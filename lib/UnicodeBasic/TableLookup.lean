@@ -23,24 +23,6 @@ public import UnicodeBasic.TableLookupTables
 
 namespace Unicode
 
-namespace CLib
-
-@[extern "unicode_case_lookup"]
-protected opaque lookupCase (c : UInt32) : UInt64
-
-protected abbrev oUpper : UInt64 := 0x100000000
-protected abbrev oLower : UInt64 := 0x200000000
-protected abbrev oAlpha : UInt64 := 0x400000000
-protected abbrev oMath  : UInt64 := 0x800000000
-
-@[extern "unicode_prop_lookup"]
-protected opaque lookupProp (c : UInt32) : UInt64
-
-@[extern "unicode_script_lookup"]
-protected opaque lookupScript (c : UInt32) : Script
-
-end CLib
-
 /-- Binary search -/
 @[specialize]
 private partial def find (c : UInt32) (t : USize → UInt32) (lo hi : USize) : USize :=
@@ -51,6 +33,51 @@ private partial def find (c : UInt32) (t : USize → UInt32) (lo hi : USize) : U
     find c t lo mid
   else
     find c t mid hi
+
+private def decodeGeneralCategory (c raw : UInt32) : GC :=
+  let gcMask : UInt32 := GC.univ
+  let gc : GC := raw &&& gcMask
+  let parityBit := (raw >>> 31) &&& 1
+  if gc == GC.LC then
+    if (c &&& 1) == parityBit then GC.Lu else GC.Ll
+  else if gc == GC.PG then
+    if (c &&& 1) == parityBit then GC.Ps else GC.Pe
+  else if gc == GC.PQ then
+    if (c &&& 1) == parityBit then GC.Pi else GC.Pf
+  else
+    gc
+
+private def lookupPropRange (c : UInt32) (table : Array (UInt32 × UInt32)) : Bool :=
+  if table.size == 0 || c < table[0]!.1 then false else
+    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
+    | (_, v) => c ≤ v
+
+-- protected abbrev oUpper : UInt64 := 0x100000000
+-- protected abbrev oLower : UInt64 := 0x200000000
+-- protected abbrev oAlpha : UInt64 := 0x400000000
+-- protected abbrev oMath  : UInt64 := 0x800000000
+
+-- protected def lookupProp (c : UInt32) : UInt64 :=
+--   let gcTable : Array (UInt32 × UInt32 × UInt32) := TableLookupTables.GeneralCategory.table
+--   let gc :=
+--     if c < gcTable[0]!.1 then GC.Cn else
+--       match gcTable[find c (fun i => gcTable[i]!.1) 0 gcTable.usize]! with
+--       | (_, stop, raw) => if c ≤ stop then decodeGeneralCategory c raw else GC.Cn
+--   let bits := gc.toUInt64
+--   let bits := if lookupPropRange c TableLookupTables.OtherUppercase.table then bits ||| oUpper else bits
+--   let bits := if lookupPropRange c TableLookupTables.OtherLowercase.table then bits ||| oLower else bits
+--   let bits := if lookupPropRange c TableLookupTables.OtherAlphabetic.table then bits ||| oAlpha else bits
+--   if lookupPropRange c TableLookupTables.OtherMath.table then bits ||| oMath else bits
+
+-- protected def lookupCase (c : UInt32) : UInt64 :=
+--   let table : Array (UInt32 × UInt32 × UInt32 × UInt32 × UInt32) := TableLookupTables.CaseMapping.table
+--   if c < table[0]!.1 then 0 else
+--     match table[find c (fun i => table[i]!.1) 0 table.usize]! with
+--     | (_, stop, upper, lower, title) =>
+--       if c ≤ stop then
+--         upper.toUInt64 ||| ((lower.toUInt64 ||| (title.toUInt64 <<< (21 : UInt64))) <<< (21 : UInt64))
+--       else
+--         0
 
 /-- Get bidirectional class using the generated lookup table.
 
@@ -181,12 +208,11 @@ where
     `Simple_Uppercase_Mapping`
     `Simple_Titlecase_Mapping` -/
 public def lookupCaseMapping (c : UInt32) : UInt32 × UInt32 × UInt32 :=
-  let v : UInt64 := CLib.lookupCase c
-  if v == 0 then (c, c, c) else
-    let cu : UInt32 := v.toUInt32 &&& 0x001FFFFF
-    let cl : UInt32 := (v >>> 21).toUInt32 &&& 0x001FFFFF
-    let ct : UInt32 := (v >>> 42).toUInt32 &&& 0x001FFFFF
-    (cu, cl, ct)
+  let table : Array (UInt32 × UInt32 × UInt32 × UInt32 × UInt32) := TableLookupTables.CaseMapping.table
+  if c < table[0]!.1 then (c, c, c) else
+    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
+    | (_, stop, upper, lower, title) =>
+      if c ≤ stop then (upper, lower, title) else (c, c, c)
 
 /-- Get decomposition mapping using lookup table
 
@@ -216,7 +242,11 @@ where
 
   Unicode property: `General_Category` -/
 @[inline]
-public def lookupGC (c : UInt32) : GC := CLib.lookupProp c |>.toUInt32
+public def lookupGC (c : UInt32) : GC :=
+  let table : Array (UInt32 × UInt32 × UInt32) := TableLookupTables.GeneralCategory.table
+  if c < table[0]!.1 then GC.Cn else
+    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
+    | (_, stop, raw) => if c ≤ stop then decodeGeneralCategory c raw else GC.Cn
 
 /-- Get name of a code point using lookup table
 
@@ -269,7 +299,7 @@ where
 /-- Get numeric value of a code point using lookup table.
 
   Keep this definition in sync with the generated
-  `data-table/Numeric_Value.txt`.
+  `UnicodeBasic.TableLookupTables.NumericValue` module.
 
   Unicode properties:
     `Numeric_Type`
@@ -302,7 +332,11 @@ where
 
   Unicode properties: `Other_Alphabetic`, `Other_Lowercase`, `Other_Uppercase`, `Other_Math` -/
 public def lookupOther (c : UInt32) : UInt32 :=
-  CLib.lookupProp c >>> 32 |>.toUInt32
+  let bits := (0 : UInt32)
+  let bits := if lookupPropRange c TableLookupTables.OtherUppercase.table then bits ||| 1 else bits
+  let bits := if lookupPropRange c TableLookupTables.OtherLowercase.table then bits ||| 2 else bits
+  let bits := if lookupPropRange c TableLookupTables.OtherAlphabetic.table then bits ||| 4 else bits
+  if lookupPropRange c TableLookupTables.OtherMath.table then bits ||| 8 else bits
 
 /-! Properties -/
 
@@ -311,8 +345,7 @@ public def lookupOther (c : UInt32) : UInt32 :=
   Unicode property: `Alphabetic` -/
 @[inline]
 public def lookupAlphabetic (c : UInt32) : Bool :=
-  let m := CLib.oAlpha ||| (GC.L ||| GC.Nl).toUInt64
-  CLib.lookupProp c &&& m != 0
+  lookupPropRange c TableLookupTables.Alphabetic.table
 
 /-- Check if code point is bidi mirrored using lookup table
 
@@ -331,8 +364,7 @@ where
   Unicode property: `Cased` -/
 @[inline]
 public def lookupCased (c : UInt32 ) : Bool :=
-  let m := CLib.oUpper ||| CLib.oLower ||| GC.LC.toUInt64
-  CLib.lookupProp c &&& m != 0
+  lookupPropRange c TableLookupTables.Cased.table
 
 /-- Check if code point is ignorable using lookup table
 
@@ -351,8 +383,7 @@ where
   Unicode property: `Lowercase` -/
 @[inline]
 public def lookupLowercase (c : UInt32) : Bool :=
-  let m := CLib.oLower ||| GC.Ll.toUInt64
-  CLib.lookupProp c &&& m != 0
+  lookupPropRange c TableLookupTables.Lowercase.table
 
 
 /-- Check if code point is a mathematical symbol using lookup table
@@ -360,8 +391,7 @@ public def lookupLowercase (c : UInt32) : Bool :=
   Unicode property: `Math` -/
 @[inline]
 public def lookupMath (c : UInt32) : Bool :=
-  let m := CLib.oMath ||| GC.Sm.toUInt64
-  CLib.lookupProp c &&& m != 0
+  lookupPropRange c TableLookupTables.Math.table
 
 /-- Check if code point is a noncharcter code point
 
@@ -382,8 +412,7 @@ public def lookupTitlecase (c : UInt32) : Bool :=
   Unicode property: `Uppercase` -/
 @[inline]
 public def lookupUppercase (c : UInt32) : Bool :=
-  let m := CLib.oUpper ||| GC.Lu.toUInt64
-  CLib.lookupProp c &&& m != 0
+  lookupPropRange c TableLookupTables.Uppercase.table
 
 /-- Check if code point is a white space character using lookup table
 
@@ -400,16 +429,21 @@ where
 
   Unicode property: `Script` -/
 @[inline]
-public def lookupScript (c : UInt32) : Script := CLib.lookupScript c
+public def lookupScript (c : UInt32) : Script :=
+  let table : Array (UInt32 × UInt32 × Script) := TableLookupTables.Script.table
+  if c < table[0]!.1 then default else
+    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
+    | (_, stop, script) => if c ≤ stop then script else default
+
 
 /-- Get the name of a script
 
   Unicode property: `Script` -/
-public def lookupScriptName (s : Script) : Option String.Slice :=
+public def lookupScriptName (s : Script) : Option String :=
   let table := table
   if s.code < table[0]!.1 then none else
     match table[find s.code (fun i => table[i]!.1) 0 table.usize]! with
-    | (c, v) => if s.code = c then some v.toSlice else none
+    | (c, v) => if s.code = c then some v else none
 where
   table : Array (UInt32 × String) := TableLookupTables.ScriptName.table
 

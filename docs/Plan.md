@@ -119,7 +119,7 @@ Use small commits by tier:
 Each commit should pass:
 `lake build UnicodeData UnicodeBasic testTables`
 and when tables change:
-`lake exe makeTables`
+`lake exe makeTablesForLookup`
 `lake exe testTables`
 `just ucd-usage-status`
 `just table-provenance`

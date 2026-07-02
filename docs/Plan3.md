@@ -56,7 +56,7 @@ Chosen API direction: break API cleanly.
 
 - The bidi-specific native bridge, vendored reference sources, downloader, and
   downloader recipe have been removed.
-- Keep `UnicodeCLib` itself because other native lookup functions still exist.
+- `UnicodeCLib` has been removed; lookup tables are generated as Lean modules.
 - Documentation and comments should describe the pure Lean resolver.
 
 ## Test Plan

@@ -21,7 +21,7 @@ public def Script.isValid (c : UInt32) : Bool :=
 /-- Script identifier type -/
 public structure Script where
   public code : UInt32
-  public is_valid : Script.isValid code
+  public is_valid : Script.isValid code := by native_decide
 deriving DecidableEq, Hashable
 
 namespace Script
@@ -30,7 +30,7 @@ namespace Script
 public instance : Inhabited Script where
   default := {
     code := (((('Z'.val <<< 8 ||| 'z'.val) <<< 8) ||| 'z'.val) <<< 8) ||| 'z'.val
-    is_valid := by decide
+    is_valid := by native_decide
   }
 
 /-- String abbreviation of script -/
@@ -44,8 +44,8 @@ public def toAbbrev : Script → String
     String.ofList [c0, c1, c2, c3]
 
 @[inline]
-public def ofAbbrevAux (abbr : String) : UInt32 :=
-  let b := abbr.toUTF8
+public def ofAbbrevAux (abbr : String.Slice) : UInt32 :=
+  let b := abbr.copy.toUTF8
   if b.size = 4 then
     (UInt32.ofNat (b.get! 0).toNat <<< 24) |||
     (UInt32.ofNat (b.get! 1).toNat <<< 16) |||
@@ -58,7 +58,7 @@ public def ofAbbrevAux (abbr : String) : UInt32 :=
 @[inline]
 public def ofAbbrev? (abbr : String.Slice) : Option Script :=
   if abbr.utf8ByteSize = 4 then
-    let code := ofAbbrevAux abbr.toString
+    let code := ofAbbrevAux abbr
     if h : Script.isValid code then
       some ⟨code, h⟩
     else

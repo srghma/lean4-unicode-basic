@@ -1,145 +1,138 @@
 # Data Table Provenance
 
-Generated from `makeTables.lean`.
+Generated from `table-generators/makeTablesForLookup.lean` and `table-generators/MakeTablesForLookup/Common.lean`.
 
-## Used To Construct `data/table`
+The lookup tables consumed by `UnicodeBasic.TableLookup` are pre-generated Lean modules under `lib/UnicodeBasic/TableLookupTables`. The generator constructs table data from `UnicodeData` and UCD parser modules directly, then renders Lean table modules in one step.
 
-| data/table file | generator | UCD sources |
-| --- | --- | --- |
-| `data/table/Alphabetic.txt` | `mkAlphabetic` | `data/ucd/core/PropList.txt`, `data/ucd/core/UnicodeData.txt` |
-| `data/table/Bidi_Brackets.txt` | `mkBidiBrackets` | `data/ucd/core/BidiBrackets.txt` |
-| `data/table/Bidi_Class.txt` | `mkBidiClass` | `data/ucd/core/UnicodeData.txt` |
-| `data/table/Bidi_Mirrored.txt` | `mkBidiMirrored` | `data/ucd/core/UnicodeData.txt` |
-| `data/table/Bidi_Mirroring_Glyph.txt` | `mkBidiMirroringGlyph` | `data/ucd/core/BidiMirroring.txt` |
-| `data/table/Block_Name.txt` | `mkBlockName` | `data/ucd/core/Blocks.txt` |
-| `data/table/Canonical_Combining_Class.txt` | `mkCanonicalCombiningClass` | `data/ucd/core/UnicodeData.txt` |
-| `data/table/Canonical_Decomposition_Mapping.txt` | `mkCanonicalDecompositionMapping` | `data/ucd/core/UnicodeData.txt` |
-| `data/table/Case_Folding.txt` | `mkCaseFolding` | `data/ucd/core/CaseFolding.txt` |
-| `data/table/Case_Mapping.txt` | `mkCaseMapping` | `data/ucd/core/UnicodeData.txt` |
-| `data/table/Cased.txt` | `mkCased` | `data/ucd/core/PropList.txt`, `data/ucd/core/UnicodeData.txt` |
-| `data/table/Dash.txt` | `mkDash` | `data/ucd/core/PropList.txt` |
-| `data/table/Decomposition_Mapping.txt` | `mkDecompositionMapping` | `data/ucd/core/UnicodeData.txt` |
-| `data/table/Default_Ignorable_Code_Point.txt` | `mkDefaultIgnorableCodePoint` | `data/ucd/core/PropList.txt`, `data/ucd/core/UnicodeData.txt` |
-| `data/table/Diacritic.txt` | `mkDiacritic` | `data/ucd/core/PropList.txt` |
-| `data/table/East_Asian_Width.txt` | `mkEastAsianWidth` | `data/ucd/extracted/DerivedEastAsianWidth.txt` |
-| `data/table/Emoji.txt` | `mkEmoji` | `data/ucd/emoji/emoji-data.txt` |
-| `data/table/Emoji_Component.txt` | `mkEmojiComponent` | `data/ucd/emoji/emoji-data.txt` |
-| `data/table/Emoji_Modifier.txt` | `mkEmojiModifier` | `data/ucd/emoji/emoji-data.txt` |
-| `data/table/Emoji_Modifier_Base.txt` | `mkEmojiModifierBase` | `data/ucd/emoji/emoji-data.txt` |
-| `data/table/Emoji_Presentation.txt` | `mkEmojiPresentation` | `data/ucd/emoji/emoji-data.txt` |
-| `data/table/Extended_Pictographic.txt` | `mkExtendedPictographic` | `data/ucd/emoji/emoji-data.txt` |
-| `data/table/Extender.txt` | `mkExtender` | `data/ucd/core/PropList.txt` |
-| `data/table/General_Category.txt` | `mkGC` | `data/ucd/core/UnicodeData.txt` |
-| `data/table/Grapheme_Base.txt` | `mkGraphemeBase` | `data/ucd/core/DerivedCoreProperties.txt` |
-| `data/table/Grapheme_Break.txt` | `mkGraphemeBreak` | `data/ucd/auxiliary/GraphemeBreakProperty.txt` |
-| `data/table/Grapheme_Extend.txt` | `mkGraphemeExtend` | `data/ucd/core/DerivedCoreProperties.txt` |
-| `data/table/Hyphen.txt` | `mkHyphen` | `data/ucd/core/PropList.txt` |
-| `data/table/ID_Continue.txt` | `mkIDContinue` | `data/ucd/core/DerivedCoreProperties.txt` |
-| `data/table/ID_Start.txt` | `mkIDStart` | `data/ucd/core/DerivedCoreProperties.txt` |
-| `data/table/Line_Break.txt` | `mkLineBreak` | `data/ucd/core/LineBreak.txt` |
-| `data/table/Lowercase.txt` | `mkLowercase` | `data/ucd/core/PropList.txt`, `data/ucd/core/UnicodeData.txt` |
-| `data/table/Math.txt` | `mkMath` | `data/ucd/core/PropList.txt`, `data/ucd/core/UnicodeData.txt` |
-| `data/table/Name.txt` | `mkName` | `data/ucd/core/PropList.txt`, `data/ucd/core/UnicodeData.txt` |
-| `data/table/Noncharacter_Code_Point.txt` | `mkNoncharacterCodePoint` | `data/ucd/core/PropList.txt` |
-| `data/table/Numeric_Value.txt` | `mkNumericValue` | `data/ucd/core/UnicodeData.txt` |
-| `data/table/Other.txt` | `mkOther` | `data/ucd/core/PropList.txt` |
-| `data/table/Other_Alphabetic.txt` | `mkOtherAlphabetic` | `data/ucd/core/PropList.txt` |
-| `data/table/Other_Default_Ignorable_Code_Point.txt` | `mkOtherDefaultIgnorableCodePoint` | `data/ucd/core/PropList.txt` |
-| `data/table/Other_Lowercase.txt` | `mkOtherLowercase` | `data/ucd/core/PropList.txt` |
-| `data/table/Other_Math.txt` | `mkOtherMath` | `data/ucd/core/PropList.txt` |
-| `data/table/Other_Uppercase.txt` | `mkOtherUppercase` | `data/ucd/core/PropList.txt` |
-| `data/table/Pattern_Syntax.txt` | `mkPatternSyntax` | `data/ucd/core/PropList.txt` |
-| `data/table/Pattern_White_Space.txt` | `mkPatternWhiteSpace` | `data/ucd/core/PropList.txt` |
-| `data/table/Prepended_Concatenation_Mark.txt` | `mkPrependedConcatenationMark` | `data/ucd/core/PropList.txt` |
-| `data/table/Quotation_Mark.txt` | `mkQuotationMark` | `data/ucd/core/PropList.txt` |
-| `data/table/Regional_Indicator.txt` | `mkRegionalIndicator` | `data/ucd/core/PropList.txt` |
-| `data/table/Script_Extensions.txt` | `mkScriptExtensions` | `data/ucd/core/ScriptExtensions.txt` |
-| `data/table/Script_Name.txt` | `mkScriptName` | `data/ucd/core/PropertyValueAliases.txt` |
-| `data/table/Sentence_Break.txt` | `mkSentenceBreak` | `data/ucd/auxiliary/SentenceBreakProperty.txt` |
-| `data/table/Sentence_Terminal.txt` | `mkSentenceTerminal` | `data/ucd/core/PropList.txt` |
-| `data/table/Simple_Case_Folding.txt` | `mkSimpleCaseFolding` | `data/ucd/core/CaseFolding.txt` |
-| `data/table/Terminal_Punctuation.txt` | `mkTerminalPunctuation` | `data/ucd/core/PropList.txt` |
-| `data/table/Titlecase.txt` | `mkTitlecase` | `data/ucd/core/UnicodeData.txt` |
-| `data/table/Uppercase.txt` | `mkUppercase` | `data/ucd/core/PropList.txt`, `data/ucd/core/UnicodeData.txt` |
-| `data/table/Variation_Selector.txt` | `mkVariationSelector` | `data/ucd/core/PropList.txt` |
-| `data/table/Vertical_Orientation.txt` | `mkVerticalOrientation` | `data/ucd/core/VerticalOrientation.txt` |
-| `data/table/White_Space.txt` | `mkWhiteSpace` | `data/ucd/core/PropList.txt` |
-| `data/table/Word_Break.txt` | `mkWordBreak` | `data/ucd/auxiliary/WordBreakProperty.txt` |
-| `data/table/XID_Continue.txt` | `mkXIDContinue` | `data/ucd/core/DerivedCoreProperties.txt` |
-| `data/table/XID_Start.txt` | `mkXIDStart` | `data/ucd/core/DerivedCoreProperties.txt` |
-
-## Not Used To Construct `data/table`
-
-These UCD text files are present in the repository but are not referenced by `makeTables.lean`.
-
-### auxiliary
-
-- `data/ucd/auxiliary/GraphemeBreakTest.txt`
-- `data/ucd/auxiliary/LineBreakTest.txt`
-- `data/ucd/auxiliary/SentenceBreakTest.txt`
-- `data/ucd/auxiliary/WordBreakTest.txt`
-
-### conformance
-
-- `data/ucd/conformance/BidiCharacterTest.txt`
-- `data/ucd/conformance/BidiTest.txt`
-- `data/ucd/conformance/NormalizationTest.txt`
-
-### core
-
-- `data/ucd/core/ArabicShaping.txt`
-- `data/ucd/core/CJKRadicals.txt`
-- `data/ucd/core/CompositionExclusions.txt`
-- `data/ucd/core/DerivedAge.txt`
-- `data/ucd/core/DerivedNormalizationProps.txt`
-- `data/ucd/core/DoNotEmit.txt`
-- `data/ucd/core/EastAsianWidth.txt`
-- `data/ucd/core/EmojiSources.txt`
-- `data/ucd/core/EquivalentUnifiedIdeograph.txt`
-- `data/ucd/core/HangulSyllableType.txt`
-- `data/ucd/core/IndicPositionalCategory.txt`
-- `data/ucd/core/IndicSyllabicCategory.txt`
-- `data/ucd/core/Jamo.txt`
-- `data/ucd/core/NameAliases.txt`
-- `data/ucd/core/NamedSequences.txt`
-- `data/ucd/core/NamedSequencesProv.txt`
-- `data/ucd/core/NamesList.txt`
-- `data/ucd/core/NormalizationCorrections.txt`
-- `data/ucd/core/NushuSources.txt`
-- `data/ucd/core/PropertyAliases.txt`
-- `data/ucd/core/Scripts.txt`
-- `data/ucd/core/SpecialCasing.txt`
-- `data/ucd/core/StandardizedVariants.txt`
-- `data/ucd/core/TangutSources.txt`
-- `data/ucd/core/Unikemet.txt`
-- `data/ucd/core/USourceData.txt`
-
-### emoji
-
-- `data/ucd/emoji/emoji-variation-sequences.txt`
-
-### extracted
-
-- `data/ucd/extracted/DerivedBidiClass.txt`
-- `data/ucd/extracted/DerivedBinaryProperties.txt`
-- `data/ucd/extracted/DerivedCombiningClass.txt`
-- `data/ucd/extracted/DerivedDecompositionType.txt`
-- `data/ucd/extracted/DerivedGeneralCategory.txt`
-- `data/ucd/extracted/DerivedJoiningGroup.txt`
-- `data/ucd/extracted/DerivedJoiningType.txt`
-- `data/ucd/extracted/DerivedLineBreak.txt`
-- `data/ucd/extracted/DerivedName.txt`
-- `data/ucd/extracted/DerivedNumericType.txt`
-- `data/ucd/extracted/DerivedNumericValues.txt`
-
-### unihan
-
-- `data/ucd/unihan/Unihan_DictionaryIndices.txt`
-- `data/ucd/unihan/Unihan_DictionaryLikeData.txt`
-- `data/ucd/unihan/Unihan_IRGSources.txt`
-- `data/ucd/unihan/Unihan_NumericValues.txt`
-- `data/ucd/unihan/Unihan_OtherMappings.txt`
-- `data/ucd/unihan/Unihan_RadicalStrokeCounts.txt`
-- `data/ucd/unihan/Unihan_Readings.txt`
-- `data/ucd/unihan/Unihan_Variants.txt`
-
+| generated module |
+| --- |
+| `lib/UnicodeBasic/TableLookupTables/Alphabetic.lean` |
+| `lib/UnicodeBasic/TableLookupTables/BidiBrackets.lean` |
+| `lib/UnicodeBasic/TableLookupTables/BidiClass.lean` |
+| `lib/UnicodeBasic/TableLookupTables/BidiMirrored.lean` |
+| `lib/UnicodeBasic/TableLookupTables/BidiMirroringGlyph.lean` |
+| `lib/UnicodeBasic/TableLookupTables/BlockName.lean` |
+| `lib/UnicodeBasic/TableLookupTables/CanonicalCombiningClass.lean` |
+| `lib/UnicodeBasic/TableLookupTables/CanonicalDecompositionMapping.lean` |
+| `lib/UnicodeBasic/TableLookupTables/CaseFolding.lean` |
+| `lib/UnicodeBasic/TableLookupTables/CaseMapping.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Cased.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Dash.lean` |
+| `lib/UnicodeBasic/TableLookupTables/DecompositionMapping.lean` |
+| `lib/UnicodeBasic/TableLookupTables/DefaultIgnorableCodePoint.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Diacritic.lean` |
+| `lib/UnicodeBasic/TableLookupTables/EastAsianWidth.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Emoji.lean` |
+| `lib/UnicodeBasic/TableLookupTables/EmojiComponent.lean` |
+| `lib/UnicodeBasic/TableLookupTables/EmojiModifier.lean` |
+| `lib/UnicodeBasic/TableLookupTables/EmojiModifierBase.lean` |
+| `lib/UnicodeBasic/TableLookupTables/EmojiPresentation.lean` |
+| `lib/UnicodeBasic/TableLookupTables/ExtendedPictographic.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Extender.lean` |
+| `lib/UnicodeBasic/TableLookupTables/GeneralCategory.lean` |
+| `lib/UnicodeBasic/TableLookupTables/GraphemeBase.lean` |
+| `lib/UnicodeBasic/TableLookupTables/GraphemeBreak.lean` |
+| `lib/UnicodeBasic/TableLookupTables/GraphemeExtend.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Hyphen.lean` |
+| `lib/UnicodeBasic/TableLookupTables/IdContinue.lean` |
+| `lib/UnicodeBasic/TableLookupTables/IdStart.lean` |
+| `lib/UnicodeBasic/TableLookupTables/LineBreak.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Lowercase.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Math.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk0.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk1.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk10.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk11.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk12.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk13.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk14.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk15.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk16.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk17.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk18.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk19.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk2.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk20.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk21.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk22.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk23.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk24.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk25.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk26.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk27.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk28.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk29.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk3.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk30.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk31.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk32.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk33.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk34.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk35.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk36.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk37.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk38.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk39.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk4.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk40.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk41.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk42.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk43.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk44.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk45.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk46.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk47.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk48.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk49.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk5.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk50.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk51.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk52.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk53.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk54.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk55.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk56.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk57.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk58.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk59.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk6.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk60.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk61.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk62.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk63.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk64.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk65.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk66.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk67.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk68.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk69.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk7.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk70.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk71.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk72.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk73.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk8.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Name/Chunk9.lean` |
+| `lib/UnicodeBasic/TableLookupTables/NumericValue.lean` |
+| `lib/UnicodeBasic/TableLookupTables/OtherAlphabetic.lean` |
+| `lib/UnicodeBasic/TableLookupTables/OtherLowercase.lean` |
+| `lib/UnicodeBasic/TableLookupTables/OtherMath.lean` |
+| `lib/UnicodeBasic/TableLookupTables/OtherUppercase.lean` |
+| `lib/UnicodeBasic/TableLookupTables/PatternSyntax.lean` |
+| `lib/UnicodeBasic/TableLookupTables/PatternWhiteSpace.lean` |
+| `lib/UnicodeBasic/TableLookupTables/QuotationMark.lean` |
+| `lib/UnicodeBasic/TableLookupTables/RegionalIndicator.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Script.lean` |
+| `lib/UnicodeBasic/TableLookupTables/ScriptExtensions.lean` |
+| `lib/UnicodeBasic/TableLookupTables/ScriptName.lean` |
+| `lib/UnicodeBasic/TableLookupTables/SentenceBreak.lean` |
+| `lib/UnicodeBasic/TableLookupTables/SentenceTerminal.lean` |
+| `lib/UnicodeBasic/TableLookupTables/SimpleCaseFolding.lean` |
+| `lib/UnicodeBasic/TableLookupTables/TerminalPunctuation.lean` |
+| `lib/UnicodeBasic/TableLookupTables/Uppercase.lean` |
+| `lib/UnicodeBasic/TableLookupTables/VerticalOrientation.lean` |
+| `lib/UnicodeBasic/TableLookupTables/WhiteSpace.lean` |
+| `lib/UnicodeBasic/TableLookupTables/WordBreak.lean` |
+| `lib/UnicodeBasic/TableLookupTables/XidContinue.lean` |
+| `lib/UnicodeBasic/TableLookupTables/XidStart.lean` |

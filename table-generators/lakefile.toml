@@ -1,6 +1,6 @@
 name = "UnicodeBasicTests"
 version = "0.1.0"
-defaultTargets = ["UnicodeData", "makeTables", "makeCLib"]
+defaultTargets = ["UnicodeData", "makeTablesForLookup"]
 
 [[require]]
 name = "UnicodeBasicCommon"
@@ -68,17 +68,9 @@ globs = [
   "UnicodeData.Unihan.UnihanRadicalStrokeCounts",
   "UnicodeData.Unihan.UnihanReadings",
   "UnicodeData.Unihan.UnihanVariants",
-  "MakeTablesForLookupInLeanFromTablesTxt.Common",
+  "MakeTablesForLookup.Common",
 ]
 
 [[lean_exe]]
-name = "makeTables"
-root = "makeTables"
-
-[[lean_exe]]
-name = "makeCLib"
-root = "makeCLib"
-
-[[lean_exe]]
-name = "makeTablesForLookupInLeanFromTablesTxt"
-root = "makeTablesForLookupInLeanFromTablesTxt"
+name = "makeTablesForLookup"
+root = "makeTablesForLookup"
