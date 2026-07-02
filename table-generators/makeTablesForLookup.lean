@@ -60,6 +60,274 @@ def statsProp (array : Array (UInt32 × UInt32)) : Id <| Nat × Nat := do
     ct := ct + (c₁.toNat - c₀.toNat)
   return (array.size, ct)
 
+inductive TableDensity where
+  | dense
+  | sparse
+deriving Repr, BEq, Inhabited
+
+inductive TableLayoutShape where
+  | pair
+  | key
+  | range
+deriving Repr, BEq, Inhabited
+
+inductive WhyInvalid where
+  | unsorted
+  | overlap
+  | duplicateKey
+  | reversedRange
+  | tooManyValueFields
+deriving Repr, BEq, Inhabited
+
+structure TableLayoutKind where
+  density : TableDensity
+  kind : TableLayoutShape
+  isInvalid : Option WhyInvalid := none
+deriving Repr, BEq, Inhabited
+
+structure TableLayoutReport where
+  kind : TableLayoutKind
+  start : UInt32
+  stop : UInt32
+  rowCount : Nat := 0
+  codePointCount : Nat := 0
+  valueFieldCount : Nat := 0
+deriving Repr, Inhabited
+
+inductive TableSize where
+  | rows (rowCount : Nat)
+  | ranges (rowCount : Nat) (spanCount : Nat)
+deriving Repr
+
+inductive TableLayoutSource where
+  | none
+  | pair (pairs : Array (UInt32 × UInt32))
+  | range (ranges : Array (UInt32 × UInt32)) (valueFieldCount : Nat)
+  | key (keys : Array UInt32)
+
+structure GeneratedTable where
+  name : String
+  size : TableSize
+  rawLayout : TableLayoutSource
+  layout : TableLayoutSource
+  sorted : Bool := false
+  render : String
+
+private def TableDensity.label : TableDensity → String
+  | .dense => "dense"
+  | .sparse => "sparse"
+
+private def TableLayoutShape.label : TableLayoutShape → String
+  | .pair => "pair"
+  | .key => "key"
+  | .range => "range"
+
+private def WhyInvalid.label : WhyInvalid → String
+  | .unsorted => "unsorted"
+  | .overlap => "overlap"
+  | .duplicateKey => "duplicate key"
+  | .reversedRange => "reversed range"
+  | .tooManyValueFields => "too many value fields"
+
+private def TableLayoutKind.label : TableLayoutKind → String
+  | k =>
+    let base :=
+      match k.density, k.kind with
+      | .dense, .pair => "dense pair"
+      | .sparse, .pair => "sparse pair"
+      | .dense, .key => "dense key"
+      | .sparse, .key => "sparse key"
+      | .dense, .range => "dense range"
+      | .sparse, .range => "sparse range"
+    match k.isInvalid with
+    | none => base
+    | some why => s!"invalid {base} ({why.label})"
+
+private def ansi (code : String) (s : String) : String :=
+  let esc := String.singleton (Char.ofNat 27)
+  s!"{esc}[{code}m{s}{esc}[0m"
+
+private def bold (s : String) : String := ansi "1" s
+private def dim (s : String) : String := ansi "2" s
+private def blue (s : String) : String := ansi "34" s
+private def cyan (s : String) : String := ansi "36" s
+private def green (s : String) : String := ansi "32" s
+private def yellow (s : String) : String := ansi "33" s
+private def magenta (s : String) : String := ansi "35" s
+private def red (s : String) : String := ansi "31" s
+
+private def TableLayoutKind.coloredLabel : TableLayoutKind → String
+  | k =>
+    match k.isInvalid with
+    | some _ => red k.label
+    | none =>
+      match k.density with
+      | .dense =>
+        match k.kind with
+        | .pair => green "dense pair"
+        | .key => cyan "dense key"
+        | .range => green "dense range"
+      | .sparse =>
+        match k.kind with
+        | .pair => yellow "sparse pair"
+        | .key => magenta "sparse key"
+        | .range => yellow "sparse range"
+
+private def TableLayoutKind.emoji : TableLayoutKind → String
+  | k =>
+    match k.isInvalid with
+    | some _ => "🔴"
+    | none =>
+      match k.density with
+      | .dense => "🟢"
+      | .sparse => "🟡"
+
+private def TableLayoutReport.describe (r : TableLayoutReport) : String :=
+  s!"Layout: {r.kind.label} [{toHexStringRaw r.start}..{toHexStringRaw r.stop}]; rows={r.rowCount}; codePoints={r.codePointCount}; valueFields={r.valueFieldCount}"
+
+private def TableSize.describe : TableSize → String
+  | .rows rowCount => s!"Size: {rowCount}"
+  | .ranges rowCount spanCount => s!"Size: {rowCount} + {spanCount}"
+
+private def analyzeRangeTable (ranges : Array (UInt32 × UInt32)) (valueFieldCount : Nat) : TableLayoutReport :=
+  match ranges[0]? with
+  | none => panic! "range table cannot be empty"
+  | some (start, firstStop) =>
+    let codePointCount := Id.run do
+      let mut total := 0
+      for (c₀, c₁) in ranges do
+        total := total + (c₁.toNat + 1 - c₀.toNat)
+      return total
+    let (density, invalid?) := Id.run do
+      if valueFieldCount > 1 then
+        return (.sparse, some WhyInvalid.tooManyValueFields)
+      let mut prevEnd := firstStop
+      if start > firstStop then
+        return (.sparse, some WhyInvalid.reversedRange)
+      for (c₀, c₁) in ranges[1:] do
+        if c₀ > c₁ then
+          return (.sparse, some WhyInvalid.reversedRange)
+        if c₀ < prevEnd + 1 then
+          if c₀ ≤ prevEnd then
+            return (.sparse, some WhyInvalid.overlap)
+          return (.sparse, some WhyInvalid.unsorted)
+        if c₀ != prevEnd + 1 then
+          return (.sparse, none)
+        prevEnd := c₁
+      return (.dense, none)
+    {
+      kind := { density, kind := .range, isInvalid := invalid? },
+      start,
+      stop := ranges[ranges.size - 1]!.2,
+      rowCount := ranges.size,
+      codePointCount,
+      valueFieldCount
+    }
+
+private def analyzeKeyTable (keys : Array UInt32) : TableLayoutReport :=
+  match keys[0]? with
+  | none => panic! "key table cannot be empty"
+  | some start =>
+    let stop := keys[keys.size - 1]!
+    let (density, invalid?) := Id.run do
+      let mut prev := start
+      for k in keys[1:] do
+        if k < prev then
+          return (.sparse, some WhyInvalid.unsorted)
+        if k == prev then
+          return (.sparse, some WhyInvalid.duplicateKey)
+        if k != prev + 1 then
+          return (.sparse, none)
+        prev := k
+      return (.dense, none)
+    {
+      kind := { density, kind := .key, isInvalid := invalid? },
+      start,
+      stop,
+      rowCount := keys.size,
+      codePointCount := keys.size,
+      valueFieldCount := 0
+    }
+
+private def analyzePairTable (pairs : Array (UInt32 × UInt32)) : TableLayoutReport :=
+  match pairs[0]? with
+  | none => panic! "pair table cannot be empty"
+  | some (start, _) =>
+    let stop := pairs[pairs.size - 1]!.1
+    let (density, invalid?) := Id.run do
+      let mut prev := start
+      for (k, _) in pairs[1:] do
+        if k < prev then
+          return (.sparse, some WhyInvalid.unsorted)
+        if k == prev then
+          return (.sparse, some WhyInvalid.duplicateKey)
+        if k != prev + 1 then
+          return (.sparse, none)
+        prev := k
+      return (.dense, none)
+    {
+      kind := { density, kind := .pair, isInvalid := invalid? },
+      start,
+      stop,
+      rowCount := pairs.size,
+      codePointCount := pairs.size,
+      valueFieldCount := 0
+    }
+
+private def analyzeLayoutSource : TableLayoutSource → TableLayoutReport
+  | .none => panic! "layout source cannot be empty"
+  | .pair pairs => analyzePairTable pairs
+  | .range ranges valueFieldCount => analyzeRangeTable ranges valueFieldCount
+  | .key keys => analyzeKeyTable keys
+
+private def isSortedPairTable (table : Array (UInt32 × UInt32)) : Bool :=
+  Id.run do
+    match table[0]? with
+    | none => true
+    | some (_, first) =>
+      let mut prev := first
+      for (c₀, _) in table[1:] do
+        if c₀ < prev then
+          return false
+        prev := c₀
+      return true
+
+private def isSortedKeyTable (table : Array (UInt32 × α)) : Bool :=
+  Id.run do
+    match table[0]? with
+    | none => true
+    | some (first, _) =>
+      let mut prev := first
+      for (c, _) in table[1:] do
+        if c ≤ prev then
+          return false
+        prev := c
+      return true
+
+private def isSortedRangeTable (table : Array (UInt32 × UInt32 × α)) : Bool :=
+  Id.run do
+    match table[0]? with
+    | none => true
+    | some (firstStart, firstEnd, _) =>
+      let mut prevStart := firstStart
+      let mut prevEnd := firstEnd
+      for (c₀, c₁, _) in table[1:] do
+        if c₀ < prevStart || (c₀ == prevStart && c₁ < prevEnd) then
+          return false
+        prevStart := c₀
+        prevEnd := c₁
+      return true
+
+private def sortPairTable (table : Array (UInt32 × UInt32)) : Array (UInt32 × UInt32) :=
+  table.qsort fun (a0, _) (b0, _) => a0 < b0
+
+private def sortKeyTable (table : Array (UInt32 × α)) : Array (UInt32 × α) :=
+  table.qsort fun (a0, _) (b0, _) => a0 < b0
+
+private def sortRangeTable (table : Array (UInt32 × UInt32 × α)) : Array (UInt32 × UInt32 × α) :=
+  table.qsort fun (a0, a1, _) (b0, b1, _) =>
+    a0 < b0 || (a0 == b0 && a1 < b1)
+
 def mkBidiClass : IO <| Array (UInt32 × UInt32 × BidiClass) := do
   let mut t := #[]
   let mut start : UInt32 := 0
@@ -785,148 +1053,196 @@ private def stringPairText (table : Array (UInt32 × String)) : String :=
   lines <| table.map fun (c, v) =>
     toHexStringRaw c ++ ";" ++ v
 
-private def logPropStats (name : String) (table : Array (UInt32 × UInt32)) : IO Unit := do
-  IO.println s!"Generating table {name}"
-  IO.println s!"Size: {(statsProp table).1} + {(statsProp table).2}"
+private def renderGeneratedTable (table : GeneratedTable) : String :=
+  table.render
 
-private def logDataStats (name : String) (table : Array (UInt32 × UInt32 × α)) : IO Unit := do
-  IO.println s!"Generating table {name}"
-  IO.println s!"Size: {(statsData table).1} + {(statsData table).2}"
+private def spaces (n : Nat) : String :=
+  String.ofList <| List.replicate n ' '
 
-private def logSize (name : String) (size : Nat) : IO Unit := do
-  IO.println s!"Generating table {name}"
-  IO.println s!"Size: {size}"
+private def printIndented (indent : Nat) (s : String) : IO Unit :=
+  IO.println <| spaces indent ++ s
 
-private def tableText (name : String) : IO String := do
+private def logGeneratedTable (table : GeneratedTable) : IO Unit := do
+  printIndented 0 s!"{bold "🧾"} {bold <| blue table.name}"
+  printIndented 2 s!"{dim "size"} {bold ":"} {table.size.describe}"
+  if table.sorted then
+    let before := analyzeLayoutSource table.rawLayout
+    let after := analyzeLayoutSource table.layout
+    printIndented 2 s!"{dim "sort"} {bold ":"} yes"
+    if before.kind != after.kind then
+      printIndented 4 s!"{dim "structure"} {bold ":"} {before.kind.label} -> {after.kind.label}"
+  let report := analyzeLayoutSource table.layout
+  printIndented 2 s!"{dim "layout"} {bold ":"}"
+  printIndented 4 s!"{report.kind.emoji} {report.kind.kind.label}"
+  printIndented 6 s!"{dim "density"} {bold ":"} {report.kind.density.label}"
+  printIndented 6 s!"{dim "value fields"} {bold ":"} {report.valueFieldCount}"
+  match report.kind.isInvalid with
+  | some why => printIndented 6 s!"{dim "invalid"} {bold ":"} {why.label}"
+  | none => pure ()
+  printIndented 6 s!"{dim "bounds"} {bold ":"} [{toHexStringRaw report.start}..{toHexStringRaw report.stop}]"
+  printIndented 6 s!"{dim "rows"} {bold ":"} {report.rowCount}"
+  printIndented 6 s!"{dim "code points"} {bold ":"} {report.codePointCount}"
+
+private def mkPropTable (name : String) (table : Array (UInt32 × UInt32)) : GeneratedTable :=
+  let (rowCount, spanCount) := statsProp table
+  let sorted := sortPairTable table
+  {
+    name,
+    size := .ranges rowCount spanCount,
+    rawLayout := .range table 0,
+    layout := .range sorted 0,
+    sorted := !isSortedPairTable table,
+    render := propText sorted
+  }
+
+private def mkPairTable (name : String) (table : Array (UInt32 × UInt32)) : GeneratedTable :=
+  let sorted := sortPairTable table
+  {
+    name,
+    size := .rows table.size,
+    rawLayout := .pair table,
+    layout := .pair sorted,
+    sorted := !isSortedPairTable table,
+    render := pairText sorted
+  }
+
+private def mkRangeTable (name : String) (table : Array (UInt32 × UInt32 × α)) (render : Array (UInt32 × UInt32 × α) → String) : GeneratedTable :=
+  let (rowCount, spanCount) := statsData table
+  let sorted := sortRangeTable table
+  {
+    name,
+    size := .ranges rowCount spanCount,
+    rawLayout := .range (table.map fun (c₀, c₁, _) => (c₀, c₁)) 1,
+    layout := .range (sorted.map fun (c₀, c₁, _) => (c₀, c₁)) 1,
+    sorted := !isSortedRangeTable table,
+    render := render sorted
+  }
+
+private def mkKeyTable (name : String) (table : Array (UInt32 × α)) (render : Array (UInt32 × α) → String) : GeneratedTable :=
+  let sorted := sortKeyTable table
+  {
+    name,
+    size := .rows table.size,
+    rawLayout := .key <| table.map Prod.fst,
+    layout := .key <| sorted.map Prod.fst,
+    sorted := !isSortedKeyTable table,
+    render := render sorted
+  }
+
+private def buildTable (name : String) : IO GeneratedTable := do
   match name with
   | "Alphabetic" =>
     let table ← mkAlphabetic
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "Bidi_Class" =>
     let table ← mkBidiClass
-    logDataStats name table
-    return rangeText <| table.map fun (c₀, c₁, v) => (c₀, c₁, v.toAbbrev)
+    return mkRangeTable name table (fun table =>
+      rangeText <| table.map fun (c₀, c₁, v) => (c₀, c₁, v.toAbbrev))
   | "Bidi_Mirroring_Glyph" =>
     let table := mkBidiMirroringGlyph
-    logSize name table.size
-    return pairText table
+    return mkPairTable name table
   | "Bidi_Brackets" =>
     let table := mkBidiBrackets
-    logSize name table.size
-    return lines <| table.map fun (c, paired, bracketType) =>
-      ";".intercalate [toHexStringRaw c, toHexStringRaw paired, toString bracketType]
+    return mkKeyTable name table (fun table =>
+      lines <| table.map fun (c, paired, bracketType) =>
+        ";".intercalate [toHexStringRaw c, toHexStringRaw paired, toString bracketType]
+    )
   | "Block_Name" =>
     let table := mkBlockName
-    logSize name table.size
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "East_Asian_Width" =>
     let table := mkEastAsianWidth
-    logDataStats name table
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "Vertical_Orientation" =>
     let table := mkVerticalOrientation
-    logDataStats name table
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "Canonical_Combining_Class" =>
     let table ← mkCanonicalCombiningClass
-    logDataStats name table
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "Canonical_Decomposition_Mapping" =>
     let table ← mkCanonicalDecompositionMapping
-    logSize name table.size
-    return lines <| table.map fun (c, l) =>
-      toHexStringRaw c ++ ";" ++ ";".intercalate (l.map fun c => toHexStringRaw c.val)
+    return mkKeyTable name table (fun table =>
+      lines <| table.map fun (c, l) =>
+        toHexStringRaw c ++ ";" ++ ";".intercalate (l.map fun c => toHexStringRaw c.val)
+    )
   | "Case_Mapping" =>
     let table ← mkCaseMapping
-    logDataStats name table
-    return lines <| table.map fun (c₀, c₁, uc, lc, tc) =>
-      let base :=
-        if c₀ == c₁ then
-          toHexStringRaw c₀ ++ ";" ++
-            (if c₀ == uc then ";" else ";" ++ toHexStringRaw uc) ++
-            (if c₀ == lc then ";" else ";" ++ toHexStringRaw lc)
-        else
-          ";".intercalate <| [c₀, c₁, uc, lc].map toHexStringRaw
-      if uc == tc then base ++ ";" else base ++ ";" ++ toHexStringRaw tc
+    return mkRangeTable name table (fun table =>
+      lines <| table.map fun (c₀, c₁, uc, lc, tc) =>
+        let base :=
+          if c₀ == c₁ then
+            toHexStringRaw c₀ ++ ";" ++
+              (if c₀ == uc then ";" else ";" ++ toHexStringRaw uc) ++
+              (if c₀ == lc then ";" else ";" ++ toHexStringRaw lc)
+          else
+            ";".intercalate <| [c₀, c₁, uc, lc].map toHexStringRaw
+        if uc == tc then base ++ ";" else base ++ ";" ++ toHexStringRaw tc)
   | "Cased" =>
     let table ← mkCased
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "Decomposition_Mapping" =>
     let table ← mkDecompositionMapping
-    logSize name table.size
-    return lines <| table.map fun (c, s) => toHexStringRaw c ++ ";" ++ s
+    return mkKeyTable name table (fun table =>
+      lines <| table.map fun (c, s) => toHexStringRaw c ++ ";" ++ s
+    )
   | "Default_Ignorable_Code_Point" =>
     let table ← mkDefaultIgnorableCodePoint
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "General_Category" =>
     let table ← mkGC
-    logDataStats name table
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "Lowercase" =>
     let table ← mkLowercase
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "Math" =>
     let table ← mkMath
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "Name" =>
     let table ← mkName
-    logDataStats name table
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "Numeric_Value" =>
     let table ← mkNumericValue
-    logDataStats name table
-    return lines <| table.map fun (c₀, c₁, n) =>
-      match n with
-      | .decimal _ => ";".intercalate [toHexStringRaw c₀, toHexStringRaw c₁, "decimal"]
-      | .digit v =>
-        if c₀ == c₁ then
-          ";".intercalate [toHexStringRaw c₀, "", s!"digit {v.val}"]
-        else
-          let last := v.val + c₁.toNat - c₀.toNat
-          ";".intercalate [toHexStringRaw c₀, toHexStringRaw c₁, s!"digit {v.val}-{last}"]
-      | .numeric v none => ";".intercalate [toHexStringRaw c₀, "", s!"numeric {v}"]
-      | .numeric v (some d) => ";".intercalate [toHexStringRaw c₀, "", s!"numeric {v}/{d}"]
+    return mkRangeTable name table (fun table =>
+      lines <| table.map fun (c₀, c₁, n) =>
+        match n with
+        | .decimal _ => ";".intercalate [toHexStringRaw c₀, toHexStringRaw c₁, "decimal"]
+        | .digit v =>
+          if c₀ == c₁ then
+            ";".intercalate [toHexStringRaw c₀, "", s!"digit {v.val}"]
+          else
+            let last := v.val + c₁.toNat - c₀.toNat
+            ";".intercalate [toHexStringRaw c₀, toHexStringRaw c₁, s!"digit {v.val}-{last}"]
+        | .numeric v none => ";".intercalate [toHexStringRaw c₀, "", s!"numeric {v}"]
+        | .numeric v (some d) => ";".intercalate [toHexStringRaw c₀, "", s!"numeric {v}/{d}"])
   | "Other_Alphabetic" =>
     let table := mkOtherAlphabetic
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "Other_Lowercase" =>
     let table := mkOtherLowercase
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "Other_Math" =>
     let table := mkOtherMath
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "Other_Uppercase" =>
     let table := mkOtherUppercase
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "Bidi_Mirrored" =>
     let table ← mkBidiMirrored
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "White_Space" =>
     let table := mkWhiteSpace
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | "Script" =>
     let table := mkScript
-    logDataStats name table
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "Script_Name" =>
     let table := mkScriptName
-    logSize name table.size
-    return stringPairText table
+    return mkKeyTable name table stringPairText
   | "Script_Extensions" =>
     let table := mkScriptExtensions
-    logSize name table.size
-    return lines <| table.map fun (c₀, data) => toHexStringRaw c₀ ++ ";" ++ data
+    return mkKeyTable name table (fun table =>
+      lines <| table.map fun (c₀, data) => toHexStringRaw c₀ ++ ";" ++ data
+    )
   | "ID_Start" => pureProp name mkIDStart
   | "ID_Continue" => pureProp name mkIDContinue
   | "XID_Start" => pureProp name mkXIDStart
@@ -939,20 +1255,18 @@ private def tableText (name : String) : IO String := do
   | "Regional_Indicator" => pureProp name mkRegionalIndicator
   | "Case_Folding" =>
     let table := mkCaseFolding
-    logSize name table.size
-    return lines <| table.map fun (c, m) => toHexStringRaw c ++ ";" ++ m
+    return mkKeyTable name table (fun table =>
+      lines <| table.map fun (c, m) => toHexStringRaw c ++ ";" ++ m
+    )
   | "Simple_Case_Folding" =>
     let table := mkSimpleCaseFolding
-    logSize name table.size
-    return pairText table
+    return mkPairTable name table
   | "Grapheme_Break" =>
     let table := mkGraphemeBreak
-    logDataStats name table
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "Word_Break" =>
     let table := mkWordBreak
-    logDataStats name table
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "Diacritic" => pureProp name mkDiacritic
   | "Sentence_Terminal" => pureProp name mkSentenceTerminal
   | "Pattern_Syntax" => pureProp name mkPatternSyntax
@@ -965,23 +1279,24 @@ private def tableText (name : String) : IO String := do
   | "Extended_Pictographic" => pureProp name mkExtendedPictographic
   | "Sentence_Break" =>
     let table := mkSentenceBreak
-    logDataStats name table
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "Line_Break" =>
     let table := mkLineBreak
-    logDataStats name table
-    return rangeText table
+    return mkRangeTable name table rangeText
   | "Grapheme_Base" => pureProp name mkGraphemeBase
   | "Grapheme_Extend" => pureProp name mkGraphemeExtend
   | "Uppercase" =>
     let table ← mkUppercase
-    logPropStats name table
-    return propText table
+    return mkPropTable name table
   | other => throw <| IO.userError s!"unknown lookup table {other}"
 where
-  pureProp (name : String) (table : Array (UInt32 × UInt32)) : IO String := do
-    logPropStats name table
-    return propText table
+  pureProp (name : String) (table : Array (UInt32 × UInt32)) : IO GeneratedTable :=
+    return mkPropTable name table
+
+private def tableText (name : String) : IO String := do
+  let table ← buildTable name
+  logGeneratedTable table
+  return renderGeneratedTable table
 
 public def main (_args : List String) : IO UInt32 := do
   MakeTablesForLookup.generateFromTexts (fun spec => tableText spec.fileName) (".." / "lib" / "UnicodeBasic" / "TableLookupTables")
