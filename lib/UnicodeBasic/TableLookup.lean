@@ -87,9 +87,9 @@ private def parsePropTable (s : String) : Thunk <| Array (UInt32 × UInt32) := I
   Unicode property: `Bidi_Class` -/
 public def lookupBidiClass (c : UInt32) : BidiClass :=
   let table := table.get
-  if c < table[0]!.1 then .BN else
+  if c < table[0]!.1 then .L else
     match table[find c (fun i => table[i]!.1) 0 table.size.toUSize]! with
-    | (_, v, bc) => if c ≤ v then bc else .BN
+    | (_, v, bc) => if c ≤ v then bc else .L
 where
   str : String := include_str "../data-table/Bidi_Class.txt"
   table : Thunk <| Array (UInt32 × UInt32 × BidiClass) :=

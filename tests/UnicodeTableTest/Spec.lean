@@ -17,61 +17,15 @@ def testAlphabetic (d : UnicodeData) : Bool :=
     else PropList.isOtherAlphabetic d.code
   v == lookupAlphabetic d.code
 
-private def expectedCnBidiClass (code : UInt32) : BidiClass :=
-  if lookupDefaultIgnorableCodePoint code || PropList.isNoncharacterCodePoint code then
-    .BN
-  else if 0x0590 ≤ code && code ≤ 0x05FF then
-    .R
-  else if 0x0600 ≤ code && code ≤ 0x07BF then
-    .AL
-  else if 0x07C0 ≤ code && code ≤ 0x085F then
-    .R
-  else if 0x0860 ≤ code && code ≤ 0x08FF then
-    .AL
-  else if 0x20A0 ≤ code && code ≤ 0x20CF then
-    .ET
-  else if 0xFB1D ≤ code && code ≤ 0xFB4F then
-    .R
-  else if 0xFB50 ≤ code && code ≤ 0xFDCF then
-    .AL
-  else if 0xFDF0 ≤ code && code ≤ 0xFDFF then
-    .AL
-  else if 0xFE70 ≤ code && code ≤ 0xFEFF then
-    .AL
-  else if 0x10800 ≤ code && code ≤ 0x10CFF then
-    .R
-  else if 0x10D00 ≤ code && code ≤ 0x10D3F then
-    .AL
-  else if 0x10D40 ≤ code && code ≤ 0x10EBF then
-    .R
-  else if 0x10EC0 ≤ code && code ≤ 0x10EFF then
-    .AL
-  else if 0x10F00 ≤ code && code ≤ 0x10F2F then
-    .R
-  else if 0x10F30 ≤ code && code ≤ 0x10F6F then
-    .AL
-  else if 0x10F70 ≤ code && code ≤ 0x10FFF then
-    .R
-  else if 0x1E800 ≤ code && code ≤ 0x1EC6F then
-    .R
-  else if 0x1EC70 ≤ code && code ≤ 0x1ECBF then
-    .AL
-  else if 0x1ECC0 ≤ code && code ≤ 0x1ECFF then
-    .R
-  else if 0x1ED00 ≤ code && code ≤ 0x1ED4F then
-    .AL
-  else if 0x1ED50 ≤ code && code ≤ 0x1EDFF then
-    .R
-  else if 0x1EE00 ≤ code && code ≤ 0x1EEFF then
-    .AL
-  else if 0x1EF00 ≤ code && code ≤ 0x1EFFF then
-    .R
-  else
-    .L
-
 def testBidiClass (d : UnicodeData) : Bool :=
-  let expected := if d.gc == .Cn then expectedCnBidiClass d.code else d.bidi
-  expected == lookupBidiClass d.code
+  lookupDerivedBidiClass d.code == lookupBidiClass d.code
+
+def testBidiClassRegressions : Bool :=
+  lookupBidiClass 0x0590 == .R
+    && lookupBidiClass 0x0600 == .AN
+    && lookupBidiClass 0x0860 == .AL
+    && lookupBidiClass 0x10D40 == .AN
+    && lookupBidiClass 0xFFFF == .BN
 
 def testBidiMirrored (d : UnicodeData) : Bool :=
   d.bidiMirrored == lookupBidiMirrored d.code
@@ -238,6 +192,12 @@ def testGraphemeExtend (d : UnicodeData) : Bool :=
 def testNumericValue (d : UnicodeData) : Bool :=
   d.numeric == lookupNumericValue d.code
 
+def testNumericValueRegressions : Bool :=
+  lookupNumericValue 0x4E00 == some (.numeric 1 none)
+    && lookupNumericValue 0x4E03 == some (.numeric 7 none)
+    && lookupNumericValue 0x4E07 == some (.numeric 10000 none)
+    && lookupNumericValue 0x5146 == some (.numeric 1000000000000 none)
+
 def testTitlecase (d : UnicodeData) : Bool :=
   let v :=
     match d.gc with
@@ -273,6 +233,7 @@ def itPropertySimple (name : String) (b : Bool) : Spec.Spec := do
 public def spec : Spec.Spec := do
   Spec.describe "UnicodeTableTest" do
     itPropertyForData "Bidi_Class" testBidiClass
+    itPropertySimple "Bidi_Class regressions" testBidiClassRegressions
     itPropertySimple "Block" testBlockName
     itPropertySimple "East_Asian_Width" testEastAsianWidth
     itPropertySimple "Vertical_Orientation" testVerticalOrientation
@@ -315,5 +276,6 @@ public def spec : Spec.Spec := do
     itPropertyForData "XID_Continue" testXIDContinue
     itPropertyForData "XID_Start" testXIDStart
     itPropertyForData "Numeric_Value" testNumericValue
+    itPropertySimple "Numeric_Value regressions" testNumericValueRegressions
     itPropertyForData "General_Category" testGeneralCategory
     itPropertyForData "White_Space" testWhiteSpace

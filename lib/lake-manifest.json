@@ -7,7 +7,7 @@
    "manifestFile": "lake-manifest.json",
    "inherited": false,
    "dir": "../common",
-   "configFile": "lakefile.toml"}],
+   "configFile": "lakefile.lean"}],
  "name": "UnicodeBasic",
  "lakeDir": ".lake",
  "fixedToolchain": false}

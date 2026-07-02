@@ -44,4 +44,4 @@ lean_lib UnicodeBasic where
     `UnicodeBasic.TableLookup
   ]
   precompileModules := true
-  moreLinkObjs := #[UnicodeCLib]
+  moreLinkObjs := #[UnicodeCLib, `@UnicodeBasicCommon/libunicodebasiccommonclib]

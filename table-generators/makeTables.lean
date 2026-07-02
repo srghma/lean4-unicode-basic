@@ -61,22 +61,18 @@ def statsProp (array : Array (UInt32 × UInt32)) : Id <| Nat × Nat := do
 
 def mkBidiClass : IO <| Array (UInt32 × UInt32 × BidiClass) := do
   let mut t := #[]
-  for d in UnicodeData.data do
-    if d.name.takeEnd 7 == ", Last>" then
-      match t.back? with
-      | some (c₀, _, bc) =>
-        t := t.pop.push (c₀, d.code, bc)
-      | none => unreachable!
+  let mut start : UInt32 := 0
+  let mut last := lookupDerivedBidiClass 0
+  for i in [1:Unicode.max.toNat + 1] do
+    let c : UInt32 := UInt32.ofNat i
+    let bc := lookupDerivedBidiClass c
+    if bc == last then
+      continue
     else
-      match t.back? with
-      | some (c₀, c₁, bc) =>
-        if d.code = c₁ + 1 && d.bidi == bc then
-          t := t.pop.push (c₀, c₁+1, bc)
-        else
-          t := t.push (d.code, d.code, d.bidi)
-      | none =>
-        t := t.push (d.code, d.code, d.bidi)
-  return t
+      t := t.push (start, c - 1, last)
+      start := c
+      last := bc
+  return t.push (start, Unicode.max, last)
 
 def mkBidiMirrored : IO <| Array (UInt32 × UInt32) := do
   let mut t := #[]
@@ -431,23 +427,27 @@ def mkName : IO <| Array (UInt32 × UInt32 × String) := do
 
 def mkNumericValue : IO <| Array (UInt32 × UInt32 × NumericType) := do
   let mut t := #[]
-  for d in UnicodeData.data do
-    match d.numeric with
-    | some (.decimal 0) =>
-      t := t.push (d.code, d.code + 9, NumericType.decimal 0)
-    | some (.digit v) =>
-      match t.back! with
-      | (c₀, c₁, n@(NumericType.digit x)) =>
-        let last := x.val + c₁.toNat - c₀.toNat
-        if d.code == c₁ + 1 && v.val == last + 1 then
-          t := t.pop.push (c₀, d.code, n)
-        else
+  for c in [0:Unicode.max.toNat + 1] do
+    let c := UInt32.ofNat c
+    match getUnicodeData? c with
+    | none => continue
+    | some d =>
+      match d.numeric with
+      | some (.decimal 0) =>
+        t := t.push (d.code, d.code + 9, NumericType.decimal 0)
+      | some (.digit v) =>
+        match t.back! with
+        | (c₀, c₁, n@(NumericType.digit x)) =>
+          let last := x.val + c₁.toNat - c₀.toNat
+          if d.code == c₁ + 1 && v.val == last + 1 then
+            t := t.pop.push (c₀, d.code, n)
+          else
+            t := t.push (d.code, d.code, .digit v)
+        | _ =>
           t := t.push (d.code, d.code, .digit v)
-      | _ =>
-        t := t.push (d.code, d.code, .digit v)
-    | some n@(.numeric _ _) =>
-      t := t.push (d.code, d.code, n)
-    | _ => continue
+      | some n@(.numeric _ _) =>
+        t := t.push (d.code, d.code, n)
+      | _ => continue
   return t
 
 def mkOtherAlphabetic : Array (UInt32 × UInt32) :=
