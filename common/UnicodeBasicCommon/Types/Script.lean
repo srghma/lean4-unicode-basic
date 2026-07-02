@@ -33,11 +33,8 @@ public instance : Inhabited Script where
     is_valid := by decide
   }
 
--- TODO: implementation through cpp is not needed. Lean code is ok. Remove cpp.
-
 /-- String abbreviation of script -/
--- @[inline]
-@[extern "unicode_basic_common__script_to_abbrev"]
+@[inline]
 public def toAbbrev : Script → String
   | ⟨c, _⟩ =>
     let c0 := Char.ofUInt8 (c >>> 24).toUInt8
@@ -46,8 +43,7 @@ public def toAbbrev : Script → String
     let c3 := Char.ofUInt8 c.toUInt8
     String.ofList [c0, c1, c2, c3]
 
--- @[inline]
-@[extern "unicode_basic_common__script_of_abbrev"]
+@[inline]
 public def ofAbbrevAux (abbr : String) : UInt32 :=
   let b := abbr.toUTF8
   if b.size = 4 then

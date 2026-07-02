@@ -31,7 +31,7 @@
    "manifestFile": "lake-manifest.json",
    "inherited": true,
    "dir": "../table-generators/../common",
-   "configFile": "lakefile.lean"}],
+   "configFile": "lakefile.toml"}],
  "name": "UnicodeBasicTests",
  "lakeDir": ".lake",
  "fixedToolchain": false}
