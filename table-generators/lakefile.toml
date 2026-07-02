@@ -68,6 +68,7 @@ globs = [
   "UnicodeData.Unihan.UnihanRadicalStrokeCounts",
   "UnicodeData.Unihan.UnihanReadings",
   "UnicodeData.Unihan.UnihanVariants",
+  "MakeTablesForLookupInLeanFromTablesTxt.Common",
 ]
 
 [[lean_exe]]
@@ -77,3 +78,7 @@ root = "makeTables"
 [[lean_exe]]
 name = "makeCLib"
 root = "makeCLib"
+
+[[lean_exe]]
+name = "makeTablesForLookupInLeanFromTablesTxt"
+root = "makeTablesForLookupInLeanFromTablesTxt"

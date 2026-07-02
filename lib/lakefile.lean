@@ -41,7 +41,8 @@ lean_lib UnicodeBasic where
     `UnicodeBasic.Types.WordBreak,
     `UnicodeBasic.Bidi,
     `UnicodeBasic.Segmentation,
-    `UnicodeBasic.TableLookup
+    `UnicodeBasic.TableLookup,
+    `UnicodeBasic.TableLookupTables.*
   ]
   precompileModules := true
   moreLinkObjs := #[UnicodeCLib]
