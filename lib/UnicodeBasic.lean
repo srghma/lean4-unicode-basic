@@ -15,6 +15,7 @@ public import UnicodeBasic.Hangul
 public import UnicodeBasic.Bidi
 public import UnicodeBasic.Segmentation
 public import UnicodeBasic.TableLookup
+public import UnicodeBasic.Lookup
 
 /-!
   # General API #

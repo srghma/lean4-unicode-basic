@@ -26,7 +26,11 @@ lean_lib UnicodeBasic where
     `UnicodeBasic.Types.WordBreak,
     `UnicodeBasic.Bidi,
     `UnicodeBasic.Segmentation,
+    `UnicodeBasic.Lookup,
+    `UnicodeBasic.Lookup.*,
     `UnicodeBasic.TableLookup,
+    `UnicodeBasic.TableLookup.*,
+    `UnicodeBasic.TableLookupCommon,
     `UnicodeBasic.TableLookupTables.*
   ]
   precompileModules := true
