@@ -8,7 +8,7 @@ import UnicodeDataTest.Auxiliary.Common
 
 namespace UnicodeDataTest.Auxiliary.Data.WordBreakTest
 
-public def path : String := "data/ucd/auxiliary/WordBreakTest.txt"
+public def path : String := "../table-generators/data-ucd/auxiliary/WordBreakTest.txt"
 
 public def load : IO (Array UnicodeDataTest.BreakTestCase) := do
   return UnicodeDataTest.Auxiliary.Common.parseBreakTestFile (← IO.FS.readFile path)

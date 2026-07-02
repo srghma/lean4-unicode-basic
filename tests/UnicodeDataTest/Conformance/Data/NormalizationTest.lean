@@ -3,12 +3,22 @@ Copyright © 2026 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
-public import UnicodeDataTest.Common.Types
 import UnicodeDataTest.Common.Parse
 
 namespace UnicodeDataTest.Conformance.Data.NormalizationTest
 
-private def parseNormalizationTestLine? (lineNo : Nat) (raw : String) : Option UnicodeDataTest.NormalizationTestCase := do
+/-- Parsed normalization-test row. -/
+public structure NormalizationTestCase where
+  line : Nat
+  source : Array UInt32
+  nfc : Array UInt32
+  nfd : Array UInt32
+  nfkc : Array UInt32
+  nfkd : Array UInt32
+  comment : Option String := none
+deriving Inhabited, Repr
+
+private def parseNormalizationTestLine? (lineNo : Nat) (raw : String) : Option NormalizationTestCase := do
   let line := Unicode.UCD.trimAsciiString raw
   if line.isEmpty || line.startsWith "#" || line.startsWith "@" then
     none
@@ -28,12 +38,12 @@ private def parseNormalizationTestLine? (lineNo : Nat) (raw : String) : Option U
         comment := comment
       }
 
-private def parseNormalizationTestFile (src : String) : Array UnicodeDataTest.NormalizationTestCase :=
+private def parseNormalizationTestFile (src : String) : Array NormalizationTestCase :=
   UnicodeDataTest.Common.Parse.parseLines src parseNormalizationTestLine?
 
-public def path : String := "data/ucd/conformance/NormalizationTest.txt"
+public def path : String := "../table-generators/data-ucd/conformance/NormalizationTest.txt"
 
-public def load : IO (Array UnicodeDataTest.NormalizationTestCase) := do
+public def load : IO (Array NormalizationTestCase) := do
   return parseNormalizationTestFile (← IO.FS.readFile path)
 
 end UnicodeDataTest.Conformance.Data.NormalizationTest

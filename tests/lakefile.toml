@@ -5,7 +5,11 @@ testDriver = "testAll"
 
 [[require]]
 name = "UnicodeBasic"
-path = ".."
+path = "../lib"
+
+[[require]]
+name = "UnicodeData"
+path = "../table-generators"
 
 [[require]]
 name = "spec"

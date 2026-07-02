@@ -3,12 +3,31 @@ Copyright © 2026 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
-public import UnicodeDataTest.Common.Types
 import UnicodeDataTest.Common.Parse
+public import UnicodeBasic.Bidi
 
 namespace UnicodeDataTest.Conformance.Data.BidiTest
 
-private def parseBidiTestFile (src : String) : Array UnicodeDataTest.BidiTestCase :=
+open Unicode
+
+public def parseBidiInput (s : String) : Array BidiClass :=
+  let s := UCD.trimAsciiString s
+  if s.isEmpty then
+    #[]
+  else
+    s.splitOn " " |>.toArray.filter (· ≠ "") |>.map fun x => BidiClass.ofAbbrev! x.toSlice
+
+/-- Parsed `BidiTest.txt` row. -/
+public structure BidiTestCase where
+  line : Nat
+  expectedLevels : Array (Option Nat)
+  expectedReorder : Array Nat
+  input : Array BidiClass
+  paragraphMask : Nat
+  comment : Option String := none
+deriving Inhabited --, Repr
+
+private def parseBidiTestFile (src : String) : Array BidiTestCase :=
   Id.run do
     let mut levels : Array (Option Nat) := #[]
     let mut reorder : Array Nat := #[]
@@ -34,15 +53,15 @@ private def parseBidiTestFile (src : String) : Array UnicodeDataTest.BidiTestCas
           line := lineNo
           expectedLevels := levels
           expectedReorder := reorder
-          input := UnicodeDataTest.Common.Parse.parseBidiInput cols[0]!
+          input := parseBidiInput cols[0]!
           paragraphMask := UnicodeDataTest.Common.Parse.parseNat! cols[1]!
           comment := comment
         }
     return out
 
-public def path : String := "data/ucd/conformance/BidiTest.txt"
+public def path : String := "../table-generators/data-ucd/conformance/BidiTest.txt"
 
-public def load : IO (Array UnicodeDataTest.BidiTestCase) := do
+public def load : IO (Array BidiTestCase) := do
   return parseBidiTestFile (← IO.FS.readFile path)
 
 end UnicodeDataTest.Conformance.Data.BidiTest

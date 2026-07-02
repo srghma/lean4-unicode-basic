@@ -1,5 +1,4 @@
-/.lake
-/tests/.lake
-/tests/.spec-failures
-data/ucd/.download-meta.json
+*/.lake/
+tests/.spec-failures
+.data-ucd-download-meta.json
 *~

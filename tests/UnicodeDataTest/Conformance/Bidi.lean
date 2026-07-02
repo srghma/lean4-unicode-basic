@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
 public import UnicodeBasic.Bidi
+public import UnicodeDataTest.Conformance.Data.BidiCharacterTest
+public import UnicodeDataTest.Conformance.Data.BidiTest
 public import UnicodeDataTest.Common.Failure
 public import UnicodeDataTest.Common.Types
 
@@ -104,7 +106,7 @@ private def runFocusedRegressions : Array UnicodeDataTest.Common.Failure := Id.r
 
   return failures
 
-private def runCharacterCase (tc : UnicodeDataTest.BidiCharacterTestCase) : Option UnicodeDataTest.Common.Failure := do
+private def runCharacterCase (tc : UnicodeDataTest.Conformance.Data.BidiCharacterTest.BidiCharacterTestCase) : Option UnicodeDataTest.Common.Failure := do
   let expected : Unicode.BidiResolution := {
     paragraphLevel := tc.paragraphLevel
     resolvedLevels := tc.resolvedLevels
@@ -132,7 +134,7 @@ private def directionsOfMask (mask : Nat) : Array Unicode.BidiParagraphDirection
     out := out.push .rtl
   return out
 
-private def runBidiTestCase (tc : UnicodeDataTest.BidiTestCase) : Array UnicodeDataTest.Common.Failure := Id.run do
+private def runBidiTestCase (tc : UnicodeDataTest.Conformance.Data.BidiTest.BidiTestCase) : Array UnicodeDataTest.Common.Failure := Id.run do
   let mut failures := #[]
   let expected : Unicode.BidiResolution := {
     paragraphLevel := 0
@@ -152,8 +154,8 @@ private def runBidiTestCase (tc : UnicodeDataTest.BidiTestCase) : Array UnicodeD
   return failures
 
 public def runConformance
-    (characterCases : Array UnicodeDataTest.BidiCharacterTestCase)
-    (bidiCases : Array UnicodeDataTest.BidiTestCase) :
+    (characterCases : Array UnicodeDataTest.Conformance.Data.BidiCharacterTest.BidiCharacterTestCase)
+    (bidiCases : Array UnicodeDataTest.Conformance.Data.BidiTest.BidiTestCase) :
     Array UnicodeDataTest.Common.Failure := Id.run do
   let mut failures := #[]
   for tc in characterCases do

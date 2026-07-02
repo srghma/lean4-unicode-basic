@@ -41,20 +41,6 @@ public def parseOptNatArray (s : String) : Array (Option Nat) :=
   else
     s.splitOn " " |>.toArray.filter (· ≠ "") |>.map parseNatOrX?
 
-public def parseBidiParagraphDirection (s : String) : Unicode.BidiParagraphDirection :=
-  match UCD.trimAsciiString s with
-  | "0" => .ltr
-  | "1" => .rtl
-  | "2" => .autoLtr
-  | _ => panic! s!"invalid bidi paragraph direction: {s}"
-
-public def parseBidiInput (s : String) : Array BidiClass :=
-  let s := UCD.trimAsciiString s
-  if s.isEmpty then
-    #[]
-  else
-    s.splitOn " " |>.toArray.filter (· ≠ "") |>.map fun x => BidiClass.ofAbbrev! x.toSlice
-
 public def parseLines {α} (src : String) (f : Nat → String → Option α) : Array α := Id.run do
   let mut out := #[]
   let mut lineNo := 0

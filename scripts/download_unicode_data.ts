@@ -13,9 +13,9 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dataDir = path.join(__dirname, '..', 'data');
-const ucdDir = path.join(dataDir, 'ucd');
-const metaPath = path.join(ucdDir, '.download-meta.json');
+const dataDir = path.join(__dirname, '..', 'table-generators');
+const ucdDir = path.join(dataDir, 'data-ucd');
+const metaPath = path.join(dataDir, '.data-ucd-download-meta.json');
 
 // Base URL common to all downloads
 const BASE_URL = 'https://www.unicode.org/Public/17.0.0/ucd';

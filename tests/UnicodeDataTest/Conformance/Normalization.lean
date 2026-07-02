@@ -5,7 +5,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 module
 import UnicodeBasic
 public import UnicodeBasic.Hangul
+import UnicodeData.Basic
 import UnicodeData.Core.CompositionExclusions
+public import UnicodeDataTest.Conformance.Data.NormalizationTest
 public import UnicodeDataTest.Common.Failure
 public import UnicodeDataTest.Common.Types
 
@@ -172,7 +174,7 @@ public def nfkd (xs : Array UInt32) : Array UInt32 := normalize true false xs
 public def nfc (xs : Array UInt32) : Array UInt32 := normalize false true xs
 public def nfkc (xs : Array UInt32) : Array UInt32 := normalize true true xs
 
-public def runConformance (file : String) (cases : Array UnicodeDataTest.NormalizationTestCase) : Array UnicodeDataTest.Common.Failure := Id.run do
+public def runConformance (file : String) (cases : Array UnicodeDataTest.Conformance.Data.NormalizationTest.NormalizationTestCase) : Array UnicodeDataTest.Common.Failure := Id.run do
   let mut failures := #[]
   for tc in cases do
     let aNfc := nfc tc.source
