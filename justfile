@@ -45,6 +45,11 @@ tables:
 clib:
     cd table-generators && lake exe makeCLib
 
+set-toolchain tag:
+    for dir in {{ dirs }}; do \
+        echo "leanprover/lean4:{{ tag }}" > "$dir/lean-toolchain"; \
+    done
+
 # Build all directories
 build:
     @just lake-all-do "lake build --wfail"

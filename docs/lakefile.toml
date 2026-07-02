@@ -1,0 +1,17 @@
+name = "docs"
+reservoir = false
+packagesDir = "../lib/.lake/packages"
+buildDir = "."
+
+[[require]]
+scope = "leanprover"
+name = "doc-gen4"
+rev = "main"
+
+[[require]]
+name = "UnicodeBasic"
+path = "../lib"
+
+[[require]]
+name = "UnicodeData"
+path = "../table-generators"
