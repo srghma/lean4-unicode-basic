@@ -8,7 +8,7 @@ namespace Unicode
 public inductive BidiBracketType
 | public openBracket
 | public closeBracket
-deriving Inhabited, DecidableEq, Repr
+deriving Inhabited, Repr, DecidableEq, Hashable, Ord, BEq, ReflBEq, LawfulBEq
 
 public instance : ToString BidiBracketType where
   toString

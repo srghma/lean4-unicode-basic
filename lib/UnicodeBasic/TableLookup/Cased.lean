@@ -13,4 +13,7 @@ namespace Unicode
   Unicode property: `Cased` -/
 @[inline]
 public def lookupCased (c : UInt32 ) : Bool :=
-  lookupPropRange c TableLookupTables.Cased.table
+  if h : TableLookupTables.Cased.BetweenOrEqStartEnd c then
+    TableLookupTables.Cased.IsInsideSparseRangeTable c h
+  else
+    false

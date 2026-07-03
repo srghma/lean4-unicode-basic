@@ -13,9 +13,7 @@ namespace Unicode
   Unicode property: `Block`
 -/
 public def lookupBlockName (c : UInt32) : String :=
-  let table := table
-  if table.size == 0 || c < table[0]!.1 then "No_Block" else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, stop, name) => if c ≤ stop then name else "No_Block"
-where
-  table : Array (UInt32 × UInt32 × String) := TableLookupTables.BlockName.table
+  if h : TableLookupTables.BlockName.BetweenOrEqStartEnd c then
+    (TableLookupTables.BlockName.getInsideSparseRangeValueTable c h).getD "No_Block"
+  else
+    "No_Block"

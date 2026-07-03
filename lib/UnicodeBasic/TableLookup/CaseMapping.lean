@@ -15,8 +15,7 @@ namespace Unicode
     `Simple_Uppercase_Mapping`
     `Simple_Titlecase_Mapping` -/
 public def lookupCaseMapping (c : UInt32) : UInt32 × UInt32 × UInt32 :=
-  let table : Array (UInt32 × UInt32 × UInt32 × UInt32 × UInt32) := TableLookupTables.CaseMapping.table
-  if c < table[0]!.1 then (c, c, c) else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, stop, upper, lower, title) =>
-      if c ≤ stop then (upper, lower, title) else (c, c, c)
+  if h : TableLookupTables.CaseMapping.BetweenOrEqStartEnd c then
+    (TableLookupTables.CaseMapping.getInsideSparseRangeValueTable c h).getD (c, c, c)
+  else
+    (c, c, c)

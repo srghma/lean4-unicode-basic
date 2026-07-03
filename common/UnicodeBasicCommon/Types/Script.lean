@@ -7,7 +7,7 @@ namespace Unicode
 -/
 
 /-- Check if valid script identifier -/
-@[inline]
+@[inline, reducible]
 public def Script.isValid (c : UInt32) : Bool :=
   let c0 := (c >>> 24).toUInt8
   let c1 := (c >>> 16).toUInt8

@@ -97,13 +97,14 @@ deriving Repr, Inhabited
 inductive TableSize where
   | rows (rowCount : Nat)
   | ranges (rowCount : Nat) (spanCount : Nat)
-deriving Repr
+deriving Repr, Inhabited
 
 inductive TableLayoutSource where
   | none
   | pair (pairs : Array (UInt32 × UInt32))
   | range (ranges : Array (UInt32 × UInt32)) (valueFieldCount : Nat)
   | key (keys : Array UInt32)
+deriving Inhabited
 
 structure GeneratedTable where
   name : String
@@ -112,6 +113,7 @@ structure GeneratedTable where
   layout : TableLayoutSource
   sorted : Bool := false
   render : String
+deriving Inhabited
 
 private def TableDensity.label : TableDensity → String
   | .dense => "dense"
@@ -199,8 +201,6 @@ private def analyzeRangeTable (ranges : Array (UInt32 × UInt32)) (valueFieldCou
         total := total + (c₁.toNat + 1 - c₀.toNat)
       return total
     let (density, invalid?) := Id.run do
-      if valueFieldCount > 1 then
-        return (.sparse, some WhyInvalid.tooManyValueFields)
       let mut prevEnd := firstStop
       if start > firstStop then
         return (.sparse, some WhyInvalid.reversedRange)
@@ -928,11 +928,11 @@ def mkSimpleCaseFolding : Array (UInt32 × UInt32) :=
 
 def mkGraphemeBreak : Array (UInt32 × UInt32 × String) :=
   (BreakProperties.data.graphemeBreak).map fun (c₀, c₁, v) =>
-    (c₀, match c₁ with | some c => c | none => c₀, v)
+    (c₀, match c₁ with | some c => c | none => c₀, MakeTablesForLookup.graphemeBreak v)
 
 def mkWordBreak : Array (UInt32 × UInt32 × String) :=
   (BreakProperties.data.wordBreak).map fun (c₀, c₁, v) =>
-    (c₀, match c₁ with | some c => c | none => c₀, v)
+    (c₀, match c₁ with | some c => c | none => c₀, MakeTablesForLookup.wordBreak v)
 
 
 def mkDiacritic : Array (UInt32 × UInt32) :=
@@ -988,11 +988,11 @@ def mkExtendedPictographic : Array (UInt32 × UInt32) :=
 
 def mkSentenceBreak : Array (UInt32 × UInt32 × String) :=
   (BreakProperties.data.sentenceBreak).map fun (c₀, c₁, v) =>
-    (c₀, match c₁ with | some c => c | none => c₀, v)
+    (c₀, match c₁ with | some c => c | none => c₀, MakeTablesForLookup.sentenceBreak v)
 
 def mkLineBreak : Array (UInt32 × UInt32 × String) :=
   (BreakProperties.data.lineBreak).map fun (c₀, c₁, v) =>
-    (c₀, match c₁ with | some c => c | none => c₀, v)
+    (c₀, match c₁ with | some c => c | none => c₀, MakeTablesForLookup.lineBreak v)
 
 def mkGraphemeBase : Array (UInt32 × UInt32) :=
   (DerivedCoreProperties.data.graphemeBase).map fun
@@ -1027,37 +1027,298 @@ def mkScriptExtensions : Array (UInt32 × String) := Id.run do
   let t_res := compressData t_arr
   return t_res.map fun (c₀, c₁, val) => (c₀, (toHexStringRaw c₁) ++ ";" ++ val)
 
+private def showBidiClass : BidiClass → String
+  | .leftToRight => "BidiClass.leftToRight"
+  | .rightToLeft => "BidiClass.rightToLeft"
+  | .arabicLetter => "BidiClass.arabicLetter"
+  | .europeanNumber => "BidiClass.europeanNumber"
+  | .europeanSeparator => "BidiClass.europeanSeparator"
+  | .europeanTerminator => "BidiClass.europeanTerminator"
+  | .arabicNumber => "BidiClass.arabicNumber"
+  | .commonSeparator => "BidiClass.commonSeparator"
+  | .nonspacingMark => "BidiClass.nonspacingMark"
+  | .boundaryNeutral => "BidiClass.boundaryNeutral"
+  | .paragraphSeparator => "BidiClass.paragraphSeparator"
+  | .segmentSeparator => "BidiClass.segmentSeparator"
+  | .whiteSpace => "BidiClass.whiteSpace"
+  | .otherNeutral => "BidiClass.otherNeutral"
+  | .leftToRightEmbedding => "BidiClass.leftToRightEmbedding"
+  | .leftToRightOverride => "BidiClass.leftToRightOverride"
+  | .rightToLeftEmbeding => "BidiClass.rightToLeftEmbeding"
+  | .rightToLeftOverride => "BidiClass.rightToLeftOverride"
+  | .popDirectionalFormat => "BidiClass.popDirectionalFormat"
+  | .leftToRightIsolate => "BidiClass.leftToRightIsolate"
+  | .rightToLeftIsolate => "BidiClass.rightToLeftIsolate"
+  | .firstStrongIsolate => "BidiClass.firstStrongIsolate"
+  | .popDirectionalIsolate => "BidiClass.popDirectionalIsolate"
+
+private def showNumericType : NumericType → String
+  | .decimal v => s!"NumericType.decimal ⟨{v.val}, by decide⟩"
+  | .digit v => s!"NumericType.digit ⟨{v.val}, by decide⟩"
+  | .numeric n none => s!"NumericType.numeric {n} none"
+  | .numeric n (some d) => s!"NumericType.numeric ({n}) (some {d})"
+
 
 private def lines (rows : Array String) : String :=
   String.intercalate "\n" rows.toList ++ "\n"
 
-private def propText (table : Array (UInt32 × UInt32)) : String :=
-  lines <| table.map fun (c₀, c₁) =>
-    if c₀ == c₁ then
-      toHexStringRaw c₀ ++ ";"
-    else
-      toHexStringRaw c₀ ++ ";" ++ toHexStringRaw c₁
+private def spaces (n : Nat) : String :=
+  String.ofList <| List.replicate n ' '
 
-private def rangeText [ToString α] (table : Array (UInt32 × UInt32 × α)) : String :=
-  lines <| table.map fun (c₀, c₁, v) =>
-    if c₀ == c₁ then
-      ";".intercalate [toHexStringRaw c₀, "", toString v]
-    else
-      ";".intercalate [toHexStringRaw c₀, toHexStringRaw c₁, toString v]
+private def hexStr (c : UInt32) : String := s!"0x{toHexStringRaw c}"
 
-private def pairText (table : Array (UInt32 × UInt32)) : String :=
-  lines <| table.map fun (c, v) =>
-    toHexStringRaw c ++ ";" ++ toHexStringRaw v
+private def isDenseRange (ranges : Array (UInt32 × UInt32)) : Bool :=
+  if ranges.size ≤ 1 then true
+  else
+    Id.run do
+      let mut prevEnd := ranges[0]!.2
+      for (c₀, c₁) in ranges[1:] do
+        if c₀ != prevEnd + 1 then return false
+        prevEnd := c₁
+      return true
 
-private def stringPairText (table : Array (UInt32 × String)) : String :=
-  lines <| table.map fun (c, v) =>
-    toHexStringRaw c ++ ";" ++ v
+private def isDenseKeyArray (keys : Array UInt32) : Bool :=
+  if keys.size ≤ 1 then true
+  else
+    Id.run do
+      let mut prev := keys[0]!
+      for k in keys[1:] do
+        if k != prev + 1 then return false
+        prev := k
+      return true
+
+private def rangeBoundsText (start stop : UInt32) : String :=
+  s!"abbrev start : UInt32 := {hexStr start}\n\nabbrev «end» : UInt32 := {hexStr stop}\n\nabbrev BetweenOrEqStartEnd (v : UInt32) : Prop := start ≤ v ∧ v ≤ «end»\n\n"
+
+private def propTableText (table : Array (UInt32 × UInt32)) : String :=
+  String.intercalate ",\n" <| table.toList.map fun (c₀, c₁) =>
+    s!"  ({hexStr c₀}, {hexStr c₁})"
+
+private def pairTableText (table : Array (UInt32 × UInt32)) : String :=
+  String.intercalate ",\n" <| table.toList.map fun (c, v) =>
+    s!"  ({hexStr c}, {hexStr v})"
+
+private def keyTableText (showValue : α → String) (table : Array (UInt32 × α)) : String :=
+  String.intercalate ",\n" <| table.toList.map fun (c, v) =>
+    s!"  ({hexStr c}, {showValue v})"
+
+private def rangeTableText (showValue : α → String) (table : Array (UInt32 × UInt32 × α)) : String :=
+  String.intercalate ",\n" <| table.toList.map fun (c₀, c₁, v) =>
+    s!"  ({hexStr c₀}, {hexStr c₁}, {showValue v})"
+
+-- Compute the maximum depth of the balanced BST produced by the bst* functions.
+-- The split is always at mid = n / 2; the pivot is taken from rest, so:
+--   left  subtree has mid elements
+--   right subtree has (n - mid - 1) elements
+private partial def bstDepth (n : Nat) : Nat :=
+  if n ≤ 1 then 0
+  else
+    let mid := n / 2
+    let leftSize  := mid
+    let rightSize := n - mid - 1
+    1 + max (bstDepth leftSize) (bstDepth rightSize)
+
+-- Lean's elaborator struggles with deeply nested if-then-else Prop chains.
+-- A depth beyond this threshold is likely to cause `isDefEq` heartbeat timeouts.
+private def bstDepthWarnThreshold : Nat := 10
+
+-- Balanced BST for prop membership over sorted non-overlapping ranges.
+-- Returns Prop. O(log n) depth avoids Lean's maxRecDepth during elaboration.
+private partial def bstPropChain (ranges : List (UInt32 × UInt32)) (ind : Nat) : String :=
+  match ranges with
+  | [] => "False"
+  | [(c₀, c₁)] =>
+    if c₀ == c₁ then s!"v = {hexStr c₀}"
+    else s!"{hexStr c₀} ≤ v ∧ v ≤ {hexStr c₁}"
+  | _ =>
+    let mid := ranges.length / 2
+    let (leftRanges, rest) := ranges.splitAt mid
+    match rest with
+    | [] => bstPropChain leftRanges ind
+    | (c₀, c₁) :: rightRanges =>
+      let sp := spaces ind
+      let l := bstPropChain leftRanges (ind + 2)
+      let r := bstPropChain rightRanges (ind + 2)
+      s!"if v < {hexStr c₀} then\n{sp}  {l}\n{sp}else if {hexStr c₁} < v then\n{sp}  {r}\n{sp}else True"
+
+-- The Decidable instance uses `unfold + infer_instance`. The BST can have ~2000 synthesis steps,
+-- so we emit a file-level set_option (not `in`-scoped, to ensure the instance is registered globally).
+private def sparseRangeMembershipText (ranges : Array (UInt32 × UInt32)) : String :=
+  if ranges.isEmpty then ""
+  else
+    s!"@[inline_if_reduce, reducible]\ndef IsInsideSparseRangeTable (v : UInt32) (_h : BetweenOrEqStartEnd v) : Prop :=\n  {bstPropChain ranges.toList 2}\n\n" ++
+    s!"set_option synthInstance.maxSize 4096 in\ninstance (v : UInt32) (h : BetweenOrEqStartEnd v) : Decidable (IsInsideSparseRangeTable v h) := by\n  unfold IsInsideSparseRangeTable; infer_instance\n"
+
+-- Balanced BST for sparse range value lookup (returns Option V).
+private partial def bstSparseValueChain (showValue : α → String) (ranges : List (UInt32 × UInt32 × α)) (ind : Nat) : String :=
+  match ranges with
+  | [] => "none"
+  | [(c₀, c₁, v)] =>
+    if c₀ == c₁ then s!"if v == {hexStr c₀} then some ({showValue v}) else none"
+    else s!"if {hexStr c₀} ≤ v ∧ v ≤ {hexStr c₁} then some ({showValue v}) else none"
+  | _ =>
+    let mid := ranges.length / 2
+    let (leftRanges, rest) := ranges.splitAt mid
+    match rest with
+    | [] => bstSparseValueChain showValue leftRanges ind
+    | (c₀, c₁, v) :: rightRanges =>
+      let sp := spaces ind
+      let l := bstSparseValueChain showValue leftRanges (ind + 2)
+      let r := bstSparseValueChain showValue rightRanges (ind + 2)
+      s!"if v < {hexStr c₀} then\n{sp}  {l}\n{sp}else if {hexStr c₁} < v then\n{sp}  {r}\n{sp}else some ({showValue v})"
+
+private def sparseRangeLookupText (lookupName returnType : String) (showValue : α → String) (table : Array (UInt32 × UInt32 × α)) : String :=
+  if table.isEmpty then ""
+  else
+    -- `Name` is rendered via chunk files below, so the heartbeat override is
+    -- only kept for other generated lookup modules that still need it.
+    let prefixOpt := if lookupName == "getInsideSparseRangeValueTable" && returnType == "String" then "set_option maxHeartbeats 2000000 in\n" else ""
+    prefixOpt ++ s!"@[inline_if_reduce, reducible]\ndef {lookupName} (v : UInt32) (_h : BetweenOrEqStartEnd v) : Option {returnType} :=\n  {bstSparseValueChain showValue table.toList 2}\n"
+
+private def chunkArray (size : Nat) (rows : Array α) : Array (Array α) := Id.run do
+  let mut chunks := #[]
+  let mut chunk := #[]
+  for row in rows do
+    chunk := chunk.push row
+    if chunk.size == size then
+      chunks := chunks.push chunk
+      chunk := #[]
+  if !chunk.isEmpty then
+    chunks := chunks.push chunk
+  return chunks
+
+private def duplicateReturnedStrings (rows : Array (UInt32 × UInt32 × String)) : Array String := Id.run do
+  let values := rows.map fun (_, _, s) => s
+  let sorted := values.qsort fun a b => a < b
+  let mut dups := #[]
+  let mut i := 0
+  while i < sorted.size do
+    let s := sorted[i]!
+    let mut j := i + 1
+    while j < sorted.size && sorted[j]! == s do
+      j := j + 1
+    if j - i > 1 then
+      dups := dups.push s
+    i := j
+  return dups
+
+private def duplicateReturnedStringName (dups : Array String) (s : String) : Option String := Id.run do
+  for i in [0:dups.size] do
+    if dups[i]! == s then
+      return some s!"dup{i}"
+  return none
+
+private def renderDuplicatedReturnedStringsModule (dups : Array String) : String :=
+  let body := Id.run do
+    let mut lines : Array String := #[]
+    for i in [0:dups.size] do
+      let s := dups[i]!
+      lines := lines.push s!"-- {reprStr s}"
+      lines := lines.push s!"abbrev dup{i} : String := {reprStr s}"
+      if i + 1 < dups.size then
+        lines := lines.push ""
+    return lines
+  String.intercalate "\n" <|
+    ["/- This file is generated by table-generators/makeTablesForLookup. -/", "module", "", "@[expose] public section", "", "namespace Unicode.TableLookupTables.Name.DuplicatedReturnedStrings", ""] ++
+    body.toList ++
+    ["", "end Unicode.TableLookupTables.Name.DuplicatedReturnedStrings", ""]
+
+private def renderNameValue (dups : Array String) (s : String) : String :=
+  match duplicateReturnedStringName dups s with
+  | some dup => s!"Unicode.TableLookupTables.Name.DuplicatedReturnedStrings.{dup}"
+  | none => reprStr s
+
+private partial def bstSparseValueChainWith (showValue : α → String) (ranges : List (UInt32 × UInt32 × α)) (ind : Nat) : String :=
+  bstSparseValueChain showValue ranges ind
+
+-- Chunks should not be (of Name.lean will not build):
+--
+-- abbrev
+-- @[inline] def
+--
+-- Chunks can be:
+--
+-- def
+-- @[reducible] def
+-- @[inline_if_reduce, reducible] def
+private def renderNameChunkModule (idx : Nat) (chunk : Array (UInt32 × UInt32 × String)) (dups : Array String) : String :=
+  let name := s!"Chunk{idx}"
+  let showValue : String → String := renderNameValue dups
+  let lookupBody := bstSparseValueChainWith showValue chunk.toList 2
+  String.intercalate "\n" <|
+    ["/- This file is generated by table-generators/makeTablesForLookup. -/", "module", "", "public import UnicodeBasic.TableLookupTables.Name.DuplicatedReturnedStrings", "", "@[expose] public section", "", s!"namespace Unicode.TableLookupTables.Name.{name}", "", s!"@[inline_if_reduce, reducible]\ndef getInsideSparseRangeValueTable (v : UInt32) : Option String :=", s!"  {lookupBody}", "", s!"end Unicode.TableLookupTables.Name.{name}", ""]
+
+private partial def nameChunkDispatchChain (chunks : List (UInt32 × String)) (ind : Nat) : String :=
+  match chunks with
+  | [] => "none"
+  | [(_, call)] => call
+  | (_, call₀) :: (nextStart, call₁) :: rest =>
+      let sp := spaces ind
+      let r := nameChunkDispatchChain ((nextStart, call₁) :: rest) (ind + 2)
+      s!"if v < {hexStr nextStart} then\n{sp}  {call₀}\n{sp}else\n{sp}  {r}"
+
+private def renderNameModule (chunks : Array (Array (UInt32 × UInt32 × String))) : String :=
+  let calls := Id.run do
+    let mut out : Array (UInt32 × String) := #[]
+    for i in [0:chunks.size] do
+      let chunk := chunks[i]!
+      let start := chunk[0]!.1
+      out := out.push (start, s!"Chunk{i}.getInsideSparseRangeValueTable v")
+    return out
+  let body := nameChunkDispatchChain calls.toList 2
+  String.intercalate "\n" <|
+    ["/- This file is generated by table-generators/makeTablesForLookup. -/", "module", "", "public import UnicodeBasic.TableLookupTables.Name.DuplicatedReturnedStrings"] ++
+    (List.range chunks.size |>.map fun i => s!"public import UnicodeBasic.TableLookupTables.Name.Chunk{i}") ++
+    ["", "@[expose] public section", "", "namespace Unicode.TableLookupTables.Name", "", "abbrev start : UInt32 := 0x0000", "", "abbrev «end» : UInt32 := 0x10FFFF", "", "abbrev BetweenOrEqStartEnd (v : UInt32) : Prop := start ≤ v ∧ v ≤ «end»", "", "@[inline_if_reduce, reducible]", "def getInsideSparseRangeValueTable (v : UInt32) (_h : BetweenOrEqStartEnd v) : Option String :=", s!"  {body}", "", "end Unicode.TableLookupTables.Name", ""]
+
+-- Balanced BST for dense range value lookup (returns V, total — no Option).
+-- For dense tables every v in [start,end] belongs to exactly one range.
+private partial def bstDenseValueChain (showValue : α → String) (ranges : List (UInt32 × UInt32 × α)) (ind : Nat) : String :=
+  match ranges with
+  | [] => panic! "empty dense chain"
+  | [(_, _, v)] => showValue v
+  | _ =>
+    let mid := ranges.length / 2
+    let (leftRanges, rest) := ranges.splitAt mid
+    match rest with
+    | [] => bstDenseValueChain showValue leftRanges ind
+    | (c₀, c₁, v) :: rightRanges =>
+      let sp := spaces ind
+      let l := bstDenseValueChain showValue leftRanges (ind + 2)
+      if rightRanges.isEmpty then
+        s!"if v < {hexStr c₀} then\n{sp}  {l}\n{sp}else {showValue v}"
+      else
+        let r := bstDenseValueChain showValue rightRanges (ind + 2)
+        s!"if v < {hexStr c₀} then\n{sp}  {l}\n{sp}else if {hexStr c₁} < v then\n{sp}  {r}\n{sp}else {showValue v}"
+
+private def denseRangeLookupText (lookupName returnType : String) (showValue : α → String) (table : Array (UInt32 × UInt32 × α)) : String :=
+  if table.isEmpty then ""
+  else
+    s!"@[inline_if_reduce, reducible]\ndef {lookupName} (v : UInt32) (_h : BetweenOrEqStartEnd v) : {returnType} :=\n  {bstDenseValueChain showValue table.toList 2}\n"
+
+-- Balanced BST for exact key lookup (pair/KV tables, returns Option V).
+private partial def bstExactLookupChain (showValue : α → String) (rows : List (UInt32 × α)) (ind : Nat) : String :=
+  match rows with
+  | [] => "none"
+  | [(k, v)] => s!"if c == {hexStr k} then some ({showValue v}) else none"
+  | _ =>
+    let mid := rows.length / 2
+    let (leftRows, rest) := rows.splitAt mid
+    match rest with
+    | [] => bstExactLookupChain showValue leftRows ind
+    | (k, v) :: rightRows =>
+      let sp := spaces ind
+      let l := bstExactLookupChain showValue leftRows (ind + 2)
+      let r := bstExactLookupChain showValue rightRows (ind + 2)
+      s!"if c < {hexStr k} then\n{sp}  {l}\n{sp}else if c == {hexStr k} then some ({showValue v})\n{sp}else\n{sp}  {r}"
+
+private def optionLookupText (lookupName returnType : String) (showValue : α → String) (table : Array (UInt32 × α)) : String :=
+  if table.isEmpty then ""
+  else
+    s!"@[inline_if_reduce, reducible]\ndef {lookupName} (c : UInt32) (_h : BetweenOrEqStartEnd c) : Option {returnType} :=\n  {bstExactLookupChain showValue table.toList 2}\n"
 
 private def renderGeneratedTable (table : GeneratedTable) : String :=
   table.render
-
-private def spaces (n : Nat) : String :=
-  String.ofList <| List.replicate n ' '
 
 private def printIndented (indent : Nat) (s : String) : IO Unit :=
   IO.println <| spaces indent ++ s
@@ -1082,52 +1343,94 @@ private def logGeneratedTable (table : GeneratedTable) : IO Unit := do
   printIndented 6 s!"{dim "bounds"} {bold ":"} [{toHexStringRaw report.start}..{toHexStringRaw report.stop}]"
   printIndented 6 s!"{dim "rows"} {bold ":"} {report.rowCount}"
   printIndented 6 s!"{dim "code points"} {bold ":"} {report.codePointCount}"
+  -- For sparse tables that use a BST lookup, print the tree depth.
+  -- Dense tables use direct indexing and do not generate a BST.
+  if report.kind.density == .sparse then
+    let depth := bstDepth report.rowCount
+    if depth > bstDepthWarnThreshold then
+      printIndented 6 s!"{bold (red "⚠ bst depth")} {bold ":"} {bold (red (toString depth))} {red s!"(exceeds threshold {bstDepthWarnThreshold} — may cause elaboration heartbeat timeout)"}"
+    else
+      printIndented 6 s!"{dim "bst depth"} {bold ":"} {depth}"
 
 private def mkPropTable (name : String) (table : Array (UInt32 × UInt32)) : GeneratedTable :=
   let (rowCount, spanCount) := statsProp table
   let sorted := sortPairTable table
+  let head := sorted[0]!.1
+  let tail := sorted[sorted.size - 1]!.2
+  let isDense := isDenseRange sorted
   {
     name,
     size := .ranges rowCount spanCount,
     rawLayout := .range table 0,
     layout := .range sorted 0,
     sorted := !isSortedPairTable table,
-    render := propText sorted
+    render :=
+      rangeBoundsText head tail ++
+      -- s!"public def table : Array (UInt32 × UInt32) := #[\n{propTableText sorted}\n]\n\n" ++
+      if isDense then "" else sparseRangeMembershipText sorted
   }
 
 private def mkPairTable (name : String) (table : Array (UInt32 × UInt32)) : GeneratedTable :=
   let sorted := sortPairTable table
+  let keys := sorted.map Prod.fst
+  let head := keys[0]!
+  let tail := keys[keys.size - 1]!
+  let isDense := isDenseKeyArray keys
+  let lookupName := if isDense then "lookupDensePairTable?" else "lookupSparsePairTable?"
   {
     name,
     size := .rows table.size,
     rawLayout := .pair table,
     layout := .pair sorted,
     sorted := !isSortedPairTable table,
-    render := pairText sorted
+    render :=
+      rangeBoundsText head tail ++
+      -- s!"public def table : Array (UInt32 × UInt32) := #[\n{pairTableText sorted}\n]\n\n" ++
+      optionLookupText lookupName "UInt32" hexStr sorted
   }
 
-private def mkRangeTable (name : String) (table : Array (UInt32 × UInt32 × α)) (render : Array (UInt32 × UInt32 × α) → String) : GeneratedTable :=
+private def mkRangeTable (name : String) (valueFieldCount : Nat) (valueType : String) (showValue : α → String) (table : Array (UInt32 × UInt32 × α)) : GeneratedTable :=
   let (rowCount, spanCount) := statsData table
   let sorted := sortRangeTable table
-  {
-    name,
-    size := .ranges rowCount spanCount,
-    rawLayout := .range (table.map fun (c₀, c₁, _) => (c₀, c₁)) 1,
-    layout := .range (sorted.map fun (c₀, c₁, _) => (c₀, c₁)) 1,
-    sorted := !isSortedRangeTable table,
-    render := render sorted
-  }
+  match sorted[0]?, sorted.back? with
+  | some (head, _, _), some (_, tail, _) =>
+    let ranges := sorted.map fun (c₀, c₁, _) => (c₀, c₁)
+    let isDense := isDenseRange ranges
+    {
+      name,
+      size := .ranges rowCount spanCount,
+      rawLayout := .range (table.map fun (c₀, c₁, _) => (c₀, c₁)) valueFieldCount,
+      layout := .range ranges valueFieldCount,
+      sorted := !isSortedRangeTable table,
+      render :=
+        rangeBoundsText head tail ++
+        -- s!"public def table : Array (UInt32 × UInt32 × {valueType}) := #[\n{rangeTableText showValue sorted}\n]\n\n" ++
+        if isDense then
+          denseRangeLookupText "getInsideDenseRangeValueTable" valueType showValue sorted
+        else
+          sparseRangeLookupText "getInsideSparseRangeValueTable" valueType showValue sorted
+    }
+  | _, _ => panic! "range table cannot be empty"
 
-private def mkKeyTable (name : String) (table : Array (UInt32 × α)) (render : Array (UInt32 × α) → String) : GeneratedTable :=
+private def mkKeyTable (name : String) (valueType : String) (showValue : α → String) (table : Array (UInt32 × α)) : GeneratedTable :=
   let sorted := sortKeyTable table
-  {
-    name,
-    size := .rows table.size,
-    rawLayout := .key <| table.map Prod.fst,
-    layout := .key <| sorted.map Prod.fst,
-    sorted := !isSortedKeyTable table,
-    render := render sorted
-  }
+  let keys := sorted.map Prod.fst
+  let isDense := isDenseKeyArray keys
+  if isDense then panic! s!"dense key table not supported: {name}"
+  else
+    {
+      name,
+      size := .rows table.size,
+      rawLayout := .key <| table.map Prod.fst,
+      layout := .key <| sorted.map Prod.fst,
+      sorted := !isSortedKeyTable table,
+      render :=
+        (match keys[0]?, keys.back? with
+         | some head, some tail => rangeBoundsText head tail
+         | _, _ => "") ++
+        -- s!"public def table : Array (UInt32 × {valueType}) := #[\n{keyTableText showValue sorted}\n]\n\n" ++
+        optionLookupText "lookupSparseKVTable?" valueType showValue sorted
+    }
 
 private def buildTable (name : String) : IO GeneratedTable := do
   match name with
@@ -1136,61 +1439,58 @@ private def buildTable (name : String) : IO GeneratedTable := do
     return mkPropTable name table
   | "Bidi_Class" =>
     let table ← mkBidiClass
-    return mkRangeTable name table (fun table =>
-      rangeText <| table.map fun (c₀, c₁, v) => (c₀, c₁, v.toAbbrev))
+    return mkRangeTable name 1 "BidiClass" (fun v => s!"BidiClass.{v.toAbbrev}") table
   | "Bidi_Mirroring_Glyph" =>
     let table := mkBidiMirroringGlyph
     return mkPairTable name table
   | "Bidi_Brackets" =>
     let table := mkBidiBrackets
-    return mkKeyTable name table (fun table =>
-      lines <| table.map fun (c, paired, bracketType) =>
-        ";".intercalate [toHexStringRaw c, toHexStringRaw paired, toString bracketType]
-    )
+    let showBt : BidiBracketType → String := fun
+      | .openBracket => "BidiBracketType.openBracket"
+      | .closeBracket => "BidiBracketType.closeBracket"
+    return mkKeyTable name "BidiBracket" (fun (paired, bt) => "BidiBracket.mk " ++ hexStr paired ++ " " ++ showBt bt) (table.map fun (c, p, bt) => (c, (p, bt)))
   | "Block_Name" =>
     let table := mkBlockName
-    return mkRangeTable name table rangeText
+    return mkRangeTable name 1 "String" (fun s => reprStr s) table
   | "East_Asian_Width" =>
     let table := mkEastAsianWidth
-    return mkRangeTable name table rangeText
+    return mkRangeTable name 1 "EastAsianWidth" (fun w =>
+      match w with
+      | .ambiguous => "EastAsianWidth.ambiguous"
+      | .fullwidth => "EastAsianWidth.fullwidth"
+      | .halfwidth => "EastAsianWidth.halfwidth"
+      | .neutral => "EastAsianWidth.neutral"
+      | .narrow => "EastAsianWidth.narrow"
+      | .wide => "EastAsianWidth.wide") table
   | "Vertical_Orientation" =>
     let table := mkVerticalOrientation
-    return mkRangeTable name table rangeText
+    return mkRangeTable name 1 "VerticalOrientation" (fun v =>
+      match v with
+      | .upright => "VerticalOrientation.upright"
+      | .rotated => "VerticalOrientation.rotated"
+      | .transformedUpright => "VerticalOrientation.transformedUpright"
+      | .transformedRotated => "VerticalOrientation.transformedRotated") table
   | "Canonical_Combining_Class" =>
     let table ← mkCanonicalCombiningClass
-    return mkRangeTable name table rangeText
+    return mkRangeTable name 1 "Nat" toString table
   | "Canonical_Decomposition_Mapping" =>
     let table ← mkCanonicalDecompositionMapping
-    return mkKeyTable name table (fun table =>
-      lines <| table.map fun (c, l) =>
-        toHexStringRaw c ++ ";" ++ ";".intercalate (l.map fun c => toHexStringRaw c.val)
-    )
+    return mkKeyTable name "(List Char)" (fun l => s!"[{", ".intercalate (l.map (fun c => hexStr c.val))}]") table
   | "Case_Mapping" =>
     let table ← mkCaseMapping
-    return mkRangeTable name table (fun table =>
-      lines <| table.map fun (c₀, c₁, uc, lc, tc) =>
-        let base :=
-          if c₀ == c₁ then
-            toHexStringRaw c₀ ++ ";" ++
-              (if c₀ == uc then ";" else ";" ++ toHexStringRaw uc) ++
-              (if c₀ == lc then ";" else ";" ++ toHexStringRaw lc)
-          else
-            ";".intercalate <| [c₀, c₁, uc, lc].map toHexStringRaw
-        if uc == tc then base ++ ";" else base ++ ";" ++ toHexStringRaw tc)
+    return mkRangeTable name 3 "(UInt32 × UInt32 × UInt32)" (fun (uc, lc, tc) => s!"({hexStr uc}, {hexStr lc}, {hexStr tc})") table
   | "Cased" =>
     let table ← mkCased
     return mkPropTable name table
   | "Decomposition_Mapping" =>
     let table ← mkDecompositionMapping
-    return mkKeyTable name table (fun table =>
-      lines <| table.map fun (c, s) => toHexStringRaw c ++ ";" ++ s
-    )
+    return mkKeyTable name "String" reprStr table
   | "Default_Ignorable_Code_Point" =>
     let table ← mkDefaultIgnorableCodePoint
     return mkPropTable name table
   | "General_Category" =>
     let table ← mkGC
-    return mkRangeTable name table rangeText
+    return mkRangeTable name 1 "UInt32" (fun c => s!"({c} : UInt32)") table
   | "Lowercase" =>
     let table ← mkLowercase
     return mkPropTable name table
@@ -1199,21 +1499,27 @@ private def buildTable (name : String) : IO GeneratedTable := do
     return mkPropTable name table
   | "Name" =>
     let table ← mkName
-    return mkRangeTable name table rangeText
+    let sorted := sortRangeTable table
+    if h : sorted.size > 0 then
+      let ranges := sorted.map fun (c₀, c₁, _) => (c₀, c₁)
+      let (rowCount, spanCount) := Id.run <| statsData sorted
+      pure
+        { name,
+          size := .ranges rowCount spanCount,
+          rawLayout := .range (table.map fun (c₀, c₁, _) => (c₀, c₁)) 1,
+          layout := .range ranges 1,
+          sorted := !isSortedRangeTable table,
+          render := "" }
+    else
+      panic! "name table cannot be empty"
   | "Numeric_Value" =>
     let table ← mkNumericValue
-    return mkRangeTable name table (fun table =>
-      lines <| table.map fun (c₀, c₁, n) =>
-        match n with
-        | .decimal _ => ";".intercalate [toHexStringRaw c₀, toHexStringRaw c₁, "decimal"]
-        | .digit v =>
-          if c₀ == c₁ then
-            ";".intercalate [toHexStringRaw c₀, "", s!"digit {v.val}"]
-          else
-            let last := v.val + c₁.toNat - c₀.toNat
-            ";".intercalate [toHexStringRaw c₀, toHexStringRaw c₁, s!"digit {v.val}-{last}"]
-        | .numeric v none => ";".intercalate [toHexStringRaw c₀, "", s!"numeric {v}"]
-        | .numeric v (some d) => ";".intercalate [toHexStringRaw c₀, "", s!"numeric {v}/{d}"])
+    let showNumType : NumericType → String := fun
+      | .decimal d => s!"NumericType.decimal ⟨{d}, by decide⟩"
+      | .digit d => s!"NumericType.digit ⟨{d.val}, by decide⟩"
+      | .numeric n none => s!"NumericType.numeric {n} none"
+      | .numeric n (some d) => s!"NumericType.numeric ({n}) (some {d})"
+    return mkRangeTable name 1 "NumericType" showNumType table
   | "Other_Alphabetic" =>
     let table := mkOtherAlphabetic
     return mkPropTable name table
@@ -1234,15 +1540,16 @@ private def buildTable (name : String) : IO GeneratedTable := do
     return mkPropTable name table
   | "Script" =>
     let table := mkScript
-    return mkRangeTable name table rangeText
+    let converted := table.map fun (c₀, c₁, abbr) =>
+      let sc := Script.ofAbbrev! abbr
+      (c₀, c₁, sc)
+    return mkRangeTable name 1 "Script" (fun sc => s!"Script.mk {hexStr sc.code}") converted
   | "Script_Name" =>
     let table := mkScriptName
-    return mkKeyTable name table stringPairText
+    return mkKeyTable name "String" reprStr table
   | "Script_Extensions" =>
     let table := mkScriptExtensions
-    return mkKeyTable name table (fun table =>
-      lines <| table.map fun (c₀, data) => toHexStringRaw c₀ ++ ";" ++ data
-    )
+    return mkKeyTable name "String" reprStr table
   | "ID_Start" => pureProp name mkIDStart
   | "ID_Continue" => pureProp name mkIDContinue
   | "XID_Start" => pureProp name mkXIDStart
@@ -1255,18 +1562,16 @@ private def buildTable (name : String) : IO GeneratedTable := do
   | "Regional_Indicator" => pureProp name mkRegionalIndicator
   | "Case_Folding" =>
     let table := mkCaseFolding
-    return mkKeyTable name table (fun table =>
-      lines <| table.map fun (c, m) => toHexStringRaw c ++ ";" ++ m
-    )
+    return mkKeyTable name "String" reprStr table
   | "Simple_Case_Folding" =>
     let table := mkSimpleCaseFolding
     return mkPairTable name table
   | "Grapheme_Break" =>
     let table := mkGraphemeBreak
-    return mkRangeTable name table rangeText
+    return mkRangeTable name 1 "GraphemeClusterBreak" id table
   | "Word_Break" =>
     let table := mkWordBreak
-    return mkRangeTable name table rangeText
+    return mkRangeTable name 1 "WordBreak" id table
   | "Diacritic" => pureProp name mkDiacritic
   | "Sentence_Terminal" => pureProp name mkSentenceTerminal
   | "Pattern_Syntax" => pureProp name mkPatternSyntax
@@ -1279,10 +1584,10 @@ private def buildTable (name : String) : IO GeneratedTable := do
   | "Extended_Pictographic" => pureProp name mkExtendedPictographic
   | "Sentence_Break" =>
     let table := mkSentenceBreak
-    return mkRangeTable name table rangeText
+    return mkRangeTable name 1 "SentenceBreak" id table
   | "Line_Break" =>
     let table := mkLineBreak
-    return mkRangeTable name table rangeText
+    return mkRangeTable name 1 "LineBreak" id table
   | "Grapheme_Base" => pureProp name mkGraphemeBase
   | "Grapheme_Extend" => pureProp name mkGraphemeExtend
   | "Uppercase" =>
@@ -1293,11 +1598,35 @@ where
   pureProp (name : String) (table : Array (UInt32 × UInt32)) : IO GeneratedTable :=
     return mkPropTable name table
 
-private def tableText (name : String) : IO String := do
-  let table ← buildTable name
-  logGeneratedTable table
-  return renderGeneratedTable table
+private def buildNameGenerated : IO (GeneratedTable × Array (UInt32 × UInt32 × String) × Array (Array (UInt32 × UInt32 × String))) := do
+  let rows ← mkName
+  let sorted := sortRangeTable rows
+  let ranges := sorted.map fun (c₀, c₁, _) => (c₀, c₁)
+  let (rowCount, spanCount) := Id.run <| statsData sorted
+  pure ({ name := "Name", size := .ranges rowCount spanCount, rawLayout := .range (rows.map fun (c₀, c₁, _) => (c₀, c₁)) 1, layout := .range ranges 1, sorted := !isSortedRangeTable rows, render := "" }, sorted, chunkArray 512 sorted)
 
 public def main (_args : List String) : IO UInt32 := do
-  MakeTablesForLookup.generateFromTexts (fun spec => tableText spec.fileName) (".." / "lib" / "UnicodeBasic" / "TableLookupTables")
+  let outDir : System.FilePath := ".." / "lib" / "UnicodeBasic" / "TableLookupTables"
+  IO.FS.createDirAll outDir
+  for spec in MakeTablesForLookup.specs do
+    if spec.fileName == "Name" then
+      let nameDir : System.FilePath := outDir / "Name"
+      IO.FS.createDirAll nameDir
+      let generated ← buildNameGenerated
+      logGeneratedTable generated.1
+      let dups := duplicateReturnedStrings generated.2.1
+      IO.FS.writeFile (nameDir / "DuplicatedReturnedStrings.lean") (renderDuplicatedReturnedStringsModule dups)
+      for i in [0:generated.2.2.size] do
+        let chunk := generated.2.2[i]!
+        IO.FS.writeFile (nameDir / s!"Chunk{i}.lean") (renderNameChunkModule i chunk dups)
+      IO.FS.writeFile (outDir / "Name.lean") (renderNameModule generated.2.2)
+    else
+      let table ← buildTable spec.fileName
+      logGeneratedTable table
+      let src :=
+        MakeTablesForLookup.functionModuleHeader spec ++
+        table.render ++
+        s!"\nend Unicode.TableLookupTables.{spec.moduleName}\n"
+      IO.FS.writeFile (outDir / (spec.moduleName ++ ".lean")) src
+  IO.FS.writeFile (outDir.withFileName "TableLookupTables.lean") MakeTablesForLookup.renderAggregate
   return 0

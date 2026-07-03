@@ -13,9 +13,7 @@ namespace Unicode
 
   Unicode property: `Bidi_Class` -/
 public def lookupBidiClass (c : UInt32) : BidiClass :=
-  let table := table
-  if c < table[0]!.1 then .L else
-    match table[find c (fun i => table[i]!.1) 0 table.size.toUSize]! with
-    | (_, v, bc) => if c ≤ v then bc else .L
-where
-  table : Array (UInt32 × UInt32 × BidiClass) := TableLookupTables.BidiClass.table
+  if h : TableLookupTables.BidiClass.BetweenOrEqStartEnd c then
+    TableLookupTables.BidiClass.getInsideDenseRangeValueTable c h
+  else
+    .L

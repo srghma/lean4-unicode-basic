@@ -10,9 +10,7 @@ namespace Unicode
 
 /-- Check if code point has Dash property using lookup table -/
 public def lookupDash (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.Dash.table
+  if h : TableLookupTables.Dash.BetweenOrEqStartEnd c then
+    TableLookupTables.Dash.IsInsideSparseRangeTable c h
+  else
+    false

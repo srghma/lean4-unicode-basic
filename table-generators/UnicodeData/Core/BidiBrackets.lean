@@ -12,7 +12,7 @@ namespace Unicode
 namespace BidiBrackets
 
 /-- Structure for `BidiBrackets.txt` -/
-public structure Bracket where
+public structure BidiBracket where
   pairedBracket : UInt32
   bracketType : BidiBracketType
 deriving Inhabited, Repr
@@ -29,18 +29,18 @@ private partial def find (c : UInt32) (t : USize → UInt32) (lo hi : USize) : U
   else
     find c t mid hi
 
-public def data : Array (UInt32 × Bracket) := Id.run do
+public def data : Array (UInt32 × BidiBracket) := Id.run do
   let mut r := #[]
   let mut stream := UCDStream.ofString txt
   for record in stream do
     let code := ofHexString! record[0]!
     let pairedBracket := ofHexString! record[1]!
     let bracketType := BidiBracketType.ofAbbrev! record[2]!
-    r := r.push (code, { pairedBracket, bracketType })
+    r := r.push (code, BidiBracket.mk pairedBracket bracketType)
   return r
 
 /-- Get bidi bracket data for a code point -/
-public def lookup? (c : UInt32) : Option Bracket :=
+public def lookup? (c : UInt32) : Option BidiBracket :=
   let table := data
   if table.size == 0 || c < table[0]!.1 then none else
     let d := table[find c (fun i => table[i]!.1) 0 table.usize]!
@@ -48,11 +48,11 @@ public def lookup? (c : UInt32) : Option Bracket :=
 
 /-- Get bidi paired bracket for a code point -/
 public def lookupPairedBracket? (c : UInt32) : Option UInt32 :=
-  (lookup? c).map Bracket.pairedBracket
+  (lookup? c).map BidiBracket.pairedBracket
 
 /-- Get bidi paired bracket type for a code point -/
 public def lookupPairedBracketType? (c : UInt32) : Option BidiBracketType :=
-  (lookup? c).map Bracket.bracketType
+  (lookup? c).map BidiBracket.bracketType
 
 end BidiBrackets
 

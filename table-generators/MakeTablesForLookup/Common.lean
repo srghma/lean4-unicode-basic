@@ -1,6 +1,9 @@
 module
-import UnicodeData
-import UnicodeBasicCommon.Types.Script
+public import UnicodeBasicCommon.Types.Hex
+public import UnicodeBasicCommon.Types.Script
+public import UnicodeBasicCommon.CharacterDatabase
+
+@[expose] public section
 
 open Unicode
 
@@ -41,7 +44,7 @@ public def specs : Array TableSpec := #[
   ⟨"Alphabetic", "Alphabetic", #[], "Array (UInt32 × UInt32)", .prop⟩,
   ⟨"Bidi_Class", "BidiClass", #["UnicodeBasicCommon.Types.BidiClass"], "Array (UInt32 × UInt32 × BidiClass)", .bidiClass⟩,
   ⟨"Bidi_Mirroring_Glyph", "BidiMirroringGlyph", #[], "Array (UInt32 × UInt32)", .simpleHex⟩,
-  ⟨"Bidi_Brackets", "BidiBrackets", #["UnicodeBasicCommon.Types.BidiBracketType"], "Array (UInt32 × UInt32 × BidiBracketType)", .bidiBracket⟩,
+  ⟨"Bidi_Brackets", "BidiBrackets", #["UnicodeBasic.LookupTypes.BidiBracket", "UnicodeBasicCommon.Types.BidiBracketType"], "Array (UInt32 × BidiBracket)", .bidiBracket⟩,
   ⟨"Block_Name", "BlockName", #[], "Array (UInt32 × UInt32 × String)", .blockName⟩,
   ⟨"East_Asian_Width", "EastAsianWidth", #["UnicodeBasicCommon.Types.EastAsianWidth"], "Array (UInt32 × UInt32 × EastAsianWidth)", .eastAsianWidth⟩,
   ⟨"Vertical_Orientation", "VerticalOrientation", #["UnicodeBasicCommon.Types.VerticalOrientation"], "Array (UInt32 × UInt32 × VerticalOrientation)", .verticalOrientation⟩,
@@ -96,18 +99,18 @@ public def specs : Array TableSpec := #[
   ⟨"Uppercase", "Uppercase", #[], "Array (UInt32 × UInt32)", .prop⟩
 ]
 
-private def hex (c : UInt32) : String :=
+def hex (c : UInt32) : String :=
   s!"(0x{toHexStringRaw c} : UInt32)"
 
-private def str (s : String) : String :=
+def str (s : String) : String :=
   reprStr s
 
-private def rangeOfRecord (record : Array String.Slice) : UInt32 × UInt32 :=
+def rangeOfRecord (record : Array String.Slice) : UInt32 × UInt32 :=
   let start := ofHexString! record[0]!
   let stop := if record[1]!.isEmpty then start else ofHexString! record[1]!
   (start, stop)
 
-private def bidiClass (abbr : String.Slice) : String :=
+def bidiClass (abbr : String.Slice) : String :=
   match abbr.copy with
   | "L" => "BidiClass.leftToRight" | "R" => "BidiClass.rightToLeft" | "AL" => "BidiClass.arabicLetter"
   | "EN" => "BidiClass.europeanNumber" | "ES" => "BidiClass.europeanSeparator" | "ET" => "BidiClass.europeanTerminator"
@@ -119,25 +122,25 @@ private def bidiClass (abbr : String.Slice) : String :=
   | "FSI" => "BidiClass.firstStrongIsolate" | "PDI" => "BidiClass.popDirectionalIsolate"
   | s => panic! s!"invalid Bidi_Class {s}"
 
-private def bracketType (abbr : String.Slice) : String :=
+def bracketType (abbr : String.Slice) : String :=
   match abbr.copy with
   | "o" => "BidiBracketType.openBracket"
   | "c" => "BidiBracketType.closeBracket"
   | s => panic! s!"invalid Bidi_Paired_Bracket_Type {s}"
 
-private def eastAsianWidth (abbr : String.Slice) : String :=
+def eastAsianWidth (abbr : String.Slice) : String :=
   match abbr.copy with
   | "A" => "EastAsianWidth.ambiguous" | "F" => "EastAsianWidth.fullwidth" | "H" => "EastAsianWidth.halfwidth"
   | "N" => "EastAsianWidth.neutral" | "Na" => "EastAsianWidth.narrow" | "W" => "EastAsianWidth.wide"
   | s => panic! s!"invalid East_Asian_Width {s}"
 
-private def verticalOrientation (abbr : String.Slice) : String :=
+def verticalOrientation (abbr : String.Slice) : String :=
   match abbr.copy with
   | "U" => "VerticalOrientation.upright" | "R" => "VerticalOrientation.rotated" | "Tu" => "VerticalOrientation.transformedUpright"
   | "Tr" => "VerticalOrientation.transformedRotated"
   | s => panic! s!"invalid Vertical_Orientation {s}"
 
-private def compatibilityTag (s : String.Slice) : String :=
+def compatibilityTag (s : String.Slice) : String :=
   if s.isEmpty then "none" else
     "some " ++ match s.copy with
       | "<font>" => "CompatibilityTag.font" | "<noBreak>" => "CompatibilityTag.noBreak" | "<initial>" => "CompatibilityTag.initial"
@@ -148,7 +151,7 @@ private def compatibilityTag (s : String.Slice) : String :=
       | "<compat>" => "CompatibilityTag.compat"
       | s => panic! s!"invalid compatibility tag {s}"
 
-private def numericType (s : String.Slice) : String :=
+def numericType (s : String.Slice) : String :=
   let s := s.copy
   if s == "decimal" then
     "NumericType.decimal 0"
@@ -167,7 +170,7 @@ private def numericType (s : String.Slice) : String :=
   else
     panic! s!"invalid numeric type {s}"
 
-private def graphemeBreak (abbr : String.Slice) : String :=
+def graphemeBreak (abbr : String.Slice) : String :=
   match abbr.copy with
   | "Other" => "GraphemeClusterBreak.other" | "Control" => "GraphemeClusterBreak.control" | "CR" => "GraphemeClusterBreak.cr" | "Extend" => "GraphemeClusterBreak.extend"
   | "LF" => "GraphemeClusterBreak.lf" | "SpacingMark" => "GraphemeClusterBreak.spacingMark" | "Prepend" => "GraphemeClusterBreak.prepend"
@@ -175,7 +178,7 @@ private def graphemeBreak (abbr : String.Slice) : String :=
   | "T" => "GraphemeClusterBreak.t" | "LV" => "GraphemeClusterBreak.lv" | "LVT" => "GraphemeClusterBreak.lvt" | "ZWJ" => "GraphemeClusterBreak.zwj"
   | s => panic! s!"invalid Grapheme_Break {s}"
 
-private def wordBreak (abbr : String.Slice) : String :=
+def wordBreak (abbr : String.Slice) : String :=
   match abbr.copy with
   | "Other" => "WordBreak.other" | "Double_Quote" => "WordBreak.doubleQuote" | "Single_Quote" => "WordBreak.singleQuote"
   | "Hebrew_Letter" => "WordBreak.hebrewLetter" | "CR" => "WordBreak.cr" | "LF" => "WordBreak.lf" | "Newline" => "WordBreak.newline"
@@ -185,7 +188,7 @@ private def wordBreak (abbr : String.Slice) : String :=
   | "WSegSpace" => "WordBreak.wSegSpace" | "ZWJ" => "WordBreak.zwj" | "Format" => "WordBreak.format"
   | s => panic! s!"invalid Word_Break {s}"
 
-private def sentenceBreak (abbr : String.Slice) : String :=
+def sentenceBreak (abbr : String.Slice) : String :=
   match abbr.copy with
   | "Other" => "SentenceBreak.other" | "ATerm" => "SentenceBreak.aTerm" | "CR" => "SentenceBreak.cr" | "Close" => "SentenceBreak.close"
   | "Extend" => "SentenceBreak.extend" | "Format" => "SentenceBreak.format" | "LF" => "SentenceBreak.lf" | "Lower" => "SentenceBreak.lower"
@@ -193,7 +196,7 @@ private def sentenceBreak (abbr : String.Slice) : String :=
   | "STerm" => "SentenceBreak.sTerm" | "Sep" => "SentenceBreak.sep" | "Sp" => "SentenceBreak.sp" | "Upper" => "SentenceBreak.upper"
   | s => panic! s!"invalid Sentence_Break {s}"
 
-private def lineBreak (abbr : String.Slice) : String :=
+def lineBreak (abbr : String.Slice) : String :=
   match abbr.copy with
   | "XX" => "LineBreak.unknown" | "AI" => "LineBreak.ambiguous" | "AK" => "LineBreak.aksara" | "AP" => "LineBreak.aksaraPrebase"
   | "AS" => "LineBreak.aksaraStart" | "AL" => "LineBreak.alphabetic" | "BA" => "LineBreak.breakAfter" | "BB" => "LineBreak.breakBefore"
@@ -243,7 +246,8 @@ def renderRows (kind : TableKind) (txt : String) : Array String := Id.run do
       pure s!"  ({hex start}, {hex stop}, {bidiClass record[2]!})"
     | .bidiBracket =>
       let paired := hex <| ofHexString! record[1]!
-      pure <| "  (" ++ hex start ++ ", " ++ paired ++ ", " ++ bracketType record[2]! ++ ")"
+      let value := "BidiBracket.mk " ++ paired ++ " " ++ bracketType record[2]!
+      pure s!"  ({hex start}, {value})"
     | .blockName =>
       let (start, stop) := rangeOfRecord record
       pure s!"  ({hex start}, {hex stop}, {str record[2]!.copy})"
@@ -288,35 +292,31 @@ def renderRows (kind : TableKind) (txt : String) : Array String := Id.run do
     rows := rows.push (start, row)
   return (rows.qsort fun a b => a.1 < b.1).map Prod.snd
 
-private def header (spec : TableSpec) : String :=
+def header (spec : TableSpec) : String :=
   let imports := spec.imports.map (fun imp =>
     if spec.moduleName == "Script" && imp == "UnicodeBasicCommon.Types.Script" then
       "public import " ++ imp ++ "\npublic meta import " ++ imp
     else
       "public import " ++ imp) |>.toList
-  String.intercalate "\n" <| #[
+  String.intercalate "\n" <| [
     "/- This file is generated by table-generators/makeTablesForLookup. -/",
-    "module"
-  ].toList ++ imports ++ #[
-    "set_option maxRecDepth 1000000",
-    "set_option maxHeartbeats 0",
+    "module",
+    ""
+  ] ++ imports ++ (if imports.isEmpty then [] else [""]) ++ [
+    "@[expose] public section",
     "",
-    "namespace Unicode.TableLookupTables." ++ spec.moduleName
-  ].toList
+    "namespace Unicode.TableLookupTables." ++ spec.moduleName,
+    "",
+  ]
 
-private def renderChunk (spec : TableSpec) (idx : Nat) (rows : Array String) : String :=
-  s!"\nprivate def table{idx} : {spec.type} := #[\n" ++
-    String.intercalate ",\n" rows.toList ++
-    "\n]\n"
-
-private def renderPublicTable (spec : TableSpec) (chunkCount : Nat) : String :=
+def renderPublicTable (spec : TableSpec) (chunkCount : Nat) : String :=
   let appends := List.range chunkCount |>.map fun idx => s!"  t := t ++ table{idx}"
   String.intercalate "\n" <|
     [s!"\npublic def table : {spec.type} := Id.run do", "  let mut t := #[]"] ++
     appends ++
     ["  return t"]
 
-private def chunkRows (size : Nat) (rows : Array String) : Array (Array String) := Id.run do
+def chunkRows (size : Nat) (rows : Array String) : Array (Array String) := Id.run do
   let mut chunks := #[]
   let mut chunk := #[]
   for row in rows do
@@ -328,40 +328,7 @@ private def chunkRows (size : Nat) (rows : Array String) : Array (Array String) 
     chunks := chunks.push chunk
   return chunks
 
-private def renderChunks (spec : TableSpec) (chunks : Array (Array String)) : String := Id.run do
-  let mut out := ""
-  for h : idx in [0:chunks.size] do
-    out := out ++ renderChunk spec idx chunks[idx]
-  return out
-
-public def renderModule (spec : TableSpec) (txt : String) : String :=
-  let rows := renderRows spec.kind txt
-  let chunks := chunkRows 512 rows
-  header spec ++
-    renderChunks spec chunks ++
-    renderPublicTable spec chunks.size ++
-    "\n\nend Unicode.TableLookupTables." ++ spec.moduleName ++ "\n"
-
-private def renderSubmoduleChunk (spec : TableSpec) (idx : Nat) (rows : Array String) : String :=
-  let imports := spec.imports.map (s!"public import " ++ ·) |>.toList
-  String.intercalate "\n" <| #[
-    "/- This file is generated by table-generators/makeTablesForLookup. -/",
-    "module"
-  ].toList ++ imports ++ #[
-    "set_option maxRecDepth 1000000",
-    "set_option maxHeartbeats 0",
-    "",
-    s!"namespace Unicode.TableLookupTables.{spec.moduleName}.Chunk{idx}",
-    "",
-    s!"public def table : {spec.type} := #[",
-    String.intercalate ",\n" rows.toList,
-    "]",
-    "",
-    s!"end Unicode.TableLookupTables.{spec.moduleName}.Chunk{idx}",
-    ""
-  ].toList
-
-private def renderParentModuleFromSubmodules (spec : TableSpec) (chunkCount : Nat) : String :=
+def renderParentModuleFromSubmodules (spec : TableSpec) (chunkCount : Nat) : String :=
   let imports := List.range chunkCount |>.map fun idx =>
     s!"public import UnicodeBasic.TableLookupTables.{spec.moduleName}.Chunk{idx}"
   let appends := List.range chunkCount |>.map fun idx =>
@@ -369,55 +336,36 @@ private def renderParentModuleFromSubmodules (spec : TableSpec) (chunkCount : Na
   String.intercalate "\n" <|
     ["/- This file is generated by table-generators/makeTablesForLookup. -/", "module"] ++
     imports ++
-    ["", s!"namespace Unicode.TableLookupTables.{spec.moduleName}", "",
-      s!"public def table : {spec.type} := Id.run do", "  let mut t := #[]"] ++
+    [
+    "",
+    s!"namespace Unicode.TableLookupTables.{spec.moduleName}",
+    "",
+    s!"public def table : {spec.type} := Id.run do", "  let mut t := #[]"] ++
     appends ++
     ["  return t", "", s!"end Unicode.TableLookupTables.{spec.moduleName}", ""]
+
+public def functionModuleHeader (spec : TableSpec) : String :=
+  let imports := spec.imports.map (fun imp =>
+    if spec.moduleName == "Script" && imp == "UnicodeBasicCommon.Types.Script" then
+      "public import " ++ imp ++ "\nmeta import " ++ imp
+    else
+      "public import " ++ imp) |>.toList
+  String.intercalate "\n" <| [
+    "/- This file is generated by table-generators/makeTablesForLookup. -/",
+    "module",
+    "",
+  ] ++ imports ++ (if imports.isEmpty then [] else [""]) ++ [
+    "@[expose] public section",
+    "",
+    s!"namespace Unicode.TableLookupTables.{spec.moduleName}",
+    "",
+    ""
+  ]
 
 public def renderAggregate : String :=
   String.intercalate "\n" <|
     ["/- This file is generated by table-generators/makeTablesForLookup. -/", "module"] ++
     (specs.toList.map fun spec => "public import UnicodeBasic.TableLookupTables." ++ spec.moduleName) ++
     [""]
-
-public def generate (tableDir outDir : System.FilePath) : IO Unit := do
-  IO.FS.createDirAll outDir
-  for spec in specs do
-    let txt ← IO.FS.readFile (tableDir / (spec.fileName ++ ".txt"))
-    if spec.moduleName == "Name" then
-      let rows := renderRows spec.kind txt
-      let chunks := chunkRows 512 rows
-      let chunkDir := outDir / spec.moduleName
-      if (← chunkDir.pathExists) then
-        for entry in (← chunkDir.readDir) do
-          if entry.fileName.endsWith ".lean" then
-            IO.FS.removeFile entry.path
-      IO.FS.createDirAll chunkDir
-      for h : idx in [0:chunks.size] do
-        IO.FS.writeFile (chunkDir / s!"Chunk{idx}.lean") (renderSubmoduleChunk spec idx chunks[idx])
-      IO.FS.writeFile (outDir / (spec.moduleName ++ ".lean")) (renderParentModuleFromSubmodules spec chunks.size)
-    else
-        IO.FS.writeFile (outDir / (spec.moduleName ++ ".lean")) (renderModule spec txt)
-  IO.FS.writeFile (outDir.withFileName "TableLookupTables.lean") renderAggregate
-
-public def generateFromTexts (getText : TableSpec → IO String) (outDir : System.FilePath) : IO Unit := do
-  IO.FS.createDirAll outDir
-  for spec in specs do
-    let txt ← getText spec
-    if spec.moduleName == "Name" then
-      let rows := renderRows spec.kind txt
-      let chunks := chunkRows 512 rows
-      let chunkDir := outDir / spec.moduleName
-      if (← chunkDir.pathExists) then
-        for entry in (← chunkDir.readDir) do
-          if entry.fileName.endsWith ".lean" then
-            IO.FS.removeFile entry.path
-      IO.FS.createDirAll chunkDir
-      for h : idx in [0:chunks.size] do
-        IO.FS.writeFile (chunkDir / s!"Chunk{idx}.lean") (renderSubmoduleChunk spec idx chunks[idx])
-      IO.FS.writeFile (outDir / (spec.moduleName ++ ".lean")) (renderParentModuleFromSubmodules spec chunks.size)
-    else
-      IO.FS.writeFile (outDir / (spec.moduleName ++ ".lean")) (renderModule spec txt)
-  IO.FS.writeFile (outDir.withFileName "TableLookupTables.lean") renderAggregate
 
 end MakeTablesForLookup

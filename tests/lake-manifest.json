@@ -24,7 +24,7 @@
    "manifestFile": "lake-manifest.json",
    "inherited": false,
    "dir": "../lib",
-   "configFile": "lakefile.lean"},
+   "configFile": "lakefile.toml"},
   {"type": "path",
    "scope": "",
    "name": "UnicodeBasicCommon",

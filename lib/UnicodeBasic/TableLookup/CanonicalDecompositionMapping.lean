@@ -22,9 +22,9 @@ public def lookupCanonicalDecompositionMapping (c : UInt32) : List UInt32 :=
     | some t => [s.getLChar.val, s.getVChar.val, t.val]
     | none => [s.getLChar.val, s.getVChar.val]
   else
-    let table := table
-    if c < table[0]!.1 then [c] else
-      match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-      | (v, l) => if c == v then l else [c]
-where
-  table : Array (UInt32 × List UInt32) := TableLookupTables.CanonicalDecompositionMapping.table
+    if h : TableLookupTables.CanonicalDecompositionMapping.BetweenOrEqStartEnd c then
+      match TableLookupTables.CanonicalDecompositionMapping.lookupSparseKVTable? c h with
+      | some l => l.map Char.val
+      | none => [c]
+    else
+      [c]

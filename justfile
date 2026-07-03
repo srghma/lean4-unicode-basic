@@ -17,6 +17,9 @@ clean:
     # rm -rf table-generators/data-ucd
     rm -frd lib/UnicodeBasic/TableLookupTables
 
+update:
+    @just lake-all-do "lake update"
+
 download_unicode_data:
     node scripts/download_unicode_data.ts
 

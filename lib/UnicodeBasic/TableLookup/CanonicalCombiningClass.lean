@@ -12,9 +12,7 @@ namespace Unicode
 
   Unicode property: `Canonical_Combining_Class` -/
 public def lookupCanonicalCombiningClass (c : UInt32) : Nat :=
-  let t := table
-  if c < t[0]!.1 then 0 else
-    match t[find c (fun i => t[i]!.1) 0 t.size.toUSize]! with
-    | (_, v, n) => if c ≤ v then n else 0
-where
-  table : Array (UInt32 × UInt32 × Nat) := TableLookupTables.CanonicalCombiningClass.table
+  if h : TableLookupTables.CanonicalCombiningClass.BetweenOrEqStartEnd c then
+    (TableLookupTables.CanonicalCombiningClass.getInsideSparseRangeValueTable c h).getD 0
+  else
+    0

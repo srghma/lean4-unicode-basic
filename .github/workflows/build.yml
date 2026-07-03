@@ -25,6 +25,7 @@ jobs:
           build-args: "--wfail"
           lake-package-directory: common
           test: false
+          use-mathlib-cache: false
 
       - name: Build Table Generators
         uses: leanprover/lean-action@v1
@@ -33,6 +34,7 @@ jobs:
           build-args: "--wfail"
           lake-package-directory: table-generators
           test: false
+          use-mathlib-cache: false
 
       - name: Build Library
         uses: leanprover/lean-action@v1

@@ -11,6 +11,8 @@ namespace Unicode
 /-- Check if code point is alphabetic using lookup table
 
   Unicode property: `Alphabetic` -/
-@[inline]
-public def lookupAlphabetic (c : UInt32) : Bool :=
-  lookupPropRange c TableLookupTables.Alphabetic.table
+public abbrev lookupAlphabetic (v : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.Alphabetic.BetweenOrEqStartEnd v then
+    Unicode.TableLookupTables.Alphabetic.IsInsideSparseRangeTable v h
+  else
+    False
