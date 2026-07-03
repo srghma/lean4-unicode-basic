@@ -49,7 +49,7 @@ public def specs : Array TableSpec := #[
   ⟨"East_Asian_Width", "EastAsianWidth", #["UnicodeBasicCommon.Types.EastAsianWidth"], "Array (UInt32 × UInt32 × EastAsianWidth)", .eastAsianWidth⟩,
   ⟨"Vertical_Orientation", "VerticalOrientation", #["UnicodeBasicCommon.Types.VerticalOrientation"], "Array (UInt32 × UInt32 × VerticalOrientation)", .verticalOrientation⟩,
   ⟨"Canonical_Combining_Class", "CanonicalCombiningClass", #[], "Array (UInt32 × UInt32 × Nat)", .rangeNat⟩,
-  ⟨"Canonical_Decomposition_Mapping", "CanonicalDecompositionMapping", #[], "Array (UInt32 × List UInt32)", .hexList⟩,
+  ⟨"Canonical_Decomposition_Mapping", "CanonicalDecompositionMapping", #["UnicodeBasic.LookupTypes.CanonicalDecomposition"], "Array (UInt32 × CanonicalDecomposition)", .hexList⟩,
   ⟨"Case_Mapping", "CaseMapping", #[], "Array (UInt32 × UInt32 × UInt32 × UInt32 × UInt32)", .caseMapping⟩,
   ⟨"Cased", "Cased", #[], "Array (UInt32 × UInt32)", .prop⟩,
   ⟨"Decomposition_Mapping", "DecompositionMapping", #["UnicodeBasicCommon.Types.DecompositionMapping"], "Array (UInt32 × Option CompatibilityTag × Array UInt32)", .decomposition⟩,
@@ -225,7 +225,7 @@ def renderRows (kind : TableKind) (txt : String) : Array String := Id.run do
       pure s!"  ({hex start}, {hex <| ofHexString! record[1]!})"
     | .hexList =>
       let vals := String.intercalate ", " <| record[1:].toList.map fun c => hex <| ofHexString! c
-      pure s!"  ({hex start}, [{vals}])"
+      pure s!"  ({hex start}, CanonicalDecomposition.mk [{vals}])"
     | .caseFolding =>
       let vals := String.intercalate ", " <| record[1]!.split ";" |>.toList.map fun c => hex <| ofHexString! c
       pure s!"  ({hex start}, #[{vals}])"

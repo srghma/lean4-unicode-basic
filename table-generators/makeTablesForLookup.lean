@@ -1475,7 +1475,7 @@ private def buildTable (name : String) : IO GeneratedTable := do
     return mkRangeTable name 1 "Nat" toString table
   | "Canonical_Decomposition_Mapping" =>
     let table ← mkCanonicalDecompositionMapping
-    return mkKeyTable name "(List Char)" (fun l => s!"[{", ".intercalate (l.map (fun c => hexStr c.val))}]") table
+    return mkKeyTable name "CanonicalDecomposition" (fun l => s!"CanonicalDecomposition.mk [{", ".intercalate (l.map (fun c => hexStr c.val))}]") table
   | "Case_Mapping" =>
     let table ← mkCaseMapping
     return mkRangeTable name 3 "(UInt32 × UInt32 × UInt32)" (fun (uc, lc, tc) => s!"({hexStr uc}, {hexStr lc}, {hexStr tc})") table
