@@ -1141,13 +1141,25 @@ private partial def bstPropChain (ranges : List (UInt32 × UInt32)) (ind : Nat) 
       let r := bstPropChain rightRanges (ind + 2)
       s!"if v < {hexStr c₀} then\n{sp}  {l}\n{sp}else if {hexStr c₁} < v then\n{sp}  {r}\n{sp}else True"
 
+def magicInstanceMaxSize : String -> Nat
+| "GraphemeBase" | "XidContinue" => 5096
+| "Extender" | "Emoji" | "OtherUppercase" | "WhiteSpace" | "XidStart"
+| "OtherLowercase" | "Math" | "IdStart" | "OtherAlphabetic"
+| "TerminalPunctuation" | "SentenceTerminal" | "OtherMath" | "Hyphen"
+| "GraphemeExtend" | "PatternSyntax" | "PatternWhiteSpace"
+| "EmojiPresentation" | "Alphabetic" | "QuotationMark" | "Lowercase"
+| "EmojiModifierBase" | "ExtendedPictographic" | "IdContinue"
+| "Diacritic" | "Uppercase" | "EmojiComponent" | "Dash"
+| "BidiMirrored" | "DefaultIgnorableCodePoint" | "Cased" => 4096
+| _ => panic! "unknown module wants to generate Decidable (IsInsideSparseRangeTable ...)"
+
 -- The Decidable instance uses `unfold + infer_instance`. The BST can have ~2000 synthesis steps,
 -- so we emit a file-level set_option (not `in`-scoped, to ensure the instance is registered globally).
-private def sparseRangeMembershipText (ranges : Array (UInt32 × UInt32)) : String :=
+private def sparseRangeMembershipText (moduleName : String) (ranges : Array (UInt32 × UInt32)) : String :=
   if ranges.isEmpty then ""
   else
     s!"@[inline_if_reduce, reducible]\ndef IsInsideSparseRangeTable (v : UInt32) (_h : BetweenOrEqStartEnd v) : Prop :=\n  {bstPropChain ranges.toList 2}\n\n" ++
-    s!"set_option synthInstance.maxSize 4096 in\ninstance (v : UInt32) (h : BetweenOrEqStartEnd v) : Decidable (IsInsideSparseRangeTable v h) := by\n  unfold IsInsideSparseRangeTable; infer_instance\n"
+    s!"set_option synthInstance.maxSize {magicInstanceMaxSize moduleName} in\ninstance (v : UInt32) (h : BetweenOrEqStartEnd v) : Decidable (IsInsideSparseRangeTable v h) := by\n  unfold IsInsideSparseRangeTable; infer_instance\n"
 
 -- Balanced BST for sparse range value lookup (returns Option V).
 private partial def bstSparseValueChain (showValue : α → String) (ranges : List (UInt32 × UInt32 × α)) (ind : Nat) : String :=
@@ -1367,7 +1379,7 @@ private def mkPropTable (name : String) (table : Array (UInt32 × UInt32)) : Gen
     render :=
       rangeBoundsText head tail ++
       -- s!"public def table : Array (UInt32 × UInt32) := #[\n{propTableText sorted}\n]\n\n" ++
-      if isDense then "" else sparseRangeMembershipText sorted
+      if isDense then "" else sparseRangeMembershipText name sorted
   }
 
 private def mkPairTable (name : String) (table : Array (UInt32 × UInt32)) : GeneratedTable :=
