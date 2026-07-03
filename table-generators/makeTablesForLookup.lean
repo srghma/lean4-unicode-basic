@@ -1142,13 +1142,13 @@ private partial def bstPropChain (ranges : List (UInt32 × UInt32)) (ind : Nat) 
       s!"if v < {hexStr c₀} then\n{sp}  {l}\n{sp}else if {hexStr c₁} < v then\n{sp}  {r}\n{sp}else True"
 
 def magicInstanceMaxSize : String -> Nat
-| "Grapheme_Base" | "XID_Continue" => 5096
+| "Grapheme_Base" | "XID_Continue" | "ID_Continue" => 5096
 | "Extender" | "Emoji" | "Other_Uppercase" | "White_Space" | "XID_Start"
 | "Other_Lowercase" | "Math" | "ID_Start" | "Other_Alphabetic"
 | "Terminal_Punctuation" | "Sentence_Terminal" | "Other_Math" | "Hyphen"
 | "Grapheme_Extend" | "Pattern_Syntax" | "Pattern_White_Space"
 | "Emoji_Presentation" | "Alphabetic" | "Quotation_Mark" | "Lowercase"
-| "Emoji_Modifier_Base" | "Extended_Pictographic" | "ID_Continue"
+| "Emoji_Modifier_Base" | "Extended_Pictographic"
 | "Diacritic" | "Uppercase" | "Emoji_Component" | "Dash"
 | "Bidi_Mirrored" | "Default_Ignorable_Code_Point" | "Cased" => 4096
 | moduleName => panic! s!"unknown module {moduleName} wants to generate Decidable (IsInsideSparseRangeTable...)"

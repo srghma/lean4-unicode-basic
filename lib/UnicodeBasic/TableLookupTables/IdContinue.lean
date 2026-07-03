@@ -3639,7 +3639,7 @@ def IsInsideSparseRangeTable (v : UInt32) (_h : BetweenOrEqStartEnd v) : Prop :=
     else True
   else True
 
-set_option synthInstance.maxSize 4096 in
+set_option synthInstance.maxSize 5096 in
 instance (v : UInt32) (h : BetweenOrEqStartEnd v) : Decidable (IsInsideSparseRangeTable v h) := by
   unfold IsInsideSparseRangeTable; infer_instance
 
