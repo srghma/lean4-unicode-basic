@@ -63,6 +63,9 @@ public instance : ToString CompatibilityTag where
   | .fraction => "<fraction>"
   | .compat => "<compat>"
 
+public abbrev IsValidDecompositionMapping (l : List Char) : Prop :=
+  l.length = 1 ∨ l.length = 2 ∨ l.length = 3 ∨ l.length = 4 ∨ l.length = 5 ∨ l.length = 6 ∨ l.length = 7 ∨ l.length = 8 ∨ l.length = 18
+
 /-- Decomposition maping
 
   Unicode properties: `Decomposition_Type`, `Decomposition_Mapping` -/
@@ -71,6 +74,7 @@ public structure DecompositionMapping where
   public tag : Option CompatibilityTag
   /-- Decomposition mapping -/
   public mapping : List Char
-deriving Inhabited, DecidableEq, Repr
+  public validMapping : IsValidDecompositionMapping mapping := by decide
+deriving DecidableEq, Repr
 
 end Unicode

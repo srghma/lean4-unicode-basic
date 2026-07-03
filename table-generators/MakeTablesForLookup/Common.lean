@@ -52,7 +52,7 @@ public def specs : Array TableSpec := #[
   ⟨"Canonical_Decomposition_Mapping", "CanonicalDecompositionMapping", #["UnicodeBasic.LookupTypes.CanonicalDecomposition"], "Array (UInt32 × CanonicalDecomposition)", .hexList⟩,
   ⟨"Case_Mapping", "CaseMapping", #[], "Array (UInt32 × UInt32 × UInt32 × UInt32 × UInt32)", .caseMapping⟩,
   ⟨"Cased", "Cased", #[], "Array (UInt32 × UInt32)", .prop⟩,
-  ⟨"Decomposition_Mapping", "DecompositionMapping", #["UnicodeBasicCommon.Types.DecompositionMapping"], "Array (UInt32 × Option CompatibilityTag × Array UInt32)", .decomposition⟩,
+  ⟨"Decomposition_Mapping", "DecompositionMapping", #["UnicodeBasicCommon.Types.DecompositionMapping"], "Array (UInt32 × DecompositionMapping)", .decomposition⟩,
   ⟨"Name", "Name", #[], "Array (UInt32 × UInt32 × String)", .name⟩,
   ⟨"Numeric_Value", "NumericValue", #["UnicodeBasicCommon.Types.NumericType"], "Array (UInt32 × UInt32 × NumericType)", .numericValue⟩,
   ⟨"General_Category", "GeneralCategory", #[], "Array (UInt32 × UInt32 × UInt32)", .rangeUInt32⟩,
@@ -142,7 +142,7 @@ def verticalOrientation (abbr : String.Slice) : String :=
 
 def compatibilityTag (s : String.Slice) : String :=
   if s.isEmpty then "none" else
-    "some " ++ match s.copy with
+    "(some " ++ match s.copy with
       | "<font>" => "CompatibilityTag.font" | "<noBreak>" => "CompatibilityTag.noBreak" | "<initial>" => "CompatibilityTag.initial"
       | "<medial>" => "CompatibilityTag.medial" | "<final>" => "CompatibilityTag.final" | "<isolated>" => "CompatibilityTag.isolated"
       | "<circle>" => "CompatibilityTag.circle" | "<super>" => "CompatibilityTag.super" | "<sub>" => "CompatibilityTag.sub"
@@ -150,6 +150,7 @@ def compatibilityTag (s : String.Slice) : String :=
       | "<small>" => "CompatibilityTag.small" | "<square>" => "CompatibilityTag.square" | "<fraction>" => "CompatibilityTag.fraction"
       | "<compat>" => "CompatibilityTag.compat"
       | s => panic! s!"invalid compatibility tag {s}"
+    ++ ")"
 
 def numericType (s : String.Slice) : String :=
   let s := s.copy
@@ -258,8 +259,8 @@ def renderRows (kind : TableKind) (txt : String) : Array String := Id.run do
       let (start, stop) := rangeOfRecord record
       pure s!"  ({hex start}, {hex stop}, {verticalOrientation record[2]!})"
     | .decomposition =>
-      let vals := String.intercalate ", " <| record[2:].toList.map fun c => hex <| ofHexString! c
-      pure s!"  ({hex start}, {compatibilityTag record[1]!}, #[{vals}])"
+      let vals := String.intercalate ", " <| record[2:].toList.map fun c => s!"Char.ofNat {ofHexString! c}"
+      pure s!"  ({hex start}, DecompositionMapping.mk {compatibilityTag record[1]!} [{vals}])"
     | .name =>
       let (start, stop) := rangeOfRecord record
       pure s!"  ({hex start}, {hex stop}, {str record[2]!.copy})"

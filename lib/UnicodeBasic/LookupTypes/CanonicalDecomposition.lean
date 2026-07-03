@@ -8,14 +8,14 @@ module
 
 namespace Unicode
 
-abbrev IsValidDecompositionMapping (l : List UInt32) : Prop :=
+abbrev IsValidCanonicalDecompositionMapping (l : List UInt32) : Prop :=
   l.length = 1 ∨ l.length = 2 ∨ l.length = 3 ∨ l.length = 4
 
 -- TODO: rename to CanonicalDecompositionMappingResult?
 
 structure CanonicalDecomposition where
   mapping : List UInt32
-  valid : IsValidDecompositionMapping mapping := by decide
+  validMapping : IsValidCanonicalDecompositionMapping mapping := by decide
 deriving Repr, DecidableEq, Hashable, Ord, BEq, ReflBEq, LawfulBEq
 
 end Unicode

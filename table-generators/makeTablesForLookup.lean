@@ -1347,7 +1347,8 @@ private partial def bstExactLookupChain (showValue : α → String) (rows : List
 private def optionLookupText (lookupName returnType : String) (showValue : α → String) (table : Array (UInt32 × α)) : String :=
   if table.isEmpty then ""
   else
-    s!"@[inline_if_reduce, reducible]\ndef {lookupName} (c : UInt32) (_h : BetweenOrEqStartEnd c) : Option {returnType} :=\n  {bstExactLookupChain showValue table.toList 2}\n"
+    let prefixOpt := if returnType == "DecompositionMapping" then "set_option maxHeartbeats 2000000 in\n" else ""
+    prefixOpt ++ s!"@[inline_if_reduce, reducible]\ndef {lookupName} (c : UInt32) (_h : BetweenOrEqStartEnd c) : Option {returnType} :=\n  {bstExactLookupChain showValue table.toList 2}\n"
 
 private def renderGeneratedTable (table : GeneratedTable) : String :=
   table.render
@@ -1516,7 +1517,23 @@ private def buildTable (name : String) : IO GeneratedTable := do
     return mkPropTable name table
   | "Decomposition_Mapping" =>
     let table ← mkDecompositionMapping
-    return mkKeyTable name "String" reprStr table
+    let showDecomp : String → String := fun s =>
+      let parts := s.splitOn ";"
+      let tagStr := parts[0]!
+      let tag := if tagStr.isEmpty then "none" else
+        "(some " ++ (match tagStr with
+          | "<font>" => "CompatibilityTag.font" | "<noBreak>" => "CompatibilityTag.noBreak" | "<initial>" => "CompatibilityTag.initial"
+          | "<medial>" => "CompatibilityTag.medial" | "<final>" => "CompatibilityTag.final" | "<isolated>" => "CompatibilityTag.isolated"
+          | "<circle>" => "CompatibilityTag.circle" | "<super>" => "CompatibilityTag.super" | "<sub>" => "CompatibilityTag.sub"
+          | "<vertical>" => "CompatibilityTag.vertical" | "<wide>" => "CompatibilityTag.wide" | "<narrow>" => "CompatibilityTag.narrow"
+          | "<small>" => "CompatibilityTag.small" | "<square>" => "CompatibilityTag.square" | "<fraction>" => "CompatibilityTag.fraction"
+          | "<compat>" => "CompatibilityTag.compat"
+          | other => panic! s!"invalid compatibility tag {other}")
+        ++ ")"
+      let chars := parts.drop 1 |>.map fun hex => s!"Char.ofNat {ofHexString! hex.toSlice}"
+      let res := s!"DecompositionMapping.mk {tag} [{", ".intercalate chars}]"
+      res
+    return mkKeyTable name "DecompositionMapping" showDecomp table
   | "Default_Ignorable_Code_Point" =>
     let table ← mkDefaultIgnorableCodePoint
     return mkPropTable name table

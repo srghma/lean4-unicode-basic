@@ -92,24 +92,39 @@ public def Syllable.getTChar? (s : Syllable) : Option Char :=
   if s.toT.val == 0 then none else
     return .ofNat (baseT.toNat + s.toT)
 
+public def getSyllable (code : UInt32) (h : Syllable.base ≤ code ∧ code ≤ Syllable.last) : Syllable :=
+  let index := (code - Syllable.base).toNat
+  have islt : index < sizeLVT := by
+    have hb1 : Syllable.base.toNat ≤ code.toNat := h.1
+    have hc1 : code.toNat ≤ Syllable.last.toNat := h.2
+    have h_sub : (code - Syllable.base).toNat = code.toNat - Syllable.base.toNat := by
+      rw [UInt32.toNat_sub]
+      have h_bound_a : code.toNat < 4294967296 := UInt32.toNat_lt code
+      have h_bound_b : Syllable.base.toNat < 4294967296 := UInt32.toNat_lt Syllable.base
+      omega
+    have h_base : Syllable.base.toNat = 0xAC00 := rfl
+    have h_last : Syllable.last.toNat = 0xAC00 + sizeLVT - 1 := rfl
+    omega
+  let lpart := index / sizeVT
+  have lislt : lpart < sizeL := Nat.div_lt_of_lt_mul islt
+  let vtpart := index % sizeVT
+  have vtislt : vtpart < sizeVT := Nat.mod_lt _ (by decide)
+  let vpart := vtpart / sizeT
+  have vislt : vpart < sizeV := Nat.div_lt_of_lt_mul vtislt
+  let tpart := vtpart % sizeT
+  have tislt : tpart < sizeT := Nat.mod_lt _ (by decide)
+  ⟨⟨lpart, lislt⟩, ⟨vpart, vislt⟩, ⟨tpart, tislt⟩⟩
+
 /-- Get Hangul syllable from code point -/
 public def getSyllable? (code : UInt32) : Option Syllable :=
-  if code < 0xAC00 then none else
-    let index := (code - 0xAC00).toNat
-    if h : index ≥ Syllable.size then none else
-      have islt : index < sizeLVT := Nat.lt_of_not_ge h
-      let lpart := index / sizeVT
-      have lislt : lpart < sizeL := Nat.div_lt_of_lt_mul islt
-      let vtpart := index % sizeVT
-      have vtislt : vtpart < sizeVT := Nat.mod_lt _ (by decide)
-      let vpart := vtpart / sizeT
-      have vislt : vpart < sizeV := Nat.div_lt_of_lt_mul vtislt
-      let tpart := vtpart % sizeT
-      have tislt : tpart < sizeT := Nat.mod_lt _ (by decide)
-      some ⟨⟨lpart, lislt⟩, ⟨vpart, vislt⟩, ⟨tpart, tislt⟩⟩
+  if h : Syllable.base ≤ code ∧ code ≤ Syllable.last then
+    some (getSyllable code h)
+  else
+    none
 
 @[inherit_doc getSyllable?]
 public def getSyllable! (code : UInt32) : Syllable :=
-  match getSyllable? code with
-  | some s => s
-  | none => panic! "not a Hangul syllable"
+  if h : Syllable.base ≤ code ∧ code ≤ Syllable.last then
+    getSyllable code h
+  else
+    panic! "not a Hangul syllable"
