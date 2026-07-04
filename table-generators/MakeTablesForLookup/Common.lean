@@ -66,7 +66,7 @@ public def specs : Array TableSpec := #[
   ⟨"Default_Ignorable_Code_Point", "DefaultIgnorableCodePoint", #[], "Array (UInt32 × UInt32)", .prop⟩,
   ⟨"White_Space", "WhiteSpace", #[], "Array (UInt32 × UInt32)", .prop⟩,
   ⟨"Script", "Script", #["UnicodeBasicCommon.Types.Script"], "Array (UInt32 × UInt32 × Script)", .script⟩,
-  ⟨"Script_Name", "ScriptName", #["UnicodeBasicCommon.Types.Script"], "Array (UInt32 × String)", .scriptName⟩,
+  ⟨"Script_Name", "ScriptName", #["UnicodeBasicCommon.Types.Script", "UnicodeBasic.Types.ScriptName"], "Array (UInt32 × ScriptName)", .scriptName⟩,
   ⟨"Script_Extensions", "ScriptExtensions", #[], "Array (UInt32 × UInt32 × Array UInt32)", .scriptExtensions⟩,
   ⟨"ID_Start", "IdStart", #[], "Array (UInt32 × UInt32)", .prop⟩,
   ⟨"ID_Continue", "IdContinue", #[], "Array (UInt32 × UInt32)", .prop⟩,

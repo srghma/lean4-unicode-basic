@@ -6,16 +6,19 @@ module
 public import UnicodeBasicCommon.Types.Script
 public import UnicodeBasic.TableLookupCommon
 public import UnicodeBasic.TableLookupTables.ScriptName
+public import UnicodeBasic.Types.ScriptName
 
 namespace Unicode
+
+-- NOTE:
+-- could make code in Script be TableLookupTables.ScriptName.BetweenOrEqStartEnd from beginning,
+-- but the table is anyway sparse - so need even better proof IsValid
 
 /-- Get the name of a script
 
   Unicode property: `Script` -/
-public def lookupScriptName (s : Script) : Option String :=
-  let table := table
-  if s.code < table[0]!.1 then none else
-    match table[find s.code (fun i => table[i]!.1) 0 table.usize]! with
-    | (c, v) => if s.code = c then some v else none
-where
-  table : Array (UInt32 × String) := TableLookupTables.ScriptName.table
+public def lookupScriptName (s : Script) : Option ScriptName :=
+  if h : TableLookupTables.ScriptName.BetweenOrEqStartEnd s.code then
+    TableLookupTables.ScriptName.lookupSparseKVTable? s.code h
+  else
+    none

@@ -31,7 +31,7 @@ public def getScript (char : Char) : Script := lookupScript char.val
 -/
 @[inline]
 public def getScriptName? (s : Script) : Option String :=
-  lookupScriptName s
+  lookupScriptName s |>.map toString
 
 /-- Get character script extensions
 

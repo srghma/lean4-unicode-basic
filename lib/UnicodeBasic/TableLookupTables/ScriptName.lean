@@ -2,6 +2,7 @@
 module
 
 public import UnicodeBasicCommon.Types.Script
+public import UnicodeBasic.Types.ScriptName
 
 @[expose] public section
 
@@ -14,7 +15,7 @@ abbrev «end» : UInt32 := 0x5A7A7A7A
 abbrev BetweenOrEqStartEnd (v : UInt32) : Prop := start ≤ v ∧ v ≤ «end»
 
 @[inline_if_reduce, reducible]
-def lookupSparseKVTable? (c : UInt32) (_h : BetweenOrEqStartEnd c) : Option String :=
+def lookupSparseKVTable? (c : UInt32) (_h : BetweenOrEqStartEnd c) : Option ScriptName :=
   if c < 0x4D656E64 then
     if c < 0x4772616E then
       if c < 0x4368616D then
@@ -22,226 +23,226 @@ def lookupSparseKVTable? (c : UInt32) (_h : BetweenOrEqStartEnd c) : Option Stri
           if c < 0x41726D6E then
             if c < 0x41686F6D then
               if c < 0x41676862 then
-                if c == 0x41646C6D then some ("Adlam") else none
-              else if c == 0x41676862 then some ("Caucasian_Albanian")
+                if c == 0x41646C6D then some (ScriptName.adlam) else none
+              else if c == 0x41676862 then some (ScriptName.caucasianAlbanian)
               else
                 none
-            else if c == 0x41686F6D then some ("Ahom")
+            else if c == 0x41686F6D then some (ScriptName.ahom)
             else
               if c < 0x41726D69 then
-                if c == 0x41726162 then some ("Arabic") else none
-              else if c == 0x41726D69 then some ("Imperial_Aramaic")
+                if c == 0x41726162 then some (ScriptName.arabic) else none
+              else if c == 0x41726D69 then some (ScriptName.imperialAramaic)
               else
                 none
-          else if c == 0x41726D6E then some ("Armenian")
+          else if c == 0x41726D6E then some (ScriptName.armenian)
           else
             if c < 0x42616D75 then
               if c < 0x42616C69 then
-                if c == 0x41767374 then some ("Avestan") else none
-              else if c == 0x42616C69 then some ("Balinese")
+                if c == 0x41767374 then some (ScriptName.avestan) else none
+              else if c == 0x42616C69 then some (ScriptName.balinese)
               else
                 none
-            else if c == 0x42616D75 then some ("Bamum")
+            else if c == 0x42616D75 then some (ScriptName.bamum)
             else
               if c < 0x4261746B then
-                if c == 0x42617373 then some ("Bassa_Vah") else none
-              else if c == 0x4261746B then some ("Batak")
+                if c == 0x42617373 then some (ScriptName.bassaVah) else none
+              else if c == 0x4261746B then some (ScriptName.batak)
               else
                 none
-        else if c == 0x42656E67 then some ("Bengali")
+        else if c == 0x42656E67 then some (ScriptName.bengali)
         else
           if c < 0x42756769 then
             if c < 0x426F706F then
               if c < 0x42686B73 then
-                if c == 0x42657266 then some ("Beria_Erfe") else none
-              else if c == 0x42686B73 then some ("Bhaiksuki")
+                if c == 0x42657266 then some (ScriptName.beriaErfe) else none
+              else if c == 0x42686B73 then some (ScriptName.bhaiksuki)
               else
                 none
-            else if c == 0x426F706F then some ("Bopomofo")
+            else if c == 0x426F706F then some (ScriptName.bopomofo)
             else
               if c < 0x42726169 then
-                if c == 0x42726168 then some ("Brahmi") else none
-              else if c == 0x42726169 then some ("Braille")
+                if c == 0x42726168 then some (ScriptName.brahmi) else none
+              else if c == 0x42726169 then some (ScriptName.braille)
               else
                 none
-          else if c == 0x42756769 then some ("Buginese")
+          else if c == 0x42756769 then some (ScriptName.buginese)
           else
             if c < 0x43616E73 then
               if c < 0x43616B6D then
-                if c == 0x42756864 then some ("Buhid") else none
-              else if c == 0x43616B6D then some ("Chakma")
+                if c == 0x42756864 then some (ScriptName.buhid) else none
+              else if c == 0x43616B6D then some (ScriptName.chakma)
               else
                 none
-            else if c == 0x43616E73 then some ("Canadian_Aboriginal")
+            else if c == 0x43616E73 then some (ScriptName.canadianAboriginal)
             else
-              if c == 0x43617269 then some ("Carian") else none
-      else if c == 0x4368616D then some ("Cham")
+              if c == 0x43617269 then some (ScriptName.carian) else none
+      else if c == 0x4368616D then some (ScriptName.cham)
       else
         if c < 0x4475706C then
           if c < 0x4379726C then
             if c < 0x436F7074 then
               if c < 0x43687273 then
-                if c == 0x43686572 then some ("Cherokee") else none
-              else if c == 0x43687273 then some ("Chorasmian")
+                if c == 0x43686572 then some (ScriptName.cherokee) else none
+              else if c == 0x43687273 then some (ScriptName.chorasmian)
               else
                 none
-            else if c == 0x436F7074 then some ("Coptic")
+            else if c == 0x436F7074 then some (ScriptName.coptic)
             else
               if c < 0x43707274 then
-                if c == 0x43706D6E then some ("Cypro_Minoan") else none
-              else if c == 0x43707274 then some ("Cypriot")
+                if c == 0x43706D6E then some (ScriptName.cyproMinoan) else none
+              else if c == 0x43707274 then some (ScriptName.cypriot)
               else
                 none
-          else if c == 0x4379726C then some ("Cyrillic")
+          else if c == 0x4379726C then some (ScriptName.cyrillic)
           else
             if c < 0x446F6772 then
               if c < 0x4469616B then
-                if c == 0x44657661 then some ("Devanagari") else none
-              else if c == 0x4469616B then some ("Dives_Akuru")
+                if c == 0x44657661 then some (ScriptName.devanagari) else none
+              else if c == 0x4469616B then some (ScriptName.divesAkuru)
               else
                 none
-            else if c == 0x446F6772 then some ("Dogra")
+            else if c == 0x446F6772 then some (ScriptName.dogra)
             else
-              if c == 0x44737274 then some ("Deseret") else none
-        else if c == 0x4475706C then some ("Duployan")
+              if c == 0x44737274 then some (ScriptName.deseret) else none
+        else if c == 0x4475706C then some (ScriptName.duployan)
         else
           if c < 0x47656F72 then
             if c < 0x456C796D then
               if c < 0x456C6261 then
-                if c == 0x45677970 then some ("Egyptian_Hieroglyphs") else none
-              else if c == 0x456C6261 then some ("Elbasan")
+                if c == 0x45677970 then some (ScriptName.egyptianHieroglyphs) else none
+              else if c == 0x456C6261 then some (ScriptName.elbasan)
               else
                 none
-            else if c == 0x456C796D then some ("Elymaic")
+            else if c == 0x456C796D then some (ScriptName.elymaic)
             else
               if c < 0x47617261 then
-                if c == 0x45746869 then some ("Ethiopic") else none
-              else if c == 0x47617261 then some ("Garay")
+                if c == 0x45746869 then some (ScriptName.ethiopic) else none
+              else if c == 0x47617261 then some (ScriptName.garay)
               else
                 none
-          else if c == 0x47656F72 then some ("Georgian")
+          else if c == 0x47656F72 then some (ScriptName.georgian)
           else
             if c < 0x476F6E6D then
               if c < 0x476F6E67 then
-                if c == 0x476C6167 then some ("Glagolitic") else none
-              else if c == 0x476F6E67 then some ("Gunjala_Gondi")
+                if c == 0x476C6167 then some (ScriptName.glagolitic) else none
+              else if c == 0x476F6E67 then some (ScriptName.gunjalaGondi)
               else
                 none
-            else if c == 0x476F6E6D then some ("Masaram_Gondi")
+            else if c == 0x476F6E6D then some (ScriptName.masaramGondi)
             else
-              if c == 0x476F7468 then some ("Gothic") else none
-    else if c == 0x4772616E then some ("Grantha")
+              if c == 0x476F7468 then some (ScriptName.gothic) else none
+    else if c == 0x4772616E then some (ScriptName.grantha)
     else
       if c < 0x4B686D72 then
         if c < 0x486C7577 then
           if c < 0x48616E69 then
             if c < 0x47756B68 then
               if c < 0x47756A72 then
-                if c == 0x4772656B then some ("Greek") else none
-              else if c == 0x47756A72 then some ("Gujarati")
+                if c == 0x4772656B then some (ScriptName.greek) else none
+              else if c == 0x47756A72 then some (ScriptName.gujarati)
               else
                 none
-            else if c == 0x47756B68 then some ("Gurung_Khema")
+            else if c == 0x47756B68 then some (ScriptName.gurungKhema)
             else
               if c < 0x48616E67 then
-                if c == 0x47757275 then some ("Gurmukhi") else none
-              else if c == 0x48616E67 then some ("Hangul")
+                if c == 0x47757275 then some (ScriptName.gurmukhi) else none
+              else if c == 0x48616E67 then some (ScriptName.hangul)
               else
                 none
-          else if c == 0x48616E69 then some ("Han")
+          else if c == 0x48616E69 then some (ScriptName.han)
           else
             if c < 0x48656272 then
               if c < 0x48617472 then
-                if c == 0x48616E6F then some ("Hanunoo") else none
-              else if c == 0x48617472 then some ("Hatran")
+                if c == 0x48616E6F then some (ScriptName.hanunoo) else none
+              else if c == 0x48617472 then some (ScriptName.hatran)
               else
                 none
-            else if c == 0x48656272 then some ("Hebrew")
+            else if c == 0x48656272 then some (ScriptName.hebrew)
             else
-              if c == 0x48697261 then some ("Hiragana") else none
-        else if c == 0x486C7577 then some ("Anatolian_Hieroglyphs")
+              if c == 0x48697261 then some (ScriptName.hiragana) else none
+        else if c == 0x486C7577 then some (ScriptName.anatolianHieroglyphs)
         else
           if c < 0x4A617661 then
             if c < 0x48726B74 then
               if c < 0x486D6E70 then
-                if c == 0x486D6E67 then some ("Pahawh_Hmong") else none
-              else if c == 0x486D6E70 then some ("Nyiakeng_Puachue_Hmong")
+                if c == 0x486D6E67 then some (ScriptName.pahawhHmong) else none
+              else if c == 0x486D6E70 then some (ScriptName.nyiakengPuachueHmong)
               else
                 none
-            else if c == 0x48726B74 then some ("Katakana_Or_Hiragana")
+            else if c == 0x48726B74 then some (ScriptName.katakanaOrHiragana)
             else
               if c < 0x4974616C then
-                if c == 0x48756E67 then some ("Old_Hungarian") else none
-              else if c == 0x4974616C then some ("Old_Italic")
+                if c == 0x48756E67 then some (ScriptName.oldHungarian) else none
+              else if c == 0x4974616C then some (ScriptName.oldItalic)
               else
                 none
-          else if c == 0x4A617661 then some ("Javanese")
+          else if c == 0x4A617661 then some (ScriptName.javanese)
           else
             if c < 0x4B617769 then
               if c < 0x4B616E61 then
-                if c == 0x4B616C69 then some ("Kayah_Li") else none
-              else if c == 0x4B616E61 then some ("Katakana")
+                if c == 0x4B616C69 then some (ScriptName.kayahLi) else none
+              else if c == 0x4B616E61 then some (ScriptName.katakana)
               else
                 none
-            else if c == 0x4B617769 then some ("Kawi")
+            else if c == 0x4B617769 then some (ScriptName.kawi)
             else
-              if c == 0x4B686172 then some ("Kharoshthi") else none
-      else if c == 0x4B686D72 then some ("Khmer")
+              if c == 0x4B686172 then some (ScriptName.kharoshthi) else none
+      else if c == 0x4B686D72 then some (ScriptName.khmer)
       else
         if c < 0x4C696E61 then
           if c < 0x4C616E61 then
             if c < 0x4B6E6461 then
               if c < 0x4B697473 then
-                if c == 0x4B686F6A then some ("Khojki") else none
-              else if c == 0x4B697473 then some ("Khitan_Small_Script")
+                if c == 0x4B686F6A then some (ScriptName.khojki) else none
+              else if c == 0x4B697473 then some (ScriptName.khitanSmallScript)
               else
                 none
-            else if c == 0x4B6E6461 then some ("Kannada")
+            else if c == 0x4B6E6461 then some (ScriptName.kannada)
             else
               if c < 0x4B746869 then
-                if c == 0x4B726169 then some ("Kirat_Rai") else none
-              else if c == 0x4B746869 then some ("Kaithi")
+                if c == 0x4B726169 then some (ScriptName.kiratRai) else none
+              else if c == 0x4B746869 then some (ScriptName.kaithi)
               else
                 none
-          else if c == 0x4C616E61 then some ("Tai_Tham")
+          else if c == 0x4C616E61 then some (ScriptName.taiTham)
           else
             if c < 0x4C657063 then
               if c < 0x4C61746E then
-                if c == 0x4C616F6F then some ("Lao") else none
-              else if c == 0x4C61746E then some ("Latin")
+                if c == 0x4C616F6F then some (ScriptName.lao) else none
+              else if c == 0x4C61746E then some (ScriptName.latin)
               else
                 none
-            else if c == 0x4C657063 then some ("Lepcha")
+            else if c == 0x4C657063 then some (ScriptName.lepcha)
             else
-              if c == 0x4C696D62 then some ("Limbu") else none
-        else if c == 0x4C696E61 then some ("Linear_A")
+              if c == 0x4C696D62 then some (ScriptName.limbu) else none
+        else if c == 0x4C696E61 then some (ScriptName.linearA)
         else
           if c < 0x4D616B61 then
             if c < 0x4C796369 then
               if c < 0x4C697375 then
-                if c == 0x4C696E62 then some ("Linear_B") else none
-              else if c == 0x4C697375 then some ("Lisu")
+                if c == 0x4C696E62 then some (ScriptName.linearB) else none
+              else if c == 0x4C697375 then some (ScriptName.lisu)
               else
                 none
-            else if c == 0x4C796369 then some ("Lycian")
+            else if c == 0x4C796369 then some (ScriptName.lycian)
             else
               if c < 0x4D61686A then
-                if c == 0x4C796469 then some ("Lydian") else none
-              else if c == 0x4D61686A then some ("Mahajani")
+                if c == 0x4C796469 then some (ScriptName.lydian) else none
+              else if c == 0x4D61686A then some (ScriptName.mahajani)
               else
                 none
-          else if c == 0x4D616B61 then some ("Makasar")
+          else if c == 0x4D616B61 then some (ScriptName.makasar)
           else
             if c < 0x4D617263 then
               if c < 0x4D616E69 then
-                if c == 0x4D616E64 then some ("Mandaic") else none
-              else if c == 0x4D616E69 then some ("Manichaean")
+                if c == 0x4D616E64 then some (ScriptName.mandaic) else none
+              else if c == 0x4D616E69 then some (ScriptName.manichaean)
               else
                 none
-            else if c == 0x4D617263 then some ("Marchen")
+            else if c == 0x4D617263 then some (ScriptName.marchen)
             else
-              if c == 0x4D656466 then some ("Medefaidrin") else none
-  else if c == 0x4D656E64 then some ("Mende_Kikakui")
+              if c == 0x4D656466 then some (ScriptName.medefaidrin) else none
+  else if c == 0x4D656E64 then some (ScriptName.mendeKikakui)
   else
     if c < 0x53696474 then
       if c < 0x4F736765 then
@@ -249,220 +250,220 @@ def lookupSparseKVTable? (c : UInt32) (_h : BetweenOrEqStartEnd c) : Option Stri
           if c < 0x4D726F6F then
             if c < 0x4D6C796D then
               if c < 0x4D65726F then
-                if c == 0x4D657263 then some ("Meroitic_Cursive") else none
-              else if c == 0x4D65726F then some ("Meroitic_Hieroglyphs")
+                if c == 0x4D657263 then some (ScriptName.meroiticCursive) else none
+              else if c == 0x4D65726F then some (ScriptName.meroiticHieroglyphs)
               else
                 none
-            else if c == 0x4D6C796D then some ("Malayalam")
+            else if c == 0x4D6C796D then some (ScriptName.malayalam)
             else
               if c < 0x4D6F6E67 then
-                if c == 0x4D6F6469 then some ("Modi") else none
-              else if c == 0x4D6F6E67 then some ("Mongolian")
+                if c == 0x4D6F6469 then some (ScriptName.modi) else none
+              else if c == 0x4D6F6E67 then some (ScriptName.mongolian)
               else
                 none
-          else if c == 0x4D726F6F then some ("Mro")
+          else if c == 0x4D726F6F then some (ScriptName.mro)
           else
             if c < 0x4D796D72 then
               if c < 0x4D756C74 then
-                if c == 0x4D746569 then some ("Meetei_Mayek") else none
-              else if c == 0x4D756C74 then some ("Multani")
+                if c == 0x4D746569 then some (ScriptName.meeteiMayek) else none
+              else if c == 0x4D756C74 then some (ScriptName.multani)
               else
                 none
-            else if c == 0x4D796D72 then some ("Myanmar")
+            else if c == 0x4D796D72 then some (ScriptName.myanmar)
             else
-              if c == 0x4E61676D then some ("Nag_Mundari") else none
-        else if c == 0x4E616E64 then some ("Nandinagari")
+              if c == 0x4E61676D then some (ScriptName.nagMundari) else none
+        else if c == 0x4E616E64 then some (ScriptName.nandinagari)
         else
           if c < 0x4F67616D then
             if c < 0x4E657761 then
               if c < 0x4E626174 then
-                if c == 0x4E617262 then some ("Old_North_Arabian") else none
-              else if c == 0x4E626174 then some ("Nabataean")
+                if c == 0x4E617262 then some (ScriptName.oldNorthArabian) else none
+              else if c == 0x4E626174 then some (ScriptName.nabataean)
               else
                 none
-            else if c == 0x4E657761 then some ("Newa")
+            else if c == 0x4E657761 then some (ScriptName.newa)
             else
               if c < 0x4E736875 then
-                if c == 0x4E6B6F6F then some ("Nko") else none
-              else if c == 0x4E736875 then some ("Nushu")
+                if c == 0x4E6B6F6F then some (ScriptName.nko) else none
+              else if c == 0x4E736875 then some (ScriptName.nushu)
               else
                 none
-          else if c == 0x4F67616D then some ("Ogham")
+          else if c == 0x4F67616D then some (ScriptName.ogham)
           else
             if c < 0x4F726B68 then
               if c < 0x4F6E616F then
-                if c == 0x4F6C636B then some ("Ol_Chiki") else none
-              else if c == 0x4F6E616F then some ("Ol_Onal")
+                if c == 0x4F6C636B then some (ScriptName.olChiki) else none
+              else if c == 0x4F6E616F then some (ScriptName.olOnal)
               else
                 none
-            else if c == 0x4F726B68 then some ("Old_Turkic")
+            else if c == 0x4F726B68 then some (ScriptName.oldTurkic)
             else
-              if c == 0x4F727961 then some ("Oriya") else none
-      else if c == 0x4F736765 then some ("Osage")
+              if c == 0x4F727961 then some (ScriptName.oriya) else none
+      else if c == 0x4F736765 then some (ScriptName.osage)
       else
         if c < 0x50727469 then
           if c < 0x50686167 then
             if c < 0x50616C6D then
               if c < 0x4F756772 then
-                if c == 0x4F736D61 then some ("Osmanya") else none
-              else if c == 0x4F756772 then some ("Old_Uyghur")
+                if c == 0x4F736D61 then some (ScriptName.osmanya) else none
+              else if c == 0x4F756772 then some (ScriptName.oldUyghur)
               else
                 none
-            else if c == 0x50616C6D then some ("Palmyrene")
+            else if c == 0x50616C6D then some (ScriptName.palmyrene)
             else
               if c < 0x5065726D then
-                if c == 0x50617563 then some ("Pau_Cin_Hau") else none
-              else if c == 0x5065726D then some ("Old_Permic")
+                if c == 0x50617563 then some (ScriptName.pauCinHau) else none
+              else if c == 0x5065726D then some (ScriptName.oldPermic)
               else
                 none
-          else if c == 0x50686167 then some ("Phags_Pa")
+          else if c == 0x50686167 then some (ScriptName.phagsPa)
           else
             if c < 0x50686E78 then
               if c < 0x50686C70 then
-                if c == 0x50686C69 then some ("Inscriptional_Pahlavi") else none
-              else if c == 0x50686C70 then some ("Psalter_Pahlavi")
+                if c == 0x50686C69 then some (ScriptName.inscriptionalPahlavi) else none
+              else if c == 0x50686C70 then some (ScriptName.psalterPahlavi)
               else
                 none
-            else if c == 0x50686E78 then some ("Phoenician")
+            else if c == 0x50686E78 then some (ScriptName.phoenician)
             else
-              if c == 0x506C7264 then some ("Miao") else none
-        else if c == 0x50727469 then some ("Inscriptional_Parthian")
+              if c == 0x506C7264 then some (ScriptName.miao) else none
+        else if c == 0x50727469 then some (ScriptName.inscriptionalParthian)
         else
           if c < 0x53617572 then
             if c < 0x52756E72 then
               if c < 0x526F6867 then
-                if c == 0x526A6E67 then some ("Rejang") else none
-              else if c == 0x526F6867 then some ("Hanifi_Rohingya")
+                if c == 0x526A6E67 then some (ScriptName.rejang) else none
+              else if c == 0x526F6867 then some (ScriptName.hanifiRohingya)
               else
                 none
-            else if c == 0x52756E72 then some ("Runic")
+            else if c == 0x52756E72 then some (ScriptName.runic)
             else
               if c < 0x53617262 then
-                if c == 0x53616D72 then some ("Samaritan") else none
-              else if c == 0x53617262 then some ("Old_South_Arabian")
+                if c == 0x53616D72 then some (ScriptName.samaritan) else none
+              else if c == 0x53617262 then some (ScriptName.oldSouthArabian)
               else
                 none
-          else if c == 0x53617572 then some ("Saurashtra")
+          else if c == 0x53617572 then some (ScriptName.saurashtra)
           else
             if c < 0x53687264 then
               if c < 0x53686177 then
-                if c == 0x53676E77 then some ("SignWriting") else none
-              else if c == 0x53686177 then some ("Shavian")
+                if c == 0x53676E77 then some (ScriptName.signwriting) else none
+              else if c == 0x53686177 then some (ScriptName.shavian)
               else
                 none
-            else if c == 0x53687264 then some ("Sharada")
+            else if c == 0x53687264 then some (ScriptName.sharada)
             else
-              if c == 0x53696464 then some ("Siddham") else none
-    else if c == 0x53696474 then some ("Sidetic")
+              if c == 0x53696464 then some (ScriptName.siddham) else none
+    else if c == 0x53696474 then some (ScriptName.sidetic)
     else
       if c < 0x54686161 then
         if c < 0x54616762 then
           if c < 0x536F796F then
             if c < 0x536F6764 then
               if c < 0x53696E68 then
-                if c == 0x53696E64 then some ("Khudawadi") else none
-              else if c == 0x53696E68 then some ("Sinhala")
+                if c == 0x53696E64 then some (ScriptName.khudawadi) else none
+              else if c == 0x53696E68 then some (ScriptName.sinhala)
               else
                 none
-            else if c == 0x536F6764 then some ("Sogdian")
+            else if c == 0x536F6764 then some (ScriptName.sogdian)
             else
               if c < 0x536F7261 then
-                if c == 0x536F676F then some ("Old_Sogdian") else none
-              else if c == 0x536F7261 then some ("Sora_Sompeng")
+                if c == 0x536F676F then some (ScriptName.oldSogdian) else none
+              else if c == 0x536F7261 then some (ScriptName.soraSompeng)
               else
                 none
-          else if c == 0x536F796F then some ("Soyombo")
+          else if c == 0x536F796F then some (ScriptName.soyombo)
           else
             if c < 0x53796C6F then
               if c < 0x53756E75 then
-                if c == 0x53756E64 then some ("Sundanese") else none
-              else if c == 0x53756E75 then some ("Sunuwar")
+                if c == 0x53756E64 then some (ScriptName.sundanese) else none
+              else if c == 0x53756E75 then some (ScriptName.sunuwar)
               else
                 none
-            else if c == 0x53796C6F then some ("Syloti_Nagri")
+            else if c == 0x53796C6F then some (ScriptName.sylotiNagri)
             else
-              if c == 0x53797263 then some ("Syriac") else none
-        else if c == 0x54616762 then some ("Tagbanwa")
+              if c == 0x53797263 then some (ScriptName.syriac) else none
+        else if c == 0x54616762 then some (ScriptName.tagbanwa)
         else
           if c < 0x54617674 then
             if c < 0x54616C75 then
               if c < 0x54616C65 then
-                if c == 0x54616B72 then some ("Takri") else none
-              else if c == 0x54616C65 then some ("Tai_Le")
+                if c == 0x54616B72 then some (ScriptName.takri) else none
+              else if c == 0x54616C65 then some (ScriptName.taiLe)
               else
                 none
-            else if c == 0x54616C75 then some ("New_Tai_Lue")
+            else if c == 0x54616C75 then some (ScriptName.newTaiLue)
             else
               if c < 0x54616E67 then
-                if c == 0x54616D6C then some ("Tamil") else none
-              else if c == 0x54616E67 then some ("Tangut")
+                if c == 0x54616D6C then some (ScriptName.tamil) else none
+              else if c == 0x54616E67 then some (ScriptName.tangut)
               else
                 none
-          else if c == 0x54617674 then some ("Tai_Viet")
+          else if c == 0x54617674 then some (ScriptName.taiViet)
           else
             if c < 0x54666E67 then
               if c < 0x54656C75 then
-                if c == 0x5461796F then some ("Tai_Yo") else none
-              else if c == 0x54656C75 then some ("Telugu")
+                if c == 0x5461796F then some (ScriptName.taiYo) else none
+              else if c == 0x54656C75 then some (ScriptName.telugu)
               else
                 none
-            else if c == 0x54666E67 then some ("Tifinagh")
+            else if c == 0x54666E67 then some (ScriptName.tifinagh)
             else
-              if c == 0x54676C67 then some ("Tagalog") else none
-      else if c == 0x54686161 then some ("Thaana")
+              if c == 0x54676C67 then some (ScriptName.tagalog) else none
+      else if c == 0x54686161 then some (ScriptName.thaana)
       else
         if c < 0x56697468 then
           if c < 0x546F6C73 then
             if c < 0x54697268 then
               if c < 0x54696274 then
-                if c == 0x54686169 then some ("Thai") else none
-              else if c == 0x54696274 then some ("Tibetan")
+                if c == 0x54686169 then some (ScriptName.thai) else none
+              else if c == 0x54696274 then some (ScriptName.tibetan)
               else
                 none
-            else if c == 0x54697268 then some ("Tirhuta")
+            else if c == 0x54697268 then some (ScriptName.tirhuta)
             else
               if c < 0x546F6472 then
-                if c == 0x546E7361 then some ("Tangsa") else none
-              else if c == 0x546F6472 then some ("Todhri")
+                if c == 0x546E7361 then some (ScriptName.tangsa) else none
+              else if c == 0x546F6472 then some (ScriptName.todhri)
               else
                 none
-          else if c == 0x546F6C73 then some ("Tolong_Siki")
+          else if c == 0x546F6C73 then some (ScriptName.tolongSiki)
           else
             if c < 0x55676172 then
               if c < 0x54757467 then
-                if c == 0x546F746F then some ("Toto") else none
-              else if c == 0x54757467 then some ("Tulu_Tigalari")
+                if c == 0x546F746F then some (ScriptName.toto) else none
+              else if c == 0x54757467 then some (ScriptName.tuluTigalari)
               else
                 none
-            else if c == 0x55676172 then some ("Ugaritic")
+            else if c == 0x55676172 then some (ScriptName.ugaritic)
             else
-              if c == 0x56616969 then some ("Vai") else none
-        else if c == 0x56697468 then some ("Vithkuqi")
+              if c == 0x56616969 then some (ScriptName.vai) else none
+        else if c == 0x56697468 then some (ScriptName.vithkuqi)
         else
           if c < 0x59696969 then
             if c < 0x5870656F then
               if c < 0x5763686F then
-                if c == 0x57617261 then some ("Warang_Citi") else none
-              else if c == 0x5763686F then some ("Wancho")
+                if c == 0x57617261 then some (ScriptName.warangCiti) else none
+              else if c == 0x5763686F then some (ScriptName.wancho)
               else
                 none
-            else if c == 0x5870656F then some ("Old_Persian")
+            else if c == 0x5870656F then some (ScriptName.oldPersian)
             else
               if c < 0x59657A69 then
-                if c == 0x58737578 then some ("Cuneiform") else none
-              else if c == 0x59657A69 then some ("Yezidi")
+                if c == 0x58737578 then some (ScriptName.cuneiform) else none
+              else if c == 0x59657A69 then some (ScriptName.yezidi)
               else
                 none
-          else if c == 0x59696969 then some ("Yi")
+          else if c == 0x59696969 then some (ScriptName.yi)
           else
             if c < 0x5A797979 then
               if c < 0x5A696E68 then
-                if c == 0x5A616E62 then some ("Zanabazar_Square") else none
-              else if c == 0x5A696E68 then some ("Inherited")
+                if c == 0x5A616E62 then some (ScriptName.zanabazarSquare) else none
+              else if c == 0x5A696E68 then some (ScriptName.inherited)
               else
                 none
-            else if c == 0x5A797979 then some ("Common")
+            else if c == 0x5A797979 then some (ScriptName.common)
             else
-              if c == 0x5A7A7A7A then some ("Unknown") else none
+              if c == 0x5A7A7A7A then some (ScriptName.unknown) else none
 
 end Unicode.TableLookupTables.ScriptName
