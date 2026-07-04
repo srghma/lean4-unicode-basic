@@ -23,9 +23,9 @@ def main (args : List String) : IO Unit := do
         IO.println s!"Bidi Class ...........: {data.bidi.toAbbrev}"
         IO.println s!"Bidi Mirrored ........: {data.bidiMirrored}"
         match data.decomp with
-        | some ⟨none, m⟩ =>
+        | some { tag := none, mapping := m, .. } =>
         IO.println s!"Decomposition Mapping : \"{String.ofList m}\" (canonical)"
-        | some ⟨some t, m⟩ => IO.println s!"Decomposition Mapping : {t} \"{String.ofList m}\" (compatibility)"
+        | some { tag := some t, mapping := m, .. } => IO.println s!"Decomposition Mapping : {t} \"{String.ofList m}\" (compatibility)"
         | none => pure ()
         match data.numeric with
         | some (.decimal d) =>

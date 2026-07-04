@@ -13,7 +13,7 @@ path = "../common"
 name = "UnicodeBasic"
 roots = []
 globs = [
-  # "UnicodeBasic",
+  "UnicodeBasic",
   "UnicodeBasic.Bidi",
   "UnicodeBasic.Bidi.Core",
   "UnicodeBasic.Bidi.Explicit",

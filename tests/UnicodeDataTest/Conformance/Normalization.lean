@@ -29,7 +29,7 @@ private partial def decomposeRec (compat : Bool) (c : UInt32) : List UInt32 :=
   | some xs => xs.flatMap (decomposeRec compat)
   | none =>
       match lookupDecompositionMapping? c with
-      | some ⟨tag, mapping⟩ =>
+      | some { tag, mapping, .. } =>
           if tag.isSome && !compat then
             [c]
           else
@@ -99,7 +99,7 @@ private def composePairs : Array ((UInt32 × UInt32) × UInt32) := Id.run do
   let mut out := #[]
   for d in UnicodeData.data do
     match d.decomp with
-    | some ⟨none, [a, b]⟩ =>
+    | some { tag := none, mapping := [a, b], .. } =>
         if !Unicode.CompositionExclusions.data.contains d.code then
           out := out.push ((a.val, b.val), d.code)
     | _ => continue

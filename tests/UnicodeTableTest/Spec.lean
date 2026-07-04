@@ -36,7 +36,7 @@ def testCanonicalCombiningClass (d : UnicodeData) : Bool :=
 partial def testCanonicalDecompositionMapping (d : UnicodeData) : Bool :=
   let m := lookupCanonicalDecompositionMapping d.code
   let l := match d.decomp with
-    | some ⟨none, l⟩ => mapping (l.map Char.val)
+    | some { tag := none, mapping := l, .. } => mapping (l.map Char.val)
     | _ => [d.code]
   m == l
 where
@@ -45,7 +45,7 @@ where
   | c :: cs =>
     let d := getUnicodeData! c
     match d.decomp with
-    | some ⟨none, l⟩ => mapping <| l.map Char.val ++ cs
+    | some { tag := none, mapping := l, .. } => mapping <| l.map Char.val ++ cs
     | _ => c :: cs
 
 def testCased (d : UnicodeData) : Bool :=
