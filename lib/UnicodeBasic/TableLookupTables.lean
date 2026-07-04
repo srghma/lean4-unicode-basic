@@ -25,6 +25,7 @@ public import UnicodeBasic.TableLookupTables.BidiMirrored
 public import UnicodeBasic.TableLookupTables.DefaultIgnorableCodePoint
 public import UnicodeBasic.TableLookupTables.WhiteSpace
 public import UnicodeBasic.TableLookupTables.Script
+public import UnicodeBasic.TableLookupTables.ScriptName
 public import UnicodeBasic.TableLookupTables.ScriptExtensions
 public import UnicodeBasic.TableLookupTables.IdStart
 public import UnicodeBasic.TableLookupTables.IdContinue

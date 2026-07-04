@@ -2,29 +2,34 @@ module
 
 namespace Unicode
 
+@[expose] public section
+
 /-- Grapheme cluster break property
 
   Unicode property: `Grapheme_Cluster_Break` -/
-public inductive GraphemeClusterBreak
-| public other
-| public control
-| public cr
-| public extend
-| public lf
-| public spacingMark
-| public prepend
-| public regionalIndicator
-| public l
-| public v
-| public t
-| public lv
-| public lvt
-| public zwj
+inductive GraphemeClusterBreak
+| control
+| cr
+| extend
+| lf
+| spacingMark
+| prepend
+| regionalIndicator
+| l
+| v
+| t
+| lv
+| lvt
+| zwj
 deriving Inhabited, DecidableEq, Repr
 
-public instance : ToString GraphemeClusterBreak where
+inductive MaybeGraphemeClusterBreak
+| nonOther (gcb : GraphemeClusterBreak)
+| other
+deriving Inhabited, DecidableEq, Repr
+
+instance : ToString GraphemeClusterBreak where
   toString
-  | .other => "Other"
   | .control => "Control"
   | .cr => "CR"
   | .extend => "Extend"
@@ -39,9 +44,13 @@ public instance : ToString GraphemeClusterBreak where
   | .lvt => "LVT"
   | .zwj => "ZWJ"
 
-public def GraphemeClusterBreak.ofAbbrev? (abbr : String.Slice) : Option GraphemeClusterBreak :=
-  if abbr == "XX" || abbr == "Other" then some other
-  else if abbr == "CN" || abbr == "Control" then some control
+instance : ToString MaybeGraphemeClusterBreak where
+  toString
+  | .other => "Other"
+  | .nonOther gcb => toString gcb
+
+def GraphemeClusterBreak.ofAbbrev? (abbr : String.Slice) : Option GraphemeClusterBreak :=
+  if abbr == "CN" || abbr == "Control" then some control
   else if abbr == "CR" then some cr
   else if abbr == "EX" || abbr == "Extend" then some extend
   else if abbr == "LF" then some lf
@@ -56,10 +65,18 @@ public def GraphemeClusterBreak.ofAbbrev? (abbr : String.Slice) : Option Graphem
   else if abbr == "ZWJ" then some zwj
   else none
 
+def MaybeGraphemeClusterBreak.ofAbbrev? (abbr : String.Slice) : Option MaybeGraphemeClusterBreak :=
+  if abbr == "XX" || abbr == "Other" then some other
+  else (GraphemeClusterBreak.ofAbbrev? abbr).map nonOther
+
 @[inherit_doc GraphemeClusterBreak.ofAbbrev?]
-public def GraphemeClusterBreak.ofAbbrev! (abbr : String.Slice) : GraphemeClusterBreak :=
+def GraphemeClusterBreak.ofAbbrev! (abbr : String.Slice) : GraphemeClusterBreak :=
   match ofAbbrev? abbr with
   | some b => b
   | none => panic! s!"invalid grapheme cluster break abbreviation {abbr.copy}"
 
-end Unicode
+@[inherit_doc MaybeGraphemeClusterBreak.ofAbbrev?]
+def MaybeGraphemeClusterBreak.ofAbbrev! (abbr : String.Slice) : MaybeGraphemeClusterBreak :=
+  match ofAbbrev? abbr with
+  | some b => b
+  | none => panic! s!"invalid grapheme cluster break abbreviation {abbr.copy}"

@@ -10,8 +10,8 @@ public import UnicodeBasic.TableLookupTables.GraphemeBreak
 namespace Unicode
 
 /-- Get grapheme cluster break property using lookup table -/
-public def lookupGraphemeClusterBreak (c : UInt32) : GraphemeClusterBreak :=
+public def lookupGraphemeClusterBreak (c : UInt32) : MaybeGraphemeClusterBreak :=
   if h : TableLookupTables.GraphemeBreak.BetweenOrEqStartEnd c then
-    (TableLookupTables.GraphemeBreak.getInsideSparseRangeValueTable c h).getD .other
+    (TableLookupTables.GraphemeBreak.getInsideSparseRangeValueTable c h).elim .other .nonOther
   else
     .other

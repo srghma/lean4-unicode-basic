@@ -10,8 +10,8 @@ public import UnicodeBasic.TableLookupTables.SentenceBreak
 namespace Unicode
 
 /-- Get sentence break property using lookup table -/
-public def lookupSentenceBreak (c : UInt32) : SentenceBreak :=
+public def lookupSentenceBreak (c : UInt32) : MaybeSentenceBreak :=
   if h : TableLookupTables.SentenceBreak.BetweenOrEqStartEnd c then
-    (TableLookupTables.SentenceBreak.getInsideSparseRangeValueTable c h).getD .other
+    (TableLookupTables.SentenceBreak.getInsideSparseRangeValueTable c h).elim .other .nonOther
   else
     .other

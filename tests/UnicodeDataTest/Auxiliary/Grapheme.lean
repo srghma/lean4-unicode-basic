@@ -12,7 +12,7 @@ open Unicode
 
 namespace UnicodeDataTest.Auxiliary.Grapheme
 
-private def gcb (c : UInt32) : GraphemeClusterBreak :=
+private def gcb (c : UInt32) : MaybeGraphemeClusterBreak :=
   lookupGraphemeClusterBreak c
 
 private def isIndicConsonant (c : UInt32) : Bool :=
@@ -23,14 +23,14 @@ private def isIndicLinker (c : UInt32) : Bool :=
 
 private def isControlLike (c : UInt32) : Bool :=
   match gcb c with
-  | .control | .cr | .lf => true
+  | .nonOther .control | .nonOther .cr | .nonOther .lf => true
   | _ => false
 
 private def prevNonExtendIndex (xs : Array UInt32) (i : Nat) : Option Nat := Id.run do
   let mut j := i
   while j > 0 do
     j := j - 1
-    if gcb xs[j]! != .extend then
+    if gcb xs[j]! != .nonOther .extend then
       return some j
   return none
 
@@ -39,7 +39,7 @@ private def gb11Before? (xs : Array UInt32) (i : Nat) : Bool := Id.run do
     return false
   match prevNonExtendIndex xs i with
   | some j1 =>
-      if gcb xs[j1]! != .zwj then
+      if gcb xs[j1]! != .nonOther .zwj then
         return false
       match prevNonExtendIndex xs j1 with
       | some j0 => return lookupExtendedPictographic xs[j0]!
@@ -57,7 +57,7 @@ private def gb9cBefore? (xs : Array UInt32) (i : Nat) : Bool := Id.run do
     if isIndicLinker c then
       seenLinker := true
       continue
-    else if gcb c == .extend || gcb c == .zwj then
+    else if gcb c == .nonOther .extend || gcb c == .nonOther .zwj then
       continue
     else
       return seenLinker && isIndicConsonant c
@@ -71,21 +71,21 @@ private def shouldBreakBefore (xs : Array UInt32) (i : Nat) (riRun : Nat) : Bool
     let curr := xs[i]!
     let prevG := gcb prev
     let currG := gcb curr
-    if prevG == .cr && currG == .lf then
+    if prevG == .nonOther .cr && currG == .nonOther .lf then
       false
     else if isControlLike prev || isControlLike curr then
       true
-    else if prevG == .l && (currG == .l || currG == .v || currG == .lv || currG == .lvt) then
+    else if prevG == .nonOther .l && (currG == .nonOther .l || currG == .nonOther .v || currG == .nonOther .lv || currG == .nonOther .lvt) then
       false
-    else if (prevG == .lv || prevG == .v) && (currG == .v || currG == .t) then
+    else if (prevG == .nonOther .lv || prevG == .nonOther .v) && (currG == .nonOther .v || currG == .nonOther .t) then
       false
-    else if (prevG == .lvt || prevG == .t) && currG == .t then
+    else if (prevG == .nonOther .lvt || prevG == .nonOther .t) && currG == .nonOther .t then
       false
-    else if currG == .extend || currG == .zwj || currG == .spacingMark then
+    else if currG == .nonOther .extend || currG == .nonOther .zwj || currG == .nonOther .spacingMark then
       false
-    else if prevG == .prepend then
+    else if prevG == .nonOther .prepend then
       false
-    else if currG == .regionalIndicator && prevG == .regionalIndicator && riRun % 2 == 1 then
+    else if currG == .nonOther .regionalIndicator && prevG == .nonOther .regionalIndicator && riRun % 2 == 1 then
       false
     else if gb9cBefore? xs i then
       false
@@ -99,14 +99,14 @@ public def segmentGraphemeBoundaries (xs : Array UInt32) : Array Nat := Id.run d
   if xs.isEmpty then
     return #[0]
   let mut out := #[0]
-  let mut riRun := if gcb xs[0]! == .regionalIndicator then 1 else 0
+  let mut riRun := if gcb xs[0]! == .nonOther .regionalIndicator then 1 else 0
   for i in [1:xs.size] do
     if shouldBreakBefore xs i riRun then
       out := out.push i
-      riRun := if gcb xs[i]! == .regionalIndicator then 1 else 0
+      riRun := if gcb xs[i]! == .nonOther .regionalIndicator then 1 else 0
     else
       let curr := gcb xs[i]!
-      if curr == .regionalIndicator then
+      if curr == .nonOther .regionalIndicator then
         riRun := riRun + 1
       else
         riRun := 0

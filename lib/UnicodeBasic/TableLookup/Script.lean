@@ -16,6 +16,6 @@ namespace Unicode
 @[inline]
 public def lookupScript (c : UInt32) : MaybeUnknownScript :=
   if h : TableLookupTables.Script.BetweenOrEqStartEnd c then
-    (TableLookupTables.Script.getInsideSparseRangeValueTable c h).map MaybeUnknownScript.ofScript |>.getD default
+    (TableLookupTables.Script.getInsideSparseRangeValueTable c h).elim default MaybeUnknownScript.ofScript
   else
     default

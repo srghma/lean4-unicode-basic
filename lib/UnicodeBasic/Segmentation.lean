@@ -15,7 +15,7 @@ namespace Unicode
 private def wb (c : UInt32) : WordBreak :=
   lookupWordBreak c
 
-private def sb (c : UInt32) : SentenceBreak :=
+private def sb (c : UInt32) : MaybeSentenceBreak :=
   lookupSentenceBreak c
 
 private def prevIndexIf (xs : Array UInt32) (i : Nat) (p : UInt32 → Bool) : Option Nat := Id.run do
@@ -176,7 +176,7 @@ public def segmentWordBoundaries (xs : Array UInt32) : Array Nat := Id.run do
 
 private def sentenceIgnore (c : UInt32) : Bool :=
   match sb c with
-  | .extend | .format => true
+  | .nonOther .extend | .nonOther .format => true
   | _ => false
 
 private def sentenceSignificant (c : UInt32) : Bool :=
@@ -184,23 +184,23 @@ private def sentenceSignificant (c : UInt32) : Bool :=
 
 private def paraSep (c : UInt32) : Bool :=
   match sb c with
-  | .sep | .cr | .lf => true
+  | .nonOther .sep | .nonOther .cr | .nonOther .lf => true
   | _ => false
 
 private def satTerm (c : UInt32) : Bool :=
   match sb c with
-  | .aTerm | .sTerm => true
+  | .nonOther .aTerm | .nonOther .sTerm => true
   | _ => false
 
 private def close (c : UInt32) : Bool :=
-  sb c == .close
+  sb c == .nonOther .close
 
 private def sp (c : UInt32) : Bool :=
-  sb c == .sp
+  sb c == .nonOther .sp
 
 private def sb8Stop (c : UInt32) : Bool :=
   match sb c with
-  | .oLetter | .upper | .lower => true
+  | .nonOther .oLetter | .nonOther .upper | .nonOther .lower => true
   | _ => paraSep c || satTerm c
 
 private def prevSentence? (xs : Array UInt32) (i : Nat) : Option Nat :=
@@ -241,7 +241,7 @@ private def nextLowerBeforeSB8Stop (xs : Array UInt32) (i : Nat) : Bool := Id.ru
     if sentenceIgnore c then
       j := j + 1
       continue
-    if sb c == .lower then
+    if sb c == .nonOther .lower then
       return true
     if sb8Stop c then
       return false
@@ -253,29 +253,29 @@ private def breakBetweenSentenceSignificant (xs : Array UInt32) (pIdx cIdx : Nat
   let c := xs[cIdx]!
   let pS := sb p
   let cS := sb c
-  if pS == .cr && cS == .lf then
+  if pS == .nonOther .cr && cS == .nonOther .lf then
     return false
   else if paraSep p then
     return true
   else
     let leftClose := prevBeforeClose xs cIdx
     let leftCloseSp := prevBeforeCloseSp xs cIdx
-    if pS == .aTerm && cS == .numeric then
+    if pS == .nonOther .aTerm && cS == .nonOther .numeric then
       return false
-    else if pS == .aTerm && cS == .upper then
+    else if pS == .nonOther .aTerm && cS == .nonOther .upper then
       match prevBeforeClose xs pIdx with
       | some ppIdx =>
           let ppS := sb xs[ppIdx]!
-          if ppS == .upper || ppS == .lower then
+          if ppS == .nonOther .upper || ppS == .nonOther .lower then
             return false
           else
             return true
       | none => return true
-    else if (match leftCloseSp with | some j => sb xs[j]! == SentenceBreak.aTerm | none => false) &&
+    else if (match leftCloseSp with | some j => sb xs[j]! == .nonOther .aTerm | none => false) &&
         nextLowerBeforeSB8Stop xs cIdx then
       return false
     else if match leftCloseSp with | some j => satTerm xs[j]! | none => false then
-      if cS == SentenceBreak.sContinue || satTerm c then
+      if cS == .nonOther .sContinue || satTerm c then
         return false
       else if sp c || paraSep c then
         return false
@@ -297,7 +297,7 @@ private def breakBetweenSentenceSignificant (xs : Array UInt32) (pIdx cIdx : Nat
 private def shouldSentenceBreakBefore (xs : Array UInt32) (i : Nat) : Bool := Id.run do
   let left := xs[i - 1]!
   let right := xs[i]!
-  if sb left == .cr && sb right == .lf then
+  if sb left == .nonOther .cr && sb right == .nonOther .lf then
     return false
   else if paraSep left then
     return true

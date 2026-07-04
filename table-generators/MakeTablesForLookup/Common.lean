@@ -78,7 +78,7 @@ public def specs : Array TableSpec := #[
   ⟨"Terminal_Punctuation", "TerminalPunctuation", #[], "Array (UInt32 × UInt32)", .prop⟩,
   ⟨"Extender", "Extender", #[], "Array (UInt32 × UInt32)", .prop⟩,
   ⟨"Regional_Indicator", "RegionalIndicator", #[], "Array (UInt32 × UInt32)", .prop⟩,
-  ⟨"Case_Folding", "CaseFolding", #[], "Array (UInt32 × Array UInt32)", .caseFolding⟩,
+  ⟨"Case_Folding", "CaseFolding", #["UnicodeBasic.LookupTypes.CaseFolding"], "Array (UInt32 × CaseFolding)", .caseFolding⟩,
   ⟨"Simple_Case_Folding", "SimpleCaseFolding", #[], "Array (UInt32 × UInt32)", .simpleHex⟩,
   ⟨"Grapheme_Break", "GraphemeBreak", #["UnicodeBasic.Types.GraphemeClusterBreak"], "Array (UInt32 × UInt32 × GraphemeClusterBreak)", .graphemeBreak⟩,
   ⟨"Word_Break", "WordBreak", #["UnicodeBasic.Types.WordBreak"], "Array (UInt32 × UInt32 × WordBreak)", .wordBreak⟩,
@@ -173,7 +173,7 @@ def numericType (s : String.Slice) : String :=
 
 def graphemeBreak (abbr : String.Slice) : String :=
   match abbr.copy with
-  | "Other" => "GraphemeClusterBreak.other" | "Control" => "GraphemeClusterBreak.control" | "CR" => "GraphemeClusterBreak.cr" | "Extend" => "GraphemeClusterBreak.extend"
+  | "Other" => panic! "GraphemeClusterBreak.other is not supported" | "Control" => "GraphemeClusterBreak.control" | "CR" => "GraphemeClusterBreak.cr" | "Extend" => "GraphemeClusterBreak.extend"
   | "LF" => "GraphemeClusterBreak.lf" | "SpacingMark" => "GraphemeClusterBreak.spacingMark" | "Prepend" => "GraphemeClusterBreak.prepend"
   | "Regional_Indicator" => "GraphemeClusterBreak.regionalIndicator" | "L" => "GraphemeClusterBreak.l" | "V" => "GraphemeClusterBreak.v"
   | "T" => "GraphemeClusterBreak.t" | "LV" => "GraphemeClusterBreak.lv" | "LVT" => "GraphemeClusterBreak.lvt" | "ZWJ" => "GraphemeClusterBreak.zwj"
@@ -191,7 +191,7 @@ def wordBreak (abbr : String.Slice) : String :=
 
 def sentenceBreak (abbr : String.Slice) : String :=
   match abbr.copy with
-  | "Other" => "SentenceBreak.other" | "ATerm" => "SentenceBreak.aTerm" | "CR" => "SentenceBreak.cr" | "Close" => "SentenceBreak.close"
+  | "Other" => panic! "SentenceBreak.other is not supported" | "ATerm" => "SentenceBreak.aTerm" | "CR" => "SentenceBreak.cr" | "Close" => "SentenceBreak.close"
   | "Extend" => "SentenceBreak.extend" | "Format" => "SentenceBreak.format" | "LF" => "SentenceBreak.lf" | "Lower" => "SentenceBreak.lower"
   | "Numeric" => "SentenceBreak.numeric" | "OLetter" => "SentenceBreak.oLetter" | "SContinue" => "SentenceBreak.sContinue"
   | "STerm" => "SentenceBreak.sTerm" | "Sep" => "SentenceBreak.sep" | "Sp" => "SentenceBreak.sp" | "Upper" => "SentenceBreak.upper"

@@ -12,6 +12,6 @@ namespace Unicode
 /-- Get line break property using lookup table -/
 public def lookupLineBreak (c : UInt32) : LineBreak :=
   if h : TableLookupTables.LineBreak.BetweenOrEqStartEnd c then
-    (TableLookupTables.LineBreak.getInsideSparseRangeValueTable c h).getD .unknown
+    (TableLookupTables.LineBreak.getInsideSparseRangeValueTable c h).getD .unknown -- Why not split LineBreak on without and with unknown? bc Chunk4 and Chunk7 return unknown
   else
     .unknown

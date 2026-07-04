@@ -244,8 +244,8 @@ def testSimpleCaseFolding (d : UnicodeData) : Bool :=
 
 def testGraphemeBreak (d : UnicodeData) : Bool :=
   let expected := lookupRangeOpt? d.code BreakProperties.data.graphemeBreak
-  expected.map (fun s => GraphemeClusterBreak.ofAbbrev! s.toSlice) |>.getD .other
-    == lookupGraphemeClusterBreak d.code
+  let expVal := expected.map (fun s => MaybeGraphemeClusterBreak.nonOther (GraphemeClusterBreak.ofAbbrev! s.toSlice)) |>.getD .other
+  expVal == lookupGraphemeClusterBreak d.code
 
 def testWordBreak (d : UnicodeData) : Bool :=
   let expected := lookupRangeOpt? d.code BreakProperties.data.wordBreak
@@ -254,8 +254,8 @@ def testWordBreak (d : UnicodeData) : Bool :=
 
 def testSentenceBreak (d : UnicodeData) : Bool :=
   let expected := lookupRangeOpt? d.code BreakProperties.data.sentenceBreak
-  expected.map (fun s => SentenceBreak.ofAbbrev! s.toSlice) |>.getD .other
-    == lookupSentenceBreak d.code
+  let expVal := expected.map (fun s => MaybeSentenceBreak.nonOther (SentenceBreak.ofAbbrev! s.toSlice)) |>.getD .other
+  expVal == lookupSentenceBreak d.code
 
 def testLineBreak (d : UnicodeData) : Bool :=
   let expected := lookupRangeOpt? d.code BreakProperties.data.lineBreak

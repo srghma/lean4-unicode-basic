@@ -1,31 +1,36 @@
 module
 
+@[expose] public section
+
 namespace Unicode
 
 /-- Sentence break property
 
   Unicode property: `Sentence_Break` -/
-public inductive SentenceBreak
-| public other
-| public aTerm
-| public cr
-| public close
-| public extend
-| public format
-| public lf
-| public lower
-| public numeric
-| public oLetter
-| public sContinue
-| public sTerm
-| public sep
-| public sp
-| public upper
+inductive SentenceBreak
+| aTerm
+| cr
+| close
+| extend
+| format
+| lf
+| lower
+| numeric
+| oLetter
+| sContinue
+| sTerm
+| sep
+| sp
+| upper
 deriving Inhabited, DecidableEq, Repr
 
-public def SentenceBreak.ofAbbrev? (abbr : String.Slice) : Option SentenceBreak :=
-  if abbr == "XX" || abbr == "Other" then some other
-  else if abbr == "AT" || abbr == "ATerm" then some aTerm
+inductive MaybeSentenceBreak where
+| other : MaybeSentenceBreak
+| nonOther : SentenceBreak → MaybeSentenceBreak
+deriving Inhabited, DecidableEq, Repr
+
+def SentenceBreak.ofAbbrev? (abbr : String.Slice) : Option SentenceBreak :=
+  if abbr == "AT" || abbr == "ATerm" then some aTerm
   else if abbr == "CR" then some cr
   else if abbr == "CL" || abbr == "Close" then some close
   else if abbr == "EX" || abbr == "Extend" then some extend
@@ -42,9 +47,22 @@ public def SentenceBreak.ofAbbrev? (abbr : String.Slice) : Option SentenceBreak 
   else none
 
 @[inherit_doc SentenceBreak.ofAbbrev?]
-public def SentenceBreak.ofAbbrev! (abbr : String.Slice) : SentenceBreak :=
+def MaybeSentenceBreak.ofAbbrev? (abbr : String.Slice) : Option MaybeSentenceBreak :=
+  if abbr == "XX" || abbr == "Other" then some .other
+  else .nonOther <$> SentenceBreak.ofAbbrev? abbr
+
+@[inherit_doc SentenceBreak.ofAbbrev?]
+def SentenceBreak.ofAbbrev! (abbr : String.Slice) : SentenceBreak :=
+  match ofAbbrev? abbr with
+  | some b => b
+  | none => panic! s!"invalid sentence break abbreviation {abbr.copy}"
+
+@[inherit_doc MaybeSentenceBreak.ofAbbrev?]
+def MaybeSentenceBreak.ofAbbrev! (abbr : String.Slice) : MaybeSentenceBreak :=
   match ofAbbrev? abbr with
   | some b => b
   | none => panic! s!"invalid sentence break abbreviation {abbr.copy}"
 
 end Unicode
+
+end
