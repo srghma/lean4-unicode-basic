@@ -11,7 +11,6 @@ abbrev «end» : UInt32 := 0x10FFFF
 
 abbrev BetweenOrEqStartEnd (v : UInt32) : Prop := start ≤ v ∧ v ≤ «end»
 
-set_option maxHeartbeats 2000000 in
 @[inline_if_reduce, reducible]
 def getInsideSparseRangeValueTable (v : UInt32) (_h : BetweenOrEqStartEnd v) : Option String :=
   if v < 0x10300 then

@@ -100,8 +100,8 @@ def UnicodeData.mkHangulSyllable (c : UInt32) : UnicodeData :=
   let s := Hangul.getSyllable! c
   let m : DecompositionMapping :=
     match s.getTChar? with
-    | some t => ⟨none, [s.getLVChar, t]⟩
-    | none => ⟨none, [s.getLChar, s.getVChar]⟩
+    | some t => { tag := none, mapping := [s.getLVChar, t], validMapping := Or.inr (Or.inl rfl) }
+    | none => { tag := none, mapping := [s.getLChar, s.getVChar], validMapping := Or.inr (Or.inl rfl) }
   { code := c
     name := s!"HANGUL SYLLABLE {s.getShortName}"
     bidi := .L
@@ -171,7 +171,10 @@ public unsafe initialize UnicodeData.data : Array UnicodeData ←
             none
         else
           cs := (Char.mkUnsafe <| ofHexString! t) :: cs
-        some ⟨tag, cs⟩
+        if h : IsValidDecompositionMapping cs then
+          some { tag, mapping := cs, validMapping := h }
+        else
+          panic! s!"invalid decomposition mapping length: {cs.length}"
       | [] => unreachable!
 
   let getDigitUnsafe (char : Char) : Fin 10 :=

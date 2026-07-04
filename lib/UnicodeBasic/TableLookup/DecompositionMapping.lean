@@ -21,8 +21,8 @@ public def lookupDecompositionMapping? (c : UInt32) : Option DecompositionMappin
   if h : Hangul.Syllable.base ≤ c ∧ c ≤ Hangul.Syllable.last then
     let s := Hangul.getSyllable c h
     match s.getTChar? with
-    | some t => some ⟨none, [s.getLVChar, t]⟩
-    | none => some ⟨none, [s.getLChar, s.getVChar]⟩
+    | some t => some { tag := none, mapping := [s.getLVChar, t], validMapping := Or.inr (Or.inl rfl) }
+    | none => some { tag := none, mapping := [s.getLChar, s.getVChar], validMapping := Or.inr (Or.inl rfl) }
   else
     if h : TableLookupTables.DecompositionMapping.BetweenOrEqStartEnd c then
       TableLookupTables.DecompositionMapping.lookupSparseKVTable? c h
@@ -33,8 +33,8 @@ public def lookupDecompositionMapping (c : UInt32) (h : (Hangul.Syllable.base �
   if hhangul : Hangul.Syllable.base ≤ c ∧ c ≤ Hangul.Syllable.last then
     let s := Hangul.getSyllable c hhangul
     match s.getTChar? with
-    | some t => ⟨none, [s.getLVChar, t]⟩
-    | none => ⟨none, [s.getLChar, s.getVChar]⟩
+    | some t => { tag := none, mapping := [s.getLVChar, t], validMapping := Or.inr (Or.inl rfl) }
+    | none => { tag := none, mapping := [s.getLChar, s.getVChar], vmkUnsafealidMapping := Or.inr (Or.inl rfl) }
   else
     have htable : TableLookupTables.DecompositionMapping.BetweenOrEqStartEnd c := by
       rcases h with h1 | h2
@@ -42,5 +42,4 @@ public def lookupDecompositionMapping (c : UInt32) (h : (Hangul.Syllable.base �
       · exact h2
     match hlookup : TableLookupTables.DecompositionMapping.lookupSparseKVTable? c htable with
     | some s => s
-    | none => ⟨none, []⟩
-
+    | none => { tag := none, mapping := [], validMapping := Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (by decide)))))))) }
