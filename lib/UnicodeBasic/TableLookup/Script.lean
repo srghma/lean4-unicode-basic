@@ -3,6 +3,7 @@ Copyright © 2024-2025 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
+public import UnicodeBasicCommon.Types.MaybeUnknownScript
 public import UnicodeBasicCommon.Types.Script
 public import UnicodeBasic.TableLookupCommon
 public import UnicodeBasic.TableLookupTables.Script
@@ -13,8 +14,8 @@ namespace Unicode
 
   Unicode property: `Script` -/
 @[inline]
-public def lookupScript (c : UInt32) : Script :=
+public def lookupScript (c : UInt32) : MaybeUnknownScript :=
   if h : TableLookupTables.Script.BetweenOrEqStartEnd c then
-    (TableLookupTables.Script.getInsideSparseRangeValueTable c h).getD default
+    (TableLookupTables.Script.getInsideSparseRangeValueTable c h).map MaybeUnknownScript.ofScript |>.getD default
   else
     default

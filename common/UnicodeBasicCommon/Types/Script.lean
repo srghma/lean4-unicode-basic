@@ -1,4 +1,5 @@
 module
+public import UnicodeBasicCommon.Types.Script.IsValidCodePoint
 
 namespace Unicode
 
@@ -6,31 +7,19 @@ namespace Unicode
   ## Scripts ##
 -/
 
-/-- Check if valid script identifier -/
-@[inline, reducible]
-public def Script.isValid (c : UInt32) : Bool :=
-  let c0 := (c >>> 24).toUInt8
-  let c1 := (c >>> 16).toUInt8
-  let c2 := (c >>> 8).toUInt8
-  let c3 := c.toUInt8
-  (c0 ≤ 'Z'.toUInt8 && 'A'.toUInt8 ≤ c0)
-    && (c1 ≤ 'z'.toUInt8 && 'a'.toUInt8 ≤ c1)
-      && (c2 ≤ 'z'.toUInt8 && 'a'.toUInt8 ≤ c2)
-        && (c3 ≤ 'z'.toUInt8 && 'a'.toUInt8 ≤ c3)
-
 /-- Script identifier type -/
 public structure Script where
   public code : UInt32
-  public is_valid : Script.isValid code := by native_decide
+  public is_valid : Script.IsValidCodePoint code := by decide
 deriving DecidableEq, Hashable
 
 namespace Script
 
-/-- Default value is `Zzzz` (`Unknown`) -/
+/-- Default value is `Zyyy` (`Common`) -/
 public instance : Inhabited Script where
   default := {
-    code := (((('Z'.val <<< 8 ||| 'z'.val) <<< 8) ||| 'z'.val) <<< 8) ||| 'z'.val
-    is_valid := by native_decide
+    code := Script.CodePoints.common
+    is_valid := by decide
   }
 
 /-- String abbreviation of script -/
@@ -59,7 +48,7 @@ public def ofAbbrevAux (abbr : String.Slice) : UInt32 :=
 public def ofAbbrev? (abbr : String.Slice) : Option Script :=
   if abbr.utf8ByteSize = 4 then
     let code := ofAbbrevAux abbr
-    if h : Script.isValid code then
+    if h : Script.IsValidCodePoint code then
       some ⟨code, h⟩
     else
       none

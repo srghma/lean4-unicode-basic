@@ -844,8 +844,8 @@ def mkScriptName : Array (UInt32 × String) := Id.run do
   let stream := UCDStream.ofString txt
   for record in stream do
     if record[0]! == "sc" then
-      let s := Script.ofAbbrev! record[1]!.copy
-      t := t.push (s.code, record[2]!.toString)
+      let code := Script.ofAbbrevAux record[1]!
+      t := t.push (code, record[2]!.toString)
   return Array.qsort t fun (a, _) (b, _) => a < b
 
 def mkIDStart : Array (UInt32 × UInt32) :=
@@ -1913,11 +1913,6 @@ public def main (_args : List String) : IO UInt32 := do
         IO.FS.createDirAll typesDir
         let blockNamesTable := mkBlockName
         IO.FS.writeFile (typesDir / "BlockName.lean") (renderBlockNameTypes blockNamesTable)
-      if spec.fileName == "Script_Name" then
-        let typesDir : System.FilePath := ".." / "lib" / "UnicodeBasic" / "Types"
-        IO.FS.createDirAll typesDir
-        let scriptNamesTable := mkScriptName
-        IO.FS.writeFile (typesDir / "ScriptName.lean") (renderScriptNameTypes scriptNamesTable)
       let table ← buildTable spec.fileName
       logGeneratedTable table
       let src :=

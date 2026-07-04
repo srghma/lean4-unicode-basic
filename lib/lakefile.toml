@@ -6,6 +6,11 @@ reservoir = true
 defaultTargets = ["UnicodeBasic"]
 
 [[require]]
+name = "aesop"
+scope = "leanprover-community"
+rev = "v4.32.0-rc1"
+
+[[require]]
 name = "UnicodeBasicCommon"
 path = "../common"
 
@@ -85,7 +90,6 @@ globs = [
   "UnicodeBasic.TableLookup.RegionalIndicator",
   "UnicodeBasic.TableLookup.Script",
   "UnicodeBasic.TableLookup.ScriptExtensions",
-  "UnicodeBasic.TableLookup.ScriptName",
   "UnicodeBasic.TableLookup.SentenceBreak",
   "UnicodeBasic.TableLookup.SentenceTerminal",
   "UnicodeBasic.TableLookup.SimpleCaseFolding",
@@ -238,7 +242,6 @@ globs = [
   "UnicodeBasic.TableLookupTables.RegionalIndicator",
   "UnicodeBasic.TableLookupTables.Script",
   "UnicodeBasic.TableLookupTables.ScriptExtensions",
-  "UnicodeBasic.TableLookupTables.ScriptName",
   "UnicodeBasic.TableLookupTables.SentenceBreak",
   "UnicodeBasic.TableLookupTables.SentenceTerminal",
   "UnicodeBasic.TableLookupTables.SimpleCaseFolding",
@@ -251,8 +254,16 @@ globs = [
   "UnicodeBasic.TableLookupTables.XidStart",
   "UnicodeBasic.Types.BlockName",
   "UnicodeBasic.Types.ScriptName",
+  "UnicodeBasic.Types.ScriptName.Basic",
+  "UnicodeBasic.Types.ScriptName.ToFullName",
+  "UnicodeBasic.Types.ScriptName.OfFullName",
+  "UnicodeBasic.Types.ScriptName.ToAbbrev",
+  "UnicodeBasic.Types.ScriptName.OfAbbrev",
+  "UnicodeBasic.Types.ScriptName.FromScript",
+  "UnicodeBasic.Types.ScriptName.ToScript",
+  "UnicodeBasic.Types.ScriptName.FromToScriptIso",
   "UnicodeBasic.Types.GraphemeClusterBreak",
   "UnicodeBasic.Types.SentenceBreak",
   "UnicodeBasic.Types.WordBreak",
 ]
-precompileModules = true
+# precompileModules = false

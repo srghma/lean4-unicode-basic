@@ -35,6 +35,9 @@ generate-do-not-emit:
 generate-names-list:
     node scripts/generate_names_list.ts
 
+generate-script-types:
+    node scripts/generate_script_types.ts
+
 table-provenance:
     node scripts/ucd_table_provenance.ts
 
@@ -51,9 +54,9 @@ build:
     @just lake-all-do "lake build --wfail"
 
 test:
-    cd tests && lake test
+    cd tests && lake exe testAll -- --timeout 120
 
 check-ucd-text:
     node scripts/check_ucd_text_not_baked.ts
 
-all: tables build test
+all: generate-script-types tables build test

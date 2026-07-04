@@ -4,7 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
 public import UnicodeBasic.TableLookup.Script
-public import UnicodeBasic.TableLookup.ScriptName
+public import UnicodeBasic.Types.ScriptName.Basic
+public import UnicodeBasic.Types.ScriptName.FromScript
+public import UnicodeBasic.Types.ScriptName.ToFullName
 public import UnicodeBasic.TableLookup.ScriptExtensions
 
 /-!
@@ -23,7 +25,8 @@ namespace Unicode
   Unicode property: `Script`
 -/
 @[inline]
-public def getScript (char : Char) : Script := lookupScript char.val
+public def getScript (char : Char) : MaybeUnknownScript :=
+  lookupScript char.val
 
 /-- Get script name
 
@@ -32,17 +35,17 @@ public def getScript (char : Char) : Script := lookupScript char.val
   Unicode property: `Script`
 -/
 @[inline]
-public def getScriptName? (s : Script) : Option String :=
-  lookupScriptName s |>.map toString
+public def getScriptName? (s : Script) : String :=
+  ScriptName.toFullName (ScriptName.fromScript s)
 
 /-- Get character script extensions
 
   Unicode property: `Script_Extensions`
 -/
 @[inline]
-public def getScriptExtensions (char : Char) : Array Script :=
+public def getScriptExtensions (char : Char) : Array MaybeUnknownScript :=
   let scs := lookupScriptExtensions char.val
-  if scs.isEmpty then #[lookupScript char.val] else scs
+  if scs.isEmpty then #[lookupScript char.val] else scs.map MaybeUnknownScript.ofScript
 
 /-- Check if character is part of a script
 
@@ -50,7 +53,7 @@ public def getScriptExtensions (char : Char) : Array Script :=
 -/
 @[inline]
 public def isScript (sc : Script) (char : Char) : Bool :=
-  lookupScript char.val == sc
+  lookupScript char.val == MaybeUnknownScript.ofScript sc
 
 /-- Check if character has a script extension
 
@@ -59,6 +62,6 @@ public def isScript (sc : Script) (char : Char) : Bool :=
 -/
 @[inline]
 public def hasScript (sc : Script) (char : Char) : Bool :=
-  getScriptExtensions char |>.contains sc
+  getScriptExtensions char |>.contains (MaybeUnknownScript.ofScript sc)
 
 end Unicode

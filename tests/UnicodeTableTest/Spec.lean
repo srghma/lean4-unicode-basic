@@ -268,7 +268,14 @@ def testScript (d : UnicodeData) : Bool :=
       some (Script.ofAbbrev! (PropertyValueAliases.getShortName! "sc" sc).copy.toSlice)
     else
       none
-  expected.getD default == lookupScript d.code
+  expected.map MaybeUnknownScript.ofScript |>.getD default == lookupScript d.code
+
+def testScriptCodeValidation : Bool :=
+  decide (Script.IsValidCodePoint Script.CodePoints.latin)
+    && !decide (Script.IsValidCodePoint Script.CodePoints.unknown)
+    && decide (Script.IsValidMaybeUnknownCodePoint Script.CodePoints.unknown)
+    && Script.ofAbbrev? "Latn" == some (Script.ofAbbrev! "Latn")
+    && Script.ofAbbrev? "Qqqq" == none
 
 def testScriptExtensions (d : UnicodeData) : Bool :=
   let expected := lookupRange? d.code <| Id.run do
@@ -372,6 +379,7 @@ public def spec : Spec.Spec := do
     itPropertyForData "Numeric_Value" testNumericValue
     itPropertySimple "Numeric_Value regressions" testNumericValueRegressions
     itPropertyForData "Script" testScript
+    itPropertySimple "Script code validation" testScriptCodeValidation
     itPropertyForData "Script_Extensions" testScriptExtensions
     itPropertyForData "Sentence_Break" testSentenceBreak
     itPropertyForData "Simple_Case_Folding" testSimpleCaseFolding

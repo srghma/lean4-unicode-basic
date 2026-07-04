@@ -12,6 +12,7 @@ public import UnicodeBasicCommon.Types.EastAsianWidth
 public import UnicodeBasicCommon.Types.GeneralCategory
 public import UnicodeBasicCommon.Types.Hex
 public import UnicodeBasicCommon.Types.LineBreak
+public import UnicodeBasicCommon.Types.MaybeUnknownScript
 public import UnicodeBasicCommon.Types.NumericType
 public import UnicodeBasicCommon.Types.Script
 public import UnicodeBasicCommon.Types.VerticalOrientation
@@ -77,7 +78,6 @@ public import UnicodeBasic.TableLookup.QuotationMark
 public import UnicodeBasic.TableLookup.RegionalIndicator
 public import UnicodeBasic.TableLookup.Script
 public import UnicodeBasic.TableLookup.ScriptExtensions
-public import UnicodeBasic.TableLookup.ScriptName
 public import UnicodeBasic.TableLookup.SentenceBreak
 public import UnicodeBasic.TableLookup.SentenceTerminal
 public import UnicodeBasic.TableLookup.SimpleCaseFolding
