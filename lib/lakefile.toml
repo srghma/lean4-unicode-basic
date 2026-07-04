@@ -38,6 +38,7 @@ globs = [
   "UnicodeBasic.Lookup.Titlecase",
   "UnicodeBasic.LookupTypes.BidiBracket",
   "UnicodeBasic.LookupTypes.CanonicalDecomposition",
+  "UnicodeBasic.LookupTypes.ScriptExtensions",
   "UnicodeBasic.Segmentation",
   "UnicodeBasic.TableLookup.Alphabetic",
   "UnicodeBasic.TableLookup.BidiBrackets",

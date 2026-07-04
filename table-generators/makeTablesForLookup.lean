@@ -899,6 +899,8 @@ def mkRegionalIndicator : Array (UInt32 × UInt32) :=
     | (c₀, some c₁) => (c₀, c₁)
     | (c₀, none) => (c₀, c₀)
 
+private def hexStr (c : UInt32) : String := s!"0x{toHexStringRaw c}"
+
 def mkCaseFolding : Array (UInt32 × String) :=
   (CaseFolding.data).filterMap fun e =>
     if e.status == 'C' || e.status == 'F' then
@@ -998,8 +1000,16 @@ def mkScript : Array (UInt32 × UInt32 × String) := Id.run do
     ranges.map fun (c₀, c₁) => (c₀, c₁, sc.toAbbrev)
   return t.qsort fun (a, _, _) (b, _, _) => a < b
 
-def mkScriptExtensions : Array (UInt32 × String) := Id.run do
-  let mut t_arr : Array (UInt32 × String) := #[]
+private structure ScriptExtensionsValue where
+  lastCode : UInt32
+  scripts : Array Script
+
+private def showScriptExtensionsValue (v : ScriptExtensionsValue) : String :=
+  let scripts := v.scripts.map fun sc => s!"Script.mk {hexStr sc.code}"
+  s!"ScriptExtensionsEntry.mk {hexStr v.lastCode} #[{", ".intercalate scripts.toList}]"
+
+def mkScriptExtensions : Array (UInt32 × ScriptExtensionsValue) := Id.run do
+  let mut t_arr : Array (UInt32 × ScriptExtensionsValue) := #[]
   let txt : String := ScriptExtensions.txt
   let stream := UCDStream.ofString txt
   for record in stream do
@@ -1010,10 +1020,10 @@ def mkScriptExtensions : Array (UInt32 × String) := Id.run do
       | [c₀, c₁] => (ofHexString! c₀, ofHexString! c₁)
       | _ => panic! "invalid record in ScriptExtensions.txt"
     let r1 : String.Slice := record[1]!
-    let val : String := r1.copy
+    let scripts := r1.split " " |>.toArray |>.map Script.ofAbbrev!
     for c in [c₀.toNat:c₁.toNat + 1] do
       let c := UInt32.ofNat c
-      t_arr := t_arr.push (c, (toHexStringRaw c) ++ ";" ++ val)
+      t_arr := t_arr.push (c, { lastCode := c, scripts := scripts })
   return t_arr
 
 private def showBidiClass : BidiClass → String
@@ -1053,8 +1063,6 @@ private def lines (rows : Array String) : String :=
 
 private def spaces (n : Nat) : String :=
   String.ofList <| List.replicate n ' '
-
-private def hexStr (c : UInt32) : String := s!"0x{toHexStringRaw c}"
 
 private def isDenseRange (ranges : Array (UInt32 × UInt32)) : Bool :=
   if ranges.size ≤ 1 then true
@@ -1762,7 +1770,7 @@ private def buildTable (name : String) : IO GeneratedTable := do
     return mkKeyTable name "ScriptName" id converted
   | "Script_Extensions" =>
     let table := mkScriptExtensions
-    return mkKeyTable name "String" reprStr table
+    return mkKeyTable name "ScriptExtensionsEntry" showScriptExtensionsValue table
   | "ID_Start" => pureProp name mkIDStart
   | "ID_Continue" => pureProp name mkIDContinue
   | "XID_Start" => pureProp name mkXIDStart
