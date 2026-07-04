@@ -62,4 +62,4 @@ jobs:
 
       - name: Run Tests
         working-directory: tests
-        run: lake test
+        run: lake exe testAll -- --timeout 120

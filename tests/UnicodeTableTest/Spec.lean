@@ -249,7 +249,7 @@ def testGraphemeBreak (d : UnicodeData) : Bool :=
 
 def testWordBreak (d : UnicodeData) : Bool :=
   let expected := lookupRangeOpt? d.code BreakProperties.data.wordBreak
-  expected.map (fun s => WordBreak.ofAbbrev! s.toSlice) |>.getD .other
+  expected.map (fun s => MaybeWordBreak.ofAbbrev! s.toSlice) |>.getD .other
     == lookupWordBreak d.code
 
 def testSentenceBreak (d : UnicodeData) : Bool :=

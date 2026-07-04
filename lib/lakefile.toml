@@ -5,10 +5,10 @@ keywords = ["unicode"]
 reservoir = true
 defaultTargets = ["UnicodeBasic"]
 
-[[require]]
-name = "aesop"
-scope = "leanprover-community"
-rev = "v4.32.0-rc1"
+# [[require]]
+# name = "aesop"
+# scope = "leanprover-community"
+# rev = "v4.32.0-rc1"
 
 [[require]]
 name = "UnicodeBasicCommon"

@@ -26,7 +26,6 @@ public inductive TableKind where
   | name
   | numericValue
   | script
-  | scriptName
   | scriptExtensions
   | graphemeBreak
   | wordBreak
@@ -66,7 +65,6 @@ public def specs : Array TableSpec := #[
   ⟨"Default_Ignorable_Code_Point", "DefaultIgnorableCodePoint", #[], "Array (UInt32 × UInt32)", .prop⟩,
   ⟨"White_Space", "WhiteSpace", #[], "Array (UInt32 × UInt32)", .prop⟩,
   ⟨"Script", "Script", #["UnicodeBasicCommon.Types.Script"], "Array (UInt32 × UInt32 × Script)", .script⟩,
-  ⟨"Script_Name", "ScriptName", #["UnicodeBasicCommon.Types.Script", "UnicodeBasic.Types.ScriptName"], "Array (UInt32 × ScriptName)", .scriptName⟩,
   ⟨"Script_Extensions", "ScriptExtensions", #["UnicodeBasic.LookupTypes.ScriptExtensions", "UnicodeBasicCommon.Types.Script"], "Array (UInt32 × ScriptExtensionsEntry)", .scriptExtensions⟩,
   ⟨"ID_Start", "IdStart", #[], "Array (UInt32 × UInt32)", .prop⟩,
   ⟨"ID_Continue", "IdContinue", #[], "Array (UInt32 × UInt32)", .prop⟩,
@@ -271,8 +269,6 @@ def renderRows (kind : TableKind) (txt : String) : Array String := Id.run do
       let (start, stop) := rangeOfRecord record
       let code := Script.ofAbbrev! record[2]!.copy |>.code
       pure s!"  ({hex start}, {hex stop}, Script.mk {hex code})"
-    | .scriptName =>
-      pure s!"  ({hex start}, {str record[1]!.copy})"
     | .scriptExtensions =>
       let (start, stop) := rangeOfRecord record
       let vals := String.intercalate ", " <| record[2]!.split " " |>.toList.map fun sc =>
