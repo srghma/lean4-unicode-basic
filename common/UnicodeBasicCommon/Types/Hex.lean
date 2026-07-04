@@ -2,6 +2,12 @@ module
 
 namespace Unicode
 
+private theorem and_15_lt_16 (code : UInt32) : (code &&& 0xF).toNat < 16 := by
+  have h1 : (code &&& 0xF).toNat = code.toNat &&& 15 := rfl
+  rw [h1]
+  have h2 : code.toNat &&& 15 ≤ 15 := Nat.and_le_right
+  omega
+
 /-- Raw hexadecimal string representation of a code point
 
   Same as `toHexString` but without the `U+` prefix. -/
@@ -10,10 +16,14 @@ public def toHexStringRaw (code : UInt32) : String := Id.run do
   let mut code := code
   let mut dgts := []
   for _ in [:4] do
-    dgts := hex[(code &&& 0xF).toNat]! :: dgts
+    have h : hex.size = 16 := rfl
+    have h2 : (code &&& 0xF).toNat < hex.size := h ▸ and_15_lt_16 code
+    dgts := hex[(code &&& 0xF).toNat]'h2 :: dgts
     code := code >>> 4
   while code != 0 do
-    dgts := hex[(code &&& 0xF).toNat]! :: dgts
+    have h : hex.size = 16 := rfl
+    have h2 : (code &&& 0xF).toNat < hex.size := h ▸ and_15_lt_16 code
+    dgts := hex[(code &&& 0xF).toNat]'h2 :: dgts
     code := code >>> 4
   return String.ofList dgts
 
