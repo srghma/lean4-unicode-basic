@@ -24,7 +24,7 @@ public def lookupCanonicalDecompositionMapping (c : UInt32) : List UInt32 :=
   else
     if h : TableLookupTables.CanonicalDecompositionMapping.BetweenOrEqStartEnd c then
       match TableLookupTables.CanonicalDecompositionMapping.lookupSparseKVTable? c h with
-      | some l => l.map Char.val
+      | some l => l.mapping
       | none => [c]
     else
       [c]

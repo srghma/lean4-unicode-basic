@@ -32,13 +32,15 @@ public abbrev baseV : UInt32 := 0x1161
 public abbrev baseT : UInt32 := 0x11A7
 
 /-- Number of Hangul syllables -/
-public def Syllable.size := sizeLVT
+public abbrev Syllable.size := sizeLVT
 
 /-- Starting code point for Hangul syllables -/
-public def Syllable.base : UInt32 := 0xAC00
+public abbrev Syllable.base : UInt32 := 0xAC00
 
 /-- Stopping code point for Hangul syllables -/
-public def Syllable.last : UInt32 := ⟨0xAC00 + Syllable.size - 1, by decide⟩
+public abbrev Syllable.last : UInt32 := ⟨0xAC00 + Syllable.size - 1, by decide⟩
+
+public abbrev Syllable.IsBtwBaseAndLast (c : UInt32) := base ≤ c ∧ c ≤ last
 
 /-- Hangul syllable type -/
 public structure Syllable where
@@ -54,7 +56,7 @@ public instance : Inhabited Syllable where
   default := ⟨⟨0, by decide⟩, ⟨0, by decide⟩, ⟨0, by decide⟩⟩
 
 /-- LV part of syllable -/
-public def Syllable.toLV : Syllable → Fin sizeLV
+public abbrev Syllable.toLV : Syllable → Fin sizeLV
   | ⟨⟨l, hl⟩, ⟨v, hv⟩, _⟩ =>
     have : l * sizeV + v < sizeLV := calc
       _ < l * sizeV + sizeV := by apply Nat.add_lt_add_left; exact hv
@@ -62,7 +64,7 @@ public def Syllable.toLV : Syllable → Fin sizeLV
       _ ≤ sizeL * sizeV := by apply Nat.mul_le_mul_right; exact hl
     ⟨l * sizeV + v, this⟩
 
-public def Syllable.index (s : Syllable) : Fin Syllable.size :=
+public abbrev Syllable.index (s : Syllable) : Fin Syllable.size :=
   match s.toLV, s.toT with
   | ⟨lv, hlv⟩, ⟨t, ht⟩ =>
     have : lv * sizeT + t < sizeL * sizeV * sizeT := calc
@@ -72,58 +74,60 @@ public def Syllable.index (s : Syllable) : Fin Syllable.size :=
     ⟨lv * sizeT + t, this⟩
 
 /-- Get short name for Hangul syllable -/
-@[inline]
-public def Syllable.getShortName (s : Syllable) : String := shortNameL[s.toL] ++ shortNameV[s.toV] ++ shortNameT[s.toT]
+public abbrev Syllable.getShortName (s : Syllable) : String := shortNameL[s.toL] ++ shortNameV[s.toV] ++ shortNameT[s.toT]
 
 /-- Get L part character for syllable -/
-public def Syllable.getLChar (s : Syllable) : Char :=
+public abbrev Syllable.getLChar (s : Syllable) : Char :=
   .ofNat (baseL.toNat + s.toL)
 
 /-- Get V part character for syllable -/
-public def Syllable.getVChar (s : Syllable) : Char :=
+public abbrev Syllable.getVChar (s : Syllable) : Char :=
   .ofNat (baseV.toNat + s.toV)
 
 /-- Get LV part character for syllable -/
-public def Syllable.getLVChar (s : Syllable) : Char :=
+public abbrev Syllable.getLVChar (s : Syllable) : Char :=
   .ofNat (base.toNat + sizeT * s.toLV)
 
 /-- Get T part character for syllable -/
-public def Syllable.getTChar? (s : Syllable) : Option Char :=
+public abbrev Syllable.getTChar? (s : Syllable) : Option Char :=
   if s.toT.val == 0 then none else
     return .ofNat (baseT.toNat + s.toT)
 
-public def getSyllable (code : UInt32) (h : Syllable.base ≤ code ∧ code ≤ Syllable.last) : Syllable :=
+public abbrev getSyllable (code : UInt32) (h : Hangul.Syllable.IsBtwBaseAndLast code) : Syllable :=
   let index := (code - Syllable.base).toNat
-  have islt : index < sizeLVT := by
-    have hb1 : Syllable.base.toNat ≤ code.toNat := h.1
-    have hc1 : code.toNat ≤ Syllable.last.toNat := h.2
+  let lpart := index / sizeVT
+  have lislt : lpart < sizeL := by
+    dsimp only [lpart, index]
     have h_sub : (code - Syllable.base).toNat = code.toNat - Syllable.base.toNat := by
       rw [UInt32.toNat_sub]
-      have h_bound_a : code.toNat < 4294967296 := UInt32.toNat_lt code
-      have h_bound_b : Syllable.base.toNat < 4294967296 := UInt32.toNat_lt Syllable.base
+      have h_lt := UInt32.toNat_lt code
+      have h_base : Syllable.base.toNat = 44032 := rfl
+      have h_le : Syllable.base.toNat ≤ code.toNat := h.1
       omega
-    have h_base : Syllable.base.toNat = 0xAC00 := rfl
-    have h_last : Syllable.last.toNat = 0xAC00 + sizeLVT - 1 := rfl
+    have h_last : Syllable.last.toNat = 55203 := rfl
+    have h_base : Syllable.base.toNat = 44032 := rfl
+    have h_le_last : code.toNat ≤ Syllable.last.toNat := h.2
+    have h_sizeL : sizeL = 19 := rfl
+    have h_sizeVT : sizeVT = 588 := rfl
+    rw [h_sub, h_base, h_sizeVT, h_sizeL]
     omega
-  let lpart := index / sizeVT
-  have lislt : lpart < sizeL := Nat.div_lt_of_lt_mul islt
   let vtpart := index % sizeVT
   have vtislt : vtpart < sizeVT := Nat.mod_lt _ (by decide)
   let vpart := vtpart / sizeT
-  have vislt : vpart < sizeV := Nat.div_lt_of_lt_mul vtislt
+  have vislt : vpart < sizeV := by exact Nat.div_lt_of_lt_mul vtislt
   let tpart := vtpart % sizeT
   have tislt : tpart < sizeT := Nat.mod_lt _ (by decide)
   ⟨⟨lpart, lislt⟩, ⟨vpart, vislt⟩, ⟨tpart, tislt⟩⟩
 
 /-- Get Hangul syllable from code point -/
-public def getSyllable? (code : UInt32) : Option Syllable :=
+public abbrev getSyllable? (code : UInt32) : Option Syllable :=
   if h : Syllable.base ≤ code ∧ code ≤ Syllable.last then
     some (getSyllable code h)
   else
     none
 
 @[inherit_doc getSyllable?]
-public def getSyllable! (code : UInt32) : Syllable :=
+public abbrev getSyllable! (code : UInt32) : Syllable :=
   if h : Syllable.base ≤ code ∧ code ≤ Syllable.last then
     getSyllable code h
   else
