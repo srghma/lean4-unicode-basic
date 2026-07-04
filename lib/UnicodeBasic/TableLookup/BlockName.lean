@@ -5,6 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 module
 public import UnicodeBasic.TableLookupCommon
 public import UnicodeBasic.TableLookupTables.BlockName
+public import UnicodeBasic.Types.BlockName
 
 namespace Unicode
 
@@ -12,8 +13,12 @@ namespace Unicode
 
   Unicode property: `Block`
 -/
-public def lookupBlockName (c : UInt32) : String :=
+public def lookupBlockName (c : UInt32) : BlockNameOrNoBlock :=
   if h : TableLookupTables.BlockName.BetweenOrEqStartEnd c then
-    (TableLookupTables.BlockName.getInsideSparseRangeValueTable c h).getD "No_Block"
+    match TableLookupTables.BlockName.getInsideSparseRangeValueTable c h with
+    | some b => .blockName b
+    | none => .noBlock
   else
-    "No_Block"
+    .noBlock
+
+

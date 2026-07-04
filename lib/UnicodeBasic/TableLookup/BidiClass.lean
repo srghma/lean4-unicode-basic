@@ -16,4 +16,5 @@ public def lookupBidiClass (c : UInt32) : BidiClass :=
   if h : TableLookupTables.BidiClass.BetweenOrEqStartEnd c then
     TableLookupTables.BidiClass.getInsideDenseRangeValueTable c h
   else
-    .L
+    .L -- The original implementation defaulted to .BN (Boundary Neutral) for values outside/between ranges. However, in Unicode, any code point not explicitly listed in Bidi_Class defaults to .L (Left-to-Right).
+

@@ -34,7 +34,7 @@ public def getName (char : Char) : String := lookupName char.val
 -/
 
 /-- Get Unicode block name -/
-public def getBlockName (char : Char) : String := lookupBlockName char.val
+public def getBlockName (char : Char) : String := toString (lookupBlockName char.val)
 
 /-!
   ## East Asian Width ##

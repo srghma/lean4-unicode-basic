@@ -45,7 +45,7 @@ public def specs : Array TableSpec := #[
   ⟨"Bidi_Class", "BidiClass", #["UnicodeBasicCommon.Types.BidiClass"], "Array (UInt32 × UInt32 × BidiClass)", .bidiClass⟩,
   ⟨"Bidi_Mirroring_Glyph", "BidiMirroringGlyph", #[], "Array (UInt32 × UInt32)", .simpleHex⟩,
   ⟨"Bidi_Brackets", "BidiBrackets", #["UnicodeBasic.LookupTypes.BidiBracket", "UnicodeBasicCommon.Types.BidiBracketType"], "Array (UInt32 × BidiBracket)", .bidiBracket⟩,
-  ⟨"Block_Name", "BlockName", #[], "Array (UInt32 × UInt32 × String)", .blockName⟩,
+  ⟨"Block_Name", "BlockName", #["UnicodeBasic.Types.BlockName"], "Array (UInt32 × UInt32 × BlockName)", .blockName⟩,
   ⟨"East_Asian_Width", "EastAsianWidth", #["UnicodeBasicCommon.Types.EastAsianWidth"], "Array (UInt32 × UInt32 × EastAsianWidth)", .eastAsianWidth⟩,
   ⟨"Vertical_Orientation", "VerticalOrientation", #["UnicodeBasicCommon.Types.VerticalOrientation"], "Array (UInt32 × UInt32 × VerticalOrientation)", .verticalOrientation⟩,
   ⟨"Canonical_Combining_Class", "CanonicalCombiningClass", #[], "Array (UInt32 × UInt32 × Nat)", .rangeNat⟩,
