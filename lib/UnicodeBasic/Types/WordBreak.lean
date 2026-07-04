@@ -1,35 +1,40 @@
 module
 
+@[expose] public section
+
 namespace Unicode
 
 /-- Word break property
 
   Unicode property: `Word_Break` -/
-public inductive WordBreak
-| public other
-| public doubleQuote
-| public singleQuote
-| public hebrewLetter
-| public cr
-| public lf
-| public newline
-| public extend
-| public regionalIndicator
-| public katakana
-| public aLetter
-| public midLetter
-| public midNum
-| public midNumLet
-| public numeric
-| public extendNumLet
-| public wSegSpace
-| public zwj
-| public format
+inductive WordBreak
+| doubleQuote
+| singleQuote
+| hebrewLetter
+| cr
+| lf
+| newline
+| extend
+| regionalIndicator
+| katakana
+| aLetter
+| midLetter
+| midNum
+| midNumLet
+| numeric
+| extendNumLet
+| wSegSpace
+| zwj
+| format
 deriving Inhabited, DecidableEq, Repr
 
-public instance : ToString WordBreak where
+inductive MaybeWordBreak
+| other
+| nonOther (wb : WordBreak)
+deriving Inhabited, DecidableEq, Repr
+
+instance : ToString WordBreak where
   toString
-  | .other => "Other"
   | .doubleQuote => "Double_Quote"
   | .singleQuote => "Single_Quote"
   | .hebrewLetter => "Hebrew_Letter"
@@ -49,9 +54,13 @@ public instance : ToString WordBreak where
   | .zwj => "ZWJ"
   | .format => "Format"
 
-public def WordBreak.ofAbbrev? (abbr : String.Slice) : Option WordBreak :=
-  if abbr == "XX" || abbr == "Other" then some other
-  else if abbr == "DQ" || abbr == "Double_Quote" then some doubleQuote
+instance : ToString MaybeWordBreak where
+  toString
+  | .other => "Other"
+  | .nonOther wb => toString wb
+
+def WordBreak.ofAbbrev? (abbr : String.Slice) : Option WordBreak :=
+  if abbr == "DQ" || abbr == "Double_Quote" then some doubleQuote
   else if abbr == "SQ" || abbr == "Single_Quote" then some singleQuote
   else if abbr == "HL" || abbr == "Hebrew_Letter" then some hebrewLetter
   else if abbr == "CR" then some cr
@@ -71,9 +80,19 @@ public def WordBreak.ofAbbrev? (abbr : String.Slice) : Option WordBreak :=
   else if abbr == "FO" || abbr == "Format" then some format
   else none
 
+def MaybeWordBreak.ofAbbrev? (abbr : String.Slice) : Option MaybeWordBreak :=
+  if abbr == "XX" || abbr == "Other" then some .other
+  else .nonOther <$> WordBreak.ofAbbrev? abbr
+
 @[inherit_doc WordBreak.ofAbbrev?]
-public def WordBreak.ofAbbrev! (abbr : String.Slice) : WordBreak :=
+def WordBreak.ofAbbrev! (abbr : String.Slice) : WordBreak :=
   match ofAbbrev? abbr with
+  | some b => b
+  | none => panic! s!"invalid word break abbreviation {abbr.copy}"
+
+@[inherit_doc MaybeWordBreak.ofAbbrev?]
+def MaybeWordBreak.ofAbbrev! (abbr : String.Slice) : MaybeWordBreak :=
+  match MaybeWordBreak.ofAbbrev? abbr with
   | some b => b
   | none => panic! s!"invalid word break abbreviation {abbr.copy}"
 

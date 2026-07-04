@@ -10,8 +10,8 @@ public import UnicodeBasic.TableLookupTables.WordBreak
 namespace Unicode
 
 /-- Get word break property using lookup table -/
-public def lookupWordBreak (c : UInt32) : WordBreak :=
+public def lookupWordBreak (c : UInt32) : MaybeWordBreak :=
   if h : TableLookupTables.WordBreak.BetweenOrEqStartEnd c then
-    (TableLookupTables.WordBreak.getInsideSparseRangeValueTable c h).getD .other
+    (TableLookupTables.WordBreak.getInsideSparseRangeValueTable c h).elim .other .nonOther
   else
     .other

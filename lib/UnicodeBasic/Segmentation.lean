@@ -12,7 +12,7 @@ import UnicodeBasic.TableLookup.EastAsianWidth
 
 namespace Unicode
 
-private def wb (c : UInt32) : WordBreak :=
+private def wb (c : UInt32) : MaybeWordBreak :=
   lookupWordBreak c
 
 private def sb (c : UInt32) : MaybeSentenceBreak :=
@@ -36,7 +36,7 @@ private def nextIndexIf (xs : Array UInt32) (i : Nat) (p : UInt32 → Bool) : Op
 
 private def wordIgnore (c : UInt32) : Bool :=
   match wb c with
-  | .extend | .format | .zwj => true
+  | .nonOther .extend | .nonOther .format | .nonOther .zwj => true
   | _ => false
 
 private def wordSignificant (c : UInt32) : Bool :=
@@ -44,26 +44,26 @@ private def wordSignificant (c : UInt32) : Bool :=
 
 private def wordNewline (c : UInt32) : Bool :=
   match wb c with
-  | .cr | .lf | .newline => true
+  | .nonOther .cr | .nonOther .lf | .nonOther .newline => true
   | _ => false
 
 private def ahLetter (c : UInt32) : Bool :=
   match wb c with
-  | .aLetter | .hebrewLetter => true
+  | .nonOther .aLetter | .nonOther .hebrewLetter => true
   | _ => false
 
 private def midLetterOrMidNumLetQ (c : UInt32) : Bool :=
   match wb c with
-  | .midLetter | .midNumLet | .singleQuote => true
+  | .nonOther .midLetter | .nonOther .midNumLet | .nonOther .singleQuote => true
   | _ => false
 
 private def midNumOrMidNumLetQ (c : UInt32) : Bool :=
   match wb c with
-  | .midNum | .midNumLet | .singleQuote => true
+  | .nonOther .midNum | .nonOther .midNumLet | .nonOther .singleQuote => true
   | _ => false
 
 private def wordExtendNumLetBase (c : UInt32) : Bool :=
-  ahLetter c || wb c == .numeric || wb c == .katakana || wb c == .extendNumLet
+  ahLetter c || wb c == .nonOther .numeric || wb c == .nonOther .katakana || wb c == .nonOther .extendNumLet
 
 private def prevWord? (xs : Array UInt32) (i : Nat) : Option Nat :=
   prevIndexIf xs i wordSignificant
@@ -83,7 +83,7 @@ private def countPrevWordRI (xs : Array UInt32) (i : Nat) : Nat := Id.run do
     j := j - 1
     if wordIgnore xs[j]! then
       continue
-    if wb xs[j]! == .regionalIndicator then
+    if wb xs[j]! == .nonOther .regionalIndicator then
       n := n + 1
     else
       break
@@ -94,23 +94,23 @@ private def breakBetweenWordSignificant (xs : Array UInt32) (pIdx cIdx : Nat) : 
   let c := xs[cIdx]!
   let pW := wb p
   let cW := wb c
-  if pW == .cr && cW == .lf then
+  if pW == .nonOther .cr && cW == .nonOther .lf then
     return false
   else if wordNewline p || wordNewline c then
     return true
-  else if pW == .zwj && lookupExtendedPictographic c then
+  else if pW == .nonOther .zwj && lookupExtendedPictographic c then
     return false
-  else if pW == .wSegSpace && cW == .wSegSpace && pIdx + 1 == cIdx then
+  else if pW == .nonOther .wSegSpace && cW == .nonOther .wSegSpace && pIdx + 1 == cIdx then
     return false
-  else if pW == .hebrewLetter && cW == .singleQuote then
+  else if pW == .nonOther .hebrewLetter && cW == .nonOther .singleQuote then
     return false
-  else if pW == .hebrewLetter && cW == .doubleQuote then
+  else if pW == .nonOther .hebrewLetter && cW == .nonOther .doubleQuote then
     match nextWord? xs (cIdx + 1) with
-    | some nIdx => return wb xs[nIdx]! != .hebrewLetter
+    | some nIdx => return wb xs[nIdx]! != .nonOther .hebrewLetter
     | none => return true
-  else if pW == .doubleQuote && cW == .hebrewLetter then
+  else if pW == .nonOther .doubleQuote && cW == .nonOther .hebrewLetter then
     match prevPrevWord? xs cIdx with
-    | some ppIdx => return wb xs[ppIdx]! != .hebrewLetter
+    | some ppIdx => return wb xs[ppIdx]! != .nonOther .hebrewLetter
     | none => return true
   else if ahLetter p && ahLetter c then
     return false
@@ -122,27 +122,27 @@ private def breakBetweenWordSignificant (xs : Array UInt32) (pIdx cIdx : Nat) : 
     match prevPrevWord? xs cIdx with
     | some ppIdx => return !ahLetter xs[ppIdx]!
     | none => return true
-  else if pW == .numeric && cW == .numeric then
+  else if pW == .nonOther .numeric && cW == .nonOther .numeric then
     return false
-  else if ahLetter p && cW == .numeric then
+  else if ahLetter p && cW == .nonOther .numeric then
     return false
-  else if pW == .numeric && ahLetter c then
+  else if pW == .nonOther .numeric && ahLetter c then
     return false
-  else if cW == .numeric && midNumOrMidNumLetQ p then
+  else if cW == .nonOther .numeric && midNumOrMidNumLetQ p then
     match prevPrevWord? xs cIdx with
-    | some ppIdx => return wb xs[ppIdx]! != .numeric
+    | some ppIdx => return wb xs[ppIdx]! != .nonOther .numeric
     | none => return true
-  else if pW == .numeric && midNumOrMidNumLetQ c then
+  else if pW == .nonOther .numeric && midNumOrMidNumLetQ c then
     match nextWord? xs (cIdx + 1) with
-    | some nIdx => return wb xs[nIdx]! != .numeric
+    | some nIdx => return wb xs[nIdx]! != .nonOther .numeric
     | none => return true
-  else if pW == .katakana && cW == .katakana then
+  else if pW == .nonOther .katakana && cW == .nonOther .katakana then
     return false
-  else if wordExtendNumLetBase p && cW == .extendNumLet then
+  else if wordExtendNumLetBase p && cW == .nonOther .extendNumLet then
     return false
-  else if pW == .extendNumLet && (ahLetter c || cW == .numeric || cW == .katakana) then
+  else if pW == .nonOther .extendNumLet && (ahLetter c || cW == .nonOther .numeric || cW == .nonOther .katakana) then
     return false
-  else if pW == .regionalIndicator && cW == .regionalIndicator && countPrevWordRI xs cIdx % 2 == 1 then
+  else if pW == .nonOther .regionalIndicator && cW == .nonOther .regionalIndicator && countPrevWordRI xs cIdx % 2 == 1 then
     return false
   else
     return true
@@ -150,9 +150,9 @@ private def breakBetweenWordSignificant (xs : Array UInt32) (pIdx cIdx : Nat) : 
 private def shouldWordBreakBefore (xs : Array UInt32) (i : Nat) : Bool := Id.run do
   let left := xs[i - 1]!
   let right := xs[i]!
-  if wb left == .cr && wb right == .lf then
+  if wb left == .nonOther .cr && wb right == .nonOther .lf then
     return false
-  else if wb left == .zwj && lookupExtendedPictographic right then
+  else if wb left == .nonOther .zwj && lookupExtendedPictographic right then
     return false
   else if wordNewline left || wordNewline right then
     return true
