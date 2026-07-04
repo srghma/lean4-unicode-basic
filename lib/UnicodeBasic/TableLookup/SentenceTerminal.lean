@@ -9,10 +9,8 @@ public import UnicodeBasic.TableLookupTables.SentenceTerminal
 namespace Unicode
 
 /-- Check if code point has Sentence_Terminal property using lookup table -/
-public def lookupSentenceTerminal (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.SentenceTerminal.table
+public abbrev lookupSentenceTerminal (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.SentenceTerminal.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.SentenceTerminal.IsInsideSparseRangeTable c h
+  else
+    False

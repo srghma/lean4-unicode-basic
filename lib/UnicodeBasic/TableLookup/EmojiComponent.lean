@@ -9,10 +9,8 @@ public import UnicodeBasic.TableLookupTables.EmojiComponent
 namespace Unicode
 
 /-- Check if code point has Emoji_Component property using lookup table -/
-public def lookupEmojiComponent (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.EmojiComponent.table
+public abbrev lookupEmojiComponent (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.EmojiComponent.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.EmojiComponent.IsInsideSparseRangeTable c h
+  else
+    False

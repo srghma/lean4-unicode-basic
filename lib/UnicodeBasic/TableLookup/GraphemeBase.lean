@@ -9,10 +9,8 @@ public import UnicodeBasic.TableLookupTables.GraphemeBase
 namespace Unicode
 
 /-- Check if code point has Grapheme_Base property using lookup table -/
-public def lookupGraphemeBase (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.GraphemeBase.table
+public abbrev lookupGraphemeBase (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.GraphemeBase.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.GraphemeBase.IsInsideSparseRangeTable c h
+  else
+    False

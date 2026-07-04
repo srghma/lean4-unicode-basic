@@ -9,10 +9,8 @@ public import UnicodeBasic.TableLookupTables.PatternSyntax
 namespace Unicode
 
 /-- Check if code point has Pattern_Syntax property using lookup table -/
-public def lookupPatternSyntax (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.PatternSyntax.table
+public abbrev lookupPatternSyntax (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.PatternSyntax.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.PatternSyntax.IsInsideSparseRangeTable c h
+  else
+    False

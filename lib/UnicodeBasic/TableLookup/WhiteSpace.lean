@@ -11,10 +11,8 @@ namespace Unicode
 /-- Check if code point is a white space character using lookup table
 
   Unicode property: `White_Space` -/
-public def lookupWhiteSpace (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.WhiteSpace.table
+public abbrev lookupWhiteSpace (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.WhiteSpace.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.WhiteSpace.IsInsideSparseRangeTable c h
+  else
+    False

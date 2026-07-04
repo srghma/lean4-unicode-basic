@@ -9,10 +9,8 @@ public import UnicodeBasic.TableLookupTables.XidStart
 namespace Unicode
 
 /-- Check if code point has XID_Start property using lookup table -/
-public def lookupXIDStart (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.XidStart.table
+public abbrev lookupXIDStart (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.XidStart.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.XidStart.IsInsideSparseRangeTable c h
+  else
+    False

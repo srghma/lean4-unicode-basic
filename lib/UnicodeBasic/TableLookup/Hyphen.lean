@@ -9,10 +9,8 @@ public import UnicodeBasic.TableLookupTables.Hyphen
 namespace Unicode
 
 /-- Check if code point has Hyphen property using lookup table -/
-public def lookupHyphen (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.Hyphen.table
+public abbrev lookupHyphen (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.Hyphen.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.Hyphen.IsInsideSparseRangeTable c h
+  else
+    False

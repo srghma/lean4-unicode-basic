@@ -9,10 +9,8 @@ public import UnicodeBasic.TableLookupTables.GraphemeExtend
 namespace Unicode
 
 /-- Check if code point has Grapheme_Extend property using lookup table -/
-public def lookupGraphemeExtend (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.GraphemeExtend.table
+public abbrev lookupGraphemeExtend (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.GraphemeExtend.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.GraphemeExtend.IsInsideSparseRangeTable c h
+  else
+    False

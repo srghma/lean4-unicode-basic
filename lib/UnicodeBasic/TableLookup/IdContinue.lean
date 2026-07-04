@@ -9,10 +9,8 @@ public import UnicodeBasic.TableLookupTables.IdContinue
 namespace Unicode
 
 /-- Check if code point has ID_Continue property using lookup table -/
-public def lookupIDContinue (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.IdContinue.table
+public abbrev lookupIDContinue (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.IdContinue.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.IdContinue.IsInsideSparseRangeTable c h
+  else
+    False

@@ -9,10 +9,8 @@ public import UnicodeBasic.TableLookupTables.Diacritic
 namespace Unicode
 
 /-- Check if code point has Diacritic property using lookup table -/
-public def lookupDiacritic (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.Diacritic.table
+public abbrev lookupDiacritic (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.Diacritic.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.Diacritic.IsInsideSparseRangeTable c h
+  else
+    False

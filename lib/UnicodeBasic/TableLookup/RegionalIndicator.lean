@@ -9,10 +9,5 @@ public import UnicodeBasic.TableLookupTables.RegionalIndicator
 namespace Unicode
 
 /-- Check if code point has Regional_Indicator property using lookup table -/
-public def lookupRegionalIndicator (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.RegionalIndicator.table
+public abbrev lookupRegionalIndicator (c : UInt32) : Prop :=
+  Unicode.TableLookupTables.RegionalIndicator.BetweenOrEqStartEnd c

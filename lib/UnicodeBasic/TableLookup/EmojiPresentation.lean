@@ -9,10 +9,8 @@ public import UnicodeBasic.TableLookupTables.EmojiPresentation
 namespace Unicode
 
 /-- Check if code point has Emoji_Presentation property using lookup table -/
-public def lookupEmojiPresentation (c : UInt32) : Bool :=
-  let table := table
-  if c < table[0]!.1 then false else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v) => c ≤ v
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.EmojiPresentation.table
+public abbrev lookupEmojiPresentation (c : UInt32) : Prop :=
+  if h : Unicode.TableLookupTables.EmojiPresentation.BetweenOrEqStartEnd c then
+    Unicode.TableLookupTables.EmojiPresentation.IsInsideSparseRangeTable c h
+  else
+    False
