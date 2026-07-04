@@ -11,6 +11,21 @@ open Unicode
 
 namespace UnicodeTableTest
 
+def lookupRange? (code : UInt32) (data : Array (UInt32 × UInt32 × α)) : Option α :=
+  data.findSome? fun (c₀, c₁, v) =>
+    if c₀ ≤ code && code ≤ c₁ then some v else none
+
+def lookupRangeOpt? (code : UInt32) (data : Array (UInt32 × Option UInt32 × α)) : Option α :=
+  data.findSome? fun (c₀, c₁?, v) =>
+    let c₁ := c₁?.getD c₀
+    if c₀ ≤ code && code ≤ c₁ then some v else none
+
+def inRange (code : UInt32) (range : UInt32 × Option UInt32) : Bool :=
+  range.1 ≤ code && code ≤ range.2.getD range.1
+
+def inClosedRange (code : UInt32) (range : UInt32 × UInt32) : Bool :=
+  range.1 ≤ code && code ≤ range.2
+
 def testAlphabetic (d : UnicodeData) : Bool :=
   let v :=
     if d.gc ∈ [.Lu, .Ll, .Lt, .Lm, .Lo, .Nl] then true
@@ -98,23 +113,39 @@ def testMath (d : UnicodeData) : Bool :=
 def testName (d : UnicodeData) : Bool :=
   d.name == lookupName d.code
 
+def testBlockNameRoundtrip (d : UnicodeData) : Bool :=
+  BlockNameOrNoBlock.ofString? (Blocks.lookupName d.code) == some (lookupBlockName d.code)
+
 def testBlockName : Bool :=
   getBlockName 'A' == "Basic Latin"
     && getBlockName '(' == "Basic Latin"
+
+def testEastAsianWidthRoundtrip (d : UnicodeData) : Bool :=
+  EastAsianWidth.lookup d.code == lookupEastAsianWidth d.code
 
 def testEastAsianWidth : Bool :=
   getEastAsianWidth 'A' == EastAsianWidth.narrow
     && getEastAsianWidth '中' == EastAsianWidth.wide
 
+def testVerticalOrientationRoundtrip (d : UnicodeData) : Bool :=
+  VerticalOrientation.lookup d.code == lookupVerticalOrientation d.code
+
 def testVerticalOrientation : Bool :=
   getVerticalOrientation 'A' == VerticalOrientation.rotated
     && getVerticalOrientation '中' == VerticalOrientation.upright
+
+def testBidiPairedBracketRoundtrip (d : UnicodeData) : Bool :=
+  BidiBrackets.lookupPairedBracket? d.code == lookupBidiPairedBracket? d.code
+    && BidiBrackets.lookupPairedBracketType? d.code == lookupBidiPairedBracketType? d.code
 
 def testBidiPairedBracket : Bool :=
   getBidiPairedBracket? '(' == some (')'.val)
     && getBidiPairedBracketType? '(' == some BidiBracketType.openBracket
     && getBidiPairedBracket? ')' == some ('('.val)
     && getBidiPairedBracketType? ')' == some BidiBracketType.closeBracket
+
+def testBidiMirroringGlyphRoundtrip (d : UnicodeData) : Bool :=
+  BidiMirroring.lookupGlyph? d.code == lookupBidiMirroringGlyph? d.code
 
 def testBidiMirroringGlyph : Bool :=
   getBidiMirroringGlyph? '(' == some (')'.val)
@@ -198,6 +229,62 @@ def testNumericValueRegressions : Bool :=
     && lookupNumericValue 0x4E07 == some (.numeric 10000 none)
     && lookupNumericValue 0x5146 == some (.numeric 1000000000000 none)
 
+def testCaseFolding (d : UnicodeData) : Bool :=
+  let expected := CaseFolding.data.findSome? fun e =>
+    if e.code == d.code && (e.status == 'C' || e.status == 'F') then some e.mapping else none
+  expected.getD #[] == lookupCaseFolding d.code
+
+def testSimpleCaseFolding (d : UnicodeData) : Bool :=
+  let expected := CaseFolding.data.findSome? fun e =>
+    if e.code == d.code && (e.status == 'C' || e.status == 'S') && e.mapping.size == 1 then
+      some e.mapping[0]!
+    else
+      none
+  expected.getD d.code == lookupSimpleCaseFolding d.code
+
+def testGraphemeBreak (d : UnicodeData) : Bool :=
+  let expected := lookupRangeOpt? d.code BreakProperties.data.graphemeBreak
+  expected.map (fun s => GraphemeClusterBreak.ofAbbrev! s.toSlice) |>.getD .other
+    == lookupGraphemeClusterBreak d.code
+
+def testWordBreak (d : UnicodeData) : Bool :=
+  let expected := lookupRangeOpt? d.code BreakProperties.data.wordBreak
+  expected.map (fun s => WordBreak.ofAbbrev! s.toSlice) |>.getD .other
+    == lookupWordBreak d.code
+
+def testSentenceBreak (d : UnicodeData) : Bool :=
+  let expected := lookupRangeOpt? d.code BreakProperties.data.sentenceBreak
+  expected.map (fun s => SentenceBreak.ofAbbrev! s.toSlice) |>.getD .other
+    == lookupSentenceBreak d.code
+
+def testLineBreak (d : UnicodeData) : Bool :=
+  let expected := lookupRangeOpt? d.code BreakProperties.data.lineBreak
+  expected.map (fun s => LineBreak.ofAbbrev! s.toSlice) |>.getD .unknown
+    == lookupLineBreak d.code
+
+def testScript (d : UnicodeData) : Bool :=
+  let expected := Scripts.data.toArray.findSome? fun (sc, ranges) =>
+    if ranges.any (inClosedRange d.code) then
+      some (Script.ofAbbrev! (PropertyValueAliases.getShortName! "sc" sc).copy.toSlice)
+    else
+      none
+  expected.getD default == lookupScript d.code
+
+def testScriptExtensions (d : UnicodeData) : Bool :=
+  let expected := lookupRange? d.code <| Id.run do
+    let mut rows := #[]
+    let stream := UCDStream.ofString ScriptExtensions.txt
+    for record in stream do
+      let (c₀, c₁) : UInt32 × UInt32 :=
+        match record[0]!.split ".." |>.toList with
+        | [c] => (ofHexString! c, ofHexString! c)
+        | [c₀, c₁] => (ofHexString! c₀, ofHexString! c₁)
+        | _ => panic! "invalid record in ScriptExtensions.txt"
+      let scripts := (record[1]!.split " ").toArray.map Script.ofAbbrev!
+      rows := rows.push (c₀, c₁, scripts)
+    return rows
+  expected.getD #[] == lookupScriptExtensions d.code
+
 def testTitlecase (d : UnicodeData) : Bool :=
   let v :=
     match d.gc with
@@ -234,16 +321,22 @@ public def spec : Spec.Spec := do
   Spec.describe "UnicodeTableTest" do
     itPropertyForData "Bidi_Class" testBidiClass
     itPropertySimple "Bidi_Class regressions" testBidiClassRegressions
+    itPropertyForData "Block roundtrip" testBlockNameRoundtrip
     itPropertySimple "Block" testBlockName
+    itPropertyForData "East_Asian_Width roundtrip" testEastAsianWidthRoundtrip
     itPropertySimple "East_Asian_Width" testEastAsianWidth
+    itPropertyForData "Vertical_Orientation roundtrip" testVerticalOrientationRoundtrip
     itPropertySimple "Vertical_Orientation" testVerticalOrientation
+    itPropertyForData "Bidi_Mirroring_Glyph roundtrip" testBidiMirroringGlyphRoundtrip
     itPropertySimple "Bidi_Mirroring_Glyph" testBidiMirroringGlyph
     itPropertyForData "Alphabetic" testAlphabetic
+    itPropertyForData "Bidi_Paired_Bracket roundtrip" testBidiPairedBracketRoundtrip
     itPropertySimple "Bidi_Paired_Bracket" testBidiPairedBracket
     itPropertyForData "Bidi_Mirrored" testBidiMirrored
     itPropertyForData "Canonical_Combining_Class" testCanonicalCombiningClass
     itPropertyForData "Canonical_Decomposition_Mapping" testCanonicalDecompositionMapping
     itPropertyForData "Case_Mapping" testCaseMapping
+    itPropertyForData "Case_Folding" testCaseFolding
     itPropertyForData "Cased" testCased
     itPropertyForData "Decomposition_Mapping" testDecompositionMapping
     itPropertyForData "Default_Ignorable_Code_Point" testDefautlIgnorableCodePoint
@@ -257,6 +350,7 @@ public def spec : Spec.Spec := do
     itPropertyForData "Extended_Pictographic" testExtendedPictographic
     itPropertyForData "Extender" testExtender
     itPropertyForData "Grapheme_Base" testGraphemeBase
+    itPropertyForData "Grapheme_Break" testGraphemeBreak
     itPropertyForData "Grapheme_Extend" testGraphemeExtend
     itPropertyForData "Hyphen" testHyphen
     itPropertyForData "ID_Continue" testIDContinue
@@ -277,5 +371,11 @@ public def spec : Spec.Spec := do
     itPropertyForData "XID_Start" testXIDStart
     itPropertyForData "Numeric_Value" testNumericValue
     itPropertySimple "Numeric_Value regressions" testNumericValueRegressions
+    itPropertyForData "Script" testScript
+    itPropertyForData "Script_Extensions" testScriptExtensions
+    itPropertyForData "Sentence_Break" testSentenceBreak
+    itPropertyForData "Simple_Case_Folding" testSimpleCaseFolding
     itPropertyForData "General_Category" testGeneralCategory
+    itPropertyForData "Line_Break" testLineBreak
     itPropertyForData "White_Space" testWhiteSpace
+    itPropertyForData "Word_Break" testWordBreak

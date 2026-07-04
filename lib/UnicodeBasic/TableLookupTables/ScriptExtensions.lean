@@ -7,460 +7,1664 @@ namespace Unicode.TableLookupTables.ScriptExtensions
 
 abbrev start : UInt32 := 0x00B7
 
-abbrev «end» : UInt32 := 0x1F250
+abbrev «end» : UInt32 := 0x1F251
 
 abbrev BetweenOrEqStartEnd (v : UInt32) : Prop := start ≤ v ∧ v ≤ «end»
 
 @[inline_if_reduce, reducible]
 def lookupSparseKVTable? (c : UInt32) (_h : BetweenOrEqStartEnd c) : Option String :=
-  if c < 0x1CEB then
-    if c < 0x061B then
-      if c < 0x0310 then
-        if c < 0x0304 then
-          if c < 0x02D7 then
-            if c < 0x02C7 then
-              if c < 0x02BC then
-                if c == 0x00B7 then some ("00B7;Avst Cari Copt Dupl Elba Geor Glag Gong Goth Grek Hani Latn Lydi Mahj Perm Shaw") else none
-              else if c == 0x02BC then some ("02BC;Beng Cyrl Deva Latn Lisu Thai Toto")
-              else
-                none
-            else if c == 0x02C7 then some ("02C7;Bopo Latn")
-            else
-              if c < 0x02CD then
-                if c == 0x02C9 then some ("02CB;Bopo Latn") else none
-              else if c == 0x02CD then some ("02CD;Latn Lisu")
-              else
-                none
-          else if c == 0x02D7 then some ("02D7;Latn Thai")
-          else
+  if c < 0x31D5 then
+    if c < 0x16EC then
+      if c < 0x0668 then
+        if c < 0x0366 then
+          if c < 0x030B then
             if c < 0x0301 then
-              if c < 0x0300 then
-                if c == 0x02D9 then some ("02D9;Bopo Latn") else none
-              else if c == 0x0300 then some ("0300;Cher Copt Cyrl Grek Latn Perm Sunu Tale")
+              if c < 0x02CB then
+                if c < 0x02C7 then
+                  if c < 0x02BC then
+                    if c == 0x00B7 then some ("00B7;Avst Cari Copt Dupl Elba Geor Glag Gong Goth Grek Hani Latn Lydi Mahj Perm Shaw") else none
+                  else if c == 0x02BC then some ("02BC;Beng Cyrl Deva Latn Lisu Thai Toto")
+                  else
+                    none
+                else if c == 0x02C7 then some ("02C7;Bopo Latn")
+                else
+                  if c < 0x02CA then
+                    if c == 0x02C9 then some ("02C9;Bopo Latn") else none
+                  else if c == 0x02CA then some ("02CA;Bopo Latn")
+                  else
+                    none
+              else if c == 0x02CB then some ("02CB;Bopo Latn")
               else
-                none
+                if c < 0x02D9 then
+                  if c < 0x02D7 then
+                    if c == 0x02CD then some ("02CD;Latn Lisu") else none
+                  else if c == 0x02D7 then some ("02D7;Latn Thai")
+                  else
+                    none
+                else if c == 0x02D9 then some ("02D9;Bopo Latn")
+                else
+                  if c == 0x0300 then some ("0300;Cher Copt Cyrl Grek Latn Perm Sunu Tale") else none
             else if c == 0x0301 then some ("0301;Cher Cyrl Grek Latn Osge Sunu Tale Todr")
             else
-              if c < 0x0303 then
-                if c == 0x0302 then some ("0302;Cher Cyrl Latn Tfng") else none
-              else if c == 0x0303 then some ("0303;Glag Latn Sunu Syrc Thai")
-              else
-                none
-        else if c == 0x0304 then some ("0304;Aghb Cher Copt Cyrl Goth Grek Latn Osge Syrc Tfng Todr")
-        else
-          if c < 0x030A then
-            if c < 0x0307 then
               if c < 0x0306 then
-                if c == 0x0305 then some ("0305;Copt Elba Glag Goth Kana Latn") else none
+                if c < 0x0304 then
+                  if c < 0x0303 then
+                    if c == 0x0302 then some ("0302;Cher Cyrl Latn Tfng") else none
+                  else if c == 0x0303 then some ("0303;Glag Latn Sunu Syrc Thai")
+                  else
+                    none
+                else if c == 0x0304 then some ("0304;Aghb Cher Copt Cyrl Goth Grek Latn Osge Syrc Tfng Todr")
+                else
+                  if c == 0x0305 then some ("0305;Copt Elba Glag Goth Kana Latn") else none
               else if c == 0x0306 then some ("0306;Cyrl Grek Latn Perm Tfng")
               else
-                none
-            else if c == 0x0307 then some ("0307;Copt Dupl Hebr Latn Perm Syrc Tale Tfng Todr")
-            else
-              if c < 0x0309 then
-                if c == 0x0308 then some ("0308;Armn Cyrl Dupl Goth Grek Hebr Latn Perm Syrc Tale Tfng") else none
-              else if c == 0x0309 then some ("0309;Latn Tfng")
-              else
-                none
-          else if c == 0x030A then some ("030A;Dupl Latn Syrc")
+                if c < 0x0309 then
+                  if c < 0x0308 then
+                    if c == 0x0307 then some ("0307;Copt Dupl Hebr Latn Perm Syrc Tale Tfng Todr") else none
+                  else if c == 0x0308 then some ("0308;Armn Cyrl Dupl Goth Grek Hebr Latn Perm Syrc Tale Tfng")
+                  else
+                    none
+                else if c == 0x0309 then some ("0309;Latn Tfng")
+                else
+                  if c == 0x030A then some ("030A;Dupl Latn Syrc") else none
+          else if c == 0x030B then some ("030B;Cher Cyrl Latn Osge")
           else
-            if c < 0x030D then
-              if c < 0x030C then
-                if c == 0x030B then some ("030B;Cher Cyrl Latn Osge") else none
-              else if c == 0x030C then some ("030C;Cher Latn Tale")
-              else
-                none
-            else if c == 0x030D then some ("030D;Latn Sunu")
-            else
-              if c == 0x030E then some ("030E;Ethi Latn") else none
-      else if c == 0x0310 then some ("0310;Latn Sunu")
-      else
-        if c < 0x0345 then
-          if c < 0x032D then
-            if c < 0x0323 then
+            if c < 0x032E then
               if c < 0x0313 then
-                if c == 0x0311 then some ("0311;Cyrl Latn Todr") else none
+                if c < 0x030E then
+                  if c < 0x030D then
+                    if c == 0x030C then some ("030C;Cher Latn Tale") else none
+                  else if c == 0x030D then some ("030D;Latn Sunu")
+                  else
+                    none
+                else if c == 0x030E then some ("030E;Ethi Latn")
+                else
+                  if c < 0x0311 then
+                    if c == 0x0310 then some ("0310;Latn Sunu") else none
+                  else if c == 0x0311 then some ("0311;Cyrl Latn Todr")
+                  else
+                    none
               else if c == 0x0313 then some ("0313;Grek Latn Perm Todr")
               else
-                none
-            else if c == 0x0323 then some ("0323;Cher Dupl Kana Latn Syrc Tfng")
+                if c < 0x0325 then
+                  if c < 0x0324 then
+                    if c == 0x0323 then some ("0323;Cher Dupl Kana Latn Syrc Tfng") else none
+                  else if c == 0x0324 then some ("0324;Cher Dupl Latn Syrc")
+                  else
+                    none
+                else if c == 0x0325 then some ("0325;Latn Syrc")
+                else
+                  if c == 0x032D then some ("032D;Latn Sunu Syrc") else none
+            else if c == 0x032E then some ("032E;Latn Syrc")
             else
-              if c < 0x0325 then
-                if c == 0x0324 then some ("0324;Cher Dupl Latn Syrc") else none
-              else if c == 0x0325 then some ("0325;Latn Syrc")
+              if c < 0x0358 then
+                if c < 0x0342 then
+                  if c < 0x0331 then
+                    if c == 0x0330 then some ("0330;Cher Latn Syrc") else none
+                  else if c == 0x0331 then some ("0331;Aghb Cher Goth Latn Sunu Syrc Thai")
+                  else
+                    none
+                else if c == 0x0342 then some ("0342;Grek")
+                else
+                  if c == 0x0345 then some ("0345;Grek") else none
+              else if c == 0x0358 then some ("0358;Latn Osge")
               else
-                none
-          else if c == 0x032D then some ("032D;Latn Sunu Syrc")
-          else
-            if c < 0x0331 then
-              if c < 0x0330 then
-                if c == 0x032E then some ("032E;Latn Syrc") else none
-              else if c == 0x0330 then some ("0330;Cher Latn Syrc")
-              else
-                none
-            else if c == 0x0331 then some ("0331;Aghb Cher Goth Latn Sunu Syrc Thai")
-            else
-              if c == 0x0342 then some ("0342;Grek") else none
-        else if c == 0x0345 then some ("0345;Grek")
+                if c < 0x0364 then
+                  if c < 0x0363 then
+                    if c == 0x035E then some ("035E;Aghb Latn Todr") else none
+                  else if c == 0x0363 then some ("0363;Latn")
+                  else
+                    none
+                else if c == 0x0364 then some ("0364;Latn")
+                else
+                  if c == 0x0365 then some ("0365;Latn") else none
+        else if c == 0x0366 then some ("0366;Latn")
         else
-          if c < 0x0484 then
-            if c < 0x0363 then
-              if c < 0x035E then
-                if c == 0x0358 then some ("0358;Latn Osge") else none
-              else if c == 0x035E then some ("035E;Aghb Latn Todr")
+          if c < 0x061F then
+            if c < 0x0375 then
+              if c < 0x036C then
+                if c < 0x0369 then
+                  if c < 0x0368 then
+                    if c == 0x0367 then some ("0367;Latn") else none
+                  else if c == 0x0368 then some ("0368;Latn")
+                  else
+                    none
+                else if c == 0x0369 then some ("0369;Latn")
+                else
+                  if c < 0x036B then
+                    if c == 0x036A then some ("036A;Latn") else none
+                  else if c == 0x036B then some ("036B;Latn")
+                  else
+                    none
+              else if c == 0x036C then some ("036C;Latn")
               else
-                none
-            else if c == 0x0363 then some ("036F;Latn")
+                if c < 0x036F then
+                  if c < 0x036E then
+                    if c == 0x036D then some ("036D;Latn") else none
+                  else if c == 0x036E then some ("036E;Latn")
+                  else
+                    none
+                else if c == 0x036F then some ("036F;Latn")
+                else
+                  if c == 0x0374 then some ("0374;Copt Grek") else none
+            else if c == 0x0375 then some ("0375;Copt Grek")
             else
-              if c < 0x0483 then
-                if c == 0x0374 then some ("0375;Copt Grek") else none
-              else if c == 0x0483 then some ("0483;Cyrl Perm")
-              else
-                none
-          else if c == 0x0484 then some ("0484;Cyrl Glag")
-          else
-            if c < 0x0589 then
               if c < 0x0487 then
-                if c == 0x0485 then some ("0486;Cyrl Latn") else none
+                if c < 0x0485 then
+                  if c < 0x0484 then
+                    if c == 0x0483 then some ("0483;Cyrl Perm") else none
+                  else if c == 0x0484 then some ("0484;Cyrl Glag")
+                  else
+                    none
+                else if c == 0x0485 then some ("0485;Cyrl Latn")
+                else
+                  if c == 0x0486 then some ("0486;Cyrl Latn") else none
               else if c == 0x0487 then some ("0487;Cyrl Glag")
               else
-                none
-            else if c == 0x0589 then some ("0589;Armn Geor Glag")
-            else
-              if c == 0x060C then some ("060C;Arab Gara Nkoo Rohg Syrc Thaa Yezi") else none
-    else if c == 0x061B then some ("061B;Arab Gara Nkoo Rohg Syrc Thaa Yezi")
-    else
-      if c < 0x1802 then
-        if c < 0x0965 then
-          if c < 0x0670 then
-            if c < 0x0640 then
-              if c < 0x061F then
-                if c == 0x061C then some ("061C;Arab Syrc Thaa") else none
-              else if c == 0x061F then some ("061F;Adlm Arab Gara Nkoo Rohg Syrc Thaa Yezi")
-              else
-                none
-            else if c == 0x0640 then some ("0640;Adlm Arab Mand Mani Ougr Phlp Rohg Sogd Syrc")
-            else
-              if c < 0x0660 then
-                if c == 0x064B then some ("0655;Arab Syrc") else none
-              else if c == 0x0660 then some ("0669;Arab Thaa Yezi")
-              else
-                none
-          else if c == 0x0670 then some ("0670;Arab Syrc")
+                if c < 0x061B then
+                  if c < 0x060C then
+                    if c == 0x0589 then some ("0589;Armn Geor Glag") else none
+                  else if c == 0x060C then some ("060C;Arab Gara Nkoo Rohg Syrc Thaa Yezi")
+                  else
+                    none
+                else if c == 0x061B then some ("061B;Arab Gara Nkoo Rohg Syrc Thaa Yezi")
+                else
+                  if c == 0x061C then some ("061C;Arab Syrc Thaa") else none
+          else if c == 0x061F then some ("061F;Adlm Arab Gara Nkoo Rohg Syrc Thaa Yezi")
           else
-            if c < 0x0952 then
-              if c < 0x0951 then
-                if c == 0x06D4 then some ("06D4;Arab Rohg") else none
-              else if c == 0x0951 then some ("0951;Beng Deva Gran Gujr Guru Knda Latn Mlym Nand Newa Orya Shrd Taml Telu Tirh")
+            if c < 0x0654 then
+              if c < 0x064F then
+                if c < 0x064C then
+                  if c < 0x064B then
+                    if c == 0x0640 then some ("0640;Adlm Arab Mand Mani Ougr Phlp Rohg Sogd Syrc") else none
+                  else if c == 0x064B then some ("064B;Arab Syrc")
+                  else
+                    none
+                else if c == 0x064C then some ("064C;Arab Syrc")
+                else
+                  if c < 0x064E then
+                    if c == 0x064D then some ("064D;Arab Syrc") else none
+                  else if c == 0x064E then some ("064E;Arab Syrc")
+                  else
+                    none
+              else if c == 0x064F then some ("064F;Arab Syrc")
               else
-                none
-            else if c == 0x0952 then some ("0952;Beng Deva Gran Gujr Guru Knda Latn Mlym Newa Orya Taml Telu Tirh")
+                if c < 0x0652 then
+                  if c < 0x0651 then
+                    if c == 0x0650 then some ("0650;Arab Syrc") else none
+                  else if c == 0x0651 then some ("0651;Arab Syrc")
+                  else
+                    none
+                else if c == 0x0652 then some ("0652;Arab Syrc")
+                else
+                  if c == 0x0653 then some ("0653;Arab Syrc") else none
+            else if c == 0x0654 then some ("0654;Arab Syrc")
             else
-              if c == 0x0964 then some ("0964;Beng Deva Dogr Gong Gonm Gran Gujr Guru Knda Mahj Mlym Nand Onao Orya Sind Sinh Sylo Takr Taml Telu Tirh") else none
-        else if c == 0x0965 then some ("0965;Beng Deva Dogr Gong Gonm Gran Gujr Gukh Guru Knda Limb Mahj Mlym Nand Onao Orya Sind Sinh Sylo Takr Taml Telu Tirh")
-        else
-          if c < 0x0CE6 then
-            if c < 0x0A66 then
-              if c < 0x09E6 then
-                if c == 0x0966 then some ("096F;Deva Dogr Kthi Mahj") else none
-              else if c == 0x09E6 then some ("09EF;Beng Cakm Sylo")
+              if c < 0x0663 then
+                if c < 0x0661 then
+                  if c < 0x0660 then
+                    if c == 0x0655 then some ("0655;Arab Syrc") else none
+                  else if c == 0x0660 then some ("0660;Arab Thaa Yezi")
+                  else
+                    none
+                else if c == 0x0661 then some ("0661;Arab Thaa Yezi")
+                else
+                  if c == 0x0662 then some ("0662;Arab Thaa Yezi") else none
+              else if c == 0x0663 then some ("0663;Arab Thaa Yezi")
               else
-                none
-            else if c == 0x0A66 then some ("0A6F;Guru Mult")
-            else
-              if c < 0x0BE6 then
-                if c == 0x0AE6 then some ("0AEF;Gujr Khoj") else none
-              else if c == 0x0BE6 then some ("0BF3;Gran Taml")
-              else
-                none
-          else if c == 0x0CE6 then some ("0CEF;Knda Nand Tutg")
-          else
-            if c < 0x16EB then
-              if c < 0x10FB then
-                if c == 0x1040 then some ("1049;Cakm Mymr Tale") else none
-              else if c == 0x10FB then some ("10FB;Geor Glag Latn")
-              else
-                none
-            else if c == 0x16EB then some ("16ED;Runr")
-            else
-              if c == 0x1735 then some ("1736;Buhd Hano Tagb Tglg") else none
-      else if c == 0x1802 then some ("1803;Mong Phag")
+                if c < 0x0666 then
+                  if c < 0x0665 then
+                    if c == 0x0664 then some ("0664;Arab Thaa Yezi") else none
+                  else if c == 0x0665 then some ("0665;Arab Thaa Yezi")
+                  else
+                    none
+                else if c == 0x0666 then some ("0666;Arab Thaa Yezi")
+                else
+                  if c == 0x0667 then some ("0667;Arab Thaa Yezi") else none
+      else if c == 0x0668 then some ("0668;Arab Thaa Yezi")
       else
-        if c < 0x1CD9 then
-          if c < 0x1CD4 then
-            if c < 0x1CD1 then
-              if c < 0x1CD0 then
-                if c == 0x1805 then some ("1805;Mong Phag") else none
-              else if c == 0x1CD0 then some ("1CD0;Beng Deva Gran Knda")
+        if c < 0x0AEA then
+          if c < 0x09E9 then
+            if c < 0x0969 then
+              if c < 0x0964 then
+                if c < 0x06D4 then
+                  if c < 0x0670 then
+                    if c == 0x0669 then some ("0669;Arab Thaa Yezi") else none
+                  else if c == 0x0670 then some ("0670;Arab Syrc")
+                  else
+                    none
+                else if c == 0x06D4 then some ("06D4;Arab Rohg")
+                else
+                  if c < 0x0952 then
+                    if c == 0x0951 then some ("0951;Beng Deva Gran Gujr Guru Knda Latn Mlym Nand Newa Orya Shrd Taml Telu Tirh") else none
+                  else if c == 0x0952 then some ("0952;Beng Deva Gran Gujr Guru Knda Latn Mlym Newa Orya Taml Telu Tirh")
+                  else
+                    none
+              else if c == 0x0964 then some ("0964;Beng Deva Dogr Gong Gonm Gran Gujr Guru Knda Mahj Mlym Nand Onao Orya Sind Sinh Sylo Takr Taml Telu Tirh")
               else
-                none
-            else if c == 0x1CD1 then some ("1CD1;Deva")
+                if c < 0x0967 then
+                  if c < 0x0966 then
+                    if c == 0x0965 then some ("0965;Beng Deva Dogr Gong Gonm Gran Gujr Gukh Guru Knda Limb Mahj Mlym Nand Onao Orya Sind Sinh Sylo Takr Taml Telu Tirh") else none
+                  else if c == 0x0966 then some ("0966;Deva Dogr Kthi Mahj")
+                  else
+                    none
+                else if c == 0x0967 then some ("0967;Deva Dogr Kthi Mahj")
+                else
+                  if c == 0x0968 then some ("0968;Deva Dogr Kthi Mahj") else none
+            else if c == 0x0969 then some ("0969;Deva Dogr Kthi Mahj")
             else
-              if c < 0x1CD3 then
-                if c == 0x1CD2 then some ("1CD2;Beng Deva Gran Knda") else none
-              else if c == 0x1CD3 then some ("1CD3;Deva Gran Knda")
+              if c < 0x096E then
+                if c < 0x096C then
+                  if c < 0x096B then
+                    if c == 0x096A then some ("096A;Deva Dogr Kthi Mahj") else none
+                  else if c == 0x096B then some ("096B;Deva Dogr Kthi Mahj")
+                  else
+                    none
+                else if c == 0x096C then some ("096C;Deva Dogr Kthi Mahj")
+                else
+                  if c == 0x096D then some ("096D;Deva Dogr Kthi Mahj") else none
+              else if c == 0x096E then some ("096E;Deva Dogr Kthi Mahj")
               else
-                none
-          else if c == 0x1CD4 then some ("1CD4;Deva")
+                if c < 0x09E7 then
+                  if c < 0x09E6 then
+                    if c == 0x096F then some ("096F;Deva Dogr Kthi Mahj") else none
+                  else if c == 0x09E6 then some ("09E6;Beng Cakm Sylo")
+                  else
+                    none
+                else if c == 0x09E7 then some ("09E7;Beng Cakm Sylo")
+                else
+                  if c == 0x09E8 then some ("09E8;Beng Cakm Sylo") else none
+          else if c == 0x09E9 then some ("09E9;Beng Cakm Sylo")
           else
-            if c < 0x1CD7 then
-              if c < 0x1CD6 then
-                if c == 0x1CD5 then some ("1CD5;Beng Deva Newa Telu Tirh") else none
-              else if c == 0x1CD6 then some ("1CD6;Beng Deva Telu")
+            if c < 0x0A6A then
+              if c < 0x09EF then
+                if c < 0x09EC then
+                  if c < 0x09EB then
+                    if c == 0x09EA then some ("09EA;Beng Cakm Sylo") else none
+                  else if c == 0x09EB then some ("09EB;Beng Cakm Sylo")
+                  else
+                    none
+                else if c == 0x09EC then some ("09EC;Beng Cakm Sylo")
+                else
+                  if c < 0x09EE then
+                    if c == 0x09ED then some ("09ED;Beng Cakm Sylo") else none
+                  else if c == 0x09EE then some ("09EE;Beng Cakm Sylo")
+                  else
+                    none
+              else if c == 0x09EF then some ("09EF;Beng Cakm Sylo")
               else
-                none
-            else if c == 0x1CD7 then some ("1CD7;Deva Newa Shrd")
+                if c < 0x0A68 then
+                  if c < 0x0A67 then
+                    if c == 0x0A66 then some ("0A66;Guru Mult") else none
+                  else if c == 0x0A67 then some ("0A67;Guru Mult")
+                  else
+                    none
+                else if c == 0x0A68 then some ("0A68;Guru Mult")
+                else
+                  if c == 0x0A69 then some ("0A69;Guru Mult") else none
+            else if c == 0x0A6A then some ("0A6A;Guru Mult")
             else
-              if c == 0x1CD8 then some ("1CD8;Beng Deva Newa Telu") else none
-        else if c == 0x1CD9 then some ("1CD9;Deva Shrd")
+              if c < 0x0A6F then
+                if c < 0x0A6D then
+                  if c < 0x0A6C then
+                    if c == 0x0A6B then some ("0A6B;Guru Mult") else none
+                  else if c == 0x0A6C then some ("0A6C;Guru Mult")
+                  else
+                    none
+                else if c == 0x0A6D then some ("0A6D;Guru Mult")
+                else
+                  if c == 0x0A6E then some ("0A6E;Guru Mult") else none
+              else if c == 0x0A6F then some ("0A6F;Guru Mult")
+              else
+                if c < 0x0AE8 then
+                  if c < 0x0AE7 then
+                    if c == 0x0AE6 then some ("0AE6;Gujr Khoj") else none
+                  else if c == 0x0AE7 then some ("0AE7;Gujr Khoj")
+                  else
+                    none
+                else if c == 0x0AE8 then some ("0AE8;Gujr Khoj")
+                else
+                  if c == 0x0AE9 then some ("0AE9;Gujr Khoj") else none
+        else if c == 0x0AEA then some ("0AEA;Gujr Khoj")
         else
-          if c < 0x1CE1 then
-            if c < 0x1CDC then
-              if c < 0x1CDB then
-                if c == 0x1CDA then some ("1CDA;Deva Knda Mlym Orya Taml Telu") else none
-              else if c == 0x1CDB then some ("1CDB;Deva")
+          if c < 0x0CE7 then
+            if c < 0x0BEB then
+              if c < 0x0BE6 then
+                if c < 0x0AED then
+                  if c < 0x0AEC then
+                    if c == 0x0AEB then some ("0AEB;Gujr Khoj") else none
+                  else if c == 0x0AEC then some ("0AEC;Gujr Khoj")
+                  else
+                    none
+                else if c == 0x0AED then some ("0AED;Gujr Khoj")
+                else
+                  if c < 0x0AEF then
+                    if c == 0x0AEE then some ("0AEE;Gujr Khoj") else none
+                  else if c == 0x0AEF then some ("0AEF;Gujr Khoj")
+                  else
+                    none
+              else if c == 0x0BE6 then some ("0BE6;Gran Taml")
               else
-                none
-            else if c == 0x1CDC then some ("1CDD;Deva Shrd")
+                if c < 0x0BE9 then
+                  if c < 0x0BE8 then
+                    if c == 0x0BE7 then some ("0BE7;Gran Taml") else none
+                  else if c == 0x0BE8 then some ("0BE8;Gran Taml")
+                  else
+                    none
+                else if c == 0x0BE9 then some ("0BE9;Gran Taml")
+                else
+                  if c == 0x0BEA then some ("0BEA;Gran Taml") else none
+            else if c == 0x0BEB then some ("0BEB;Gran Taml")
             else
-              if c < 0x1CE0 then
-                if c == 0x1CDE then some ("1CDF;Deva") else none
-              else if c == 0x1CE0 then some ("1CE0;Deva Shrd")
+              if c < 0x0BF0 then
+                if c < 0x0BEE then
+                  if c < 0x0BED then
+                    if c == 0x0BEC then some ("0BEC;Gran Taml") else none
+                  else if c == 0x0BED then some ("0BED;Gran Taml")
+                  else
+                    none
+                else if c == 0x0BEE then some ("0BEE;Gran Taml")
+                else
+                  if c == 0x0BEF then some ("0BEF;Gran Taml") else none
+              else if c == 0x0BF0 then some ("0BF0;Gran Taml")
               else
-                none
-          else if c == 0x1CE1 then some ("1CE1;Beng Deva")
+                if c < 0x0BF3 then
+                  if c < 0x0BF2 then
+                    if c == 0x0BF1 then some ("0BF1;Gran Taml") else none
+                  else if c == 0x0BF2 then some ("0BF2;Gran Taml")
+                  else
+                    none
+                else if c == 0x0BF3 then some ("0BF3;Gran Taml")
+                else
+                  if c == 0x0CE6 then some ("0CE6;Knda Nand Tutg") else none
+          else if c == 0x0CE7 then some ("0CE7;Knda Nand Tutg")
+          else
+            if c < 0x1042 then
+              if c < 0x0CED then
+                if c < 0x0CEA then
+                  if c < 0x0CE9 then
+                    if c == 0x0CE8 then some ("0CE8;Knda Nand Tutg") else none
+                  else if c == 0x0CE9 then some ("0CE9;Knda Nand Tutg")
+                  else
+                    none
+                else if c == 0x0CEA then some ("0CEA;Knda Nand Tutg")
+                else
+                  if c < 0x0CEC then
+                    if c == 0x0CEB then some ("0CEB;Knda Nand Tutg") else none
+                  else if c == 0x0CEC then some ("0CEC;Knda Nand Tutg")
+                  else
+                    none
+              else if c == 0x0CED then some ("0CED;Knda Nand Tutg")
+              else
+                if c < 0x1040 then
+                  if c < 0x0CEF then
+                    if c == 0x0CEE then some ("0CEE;Knda Nand Tutg") else none
+                  else if c == 0x0CEF then some ("0CEF;Knda Nand Tutg")
+                  else
+                    none
+                else if c == 0x1040 then some ("1040;Cakm Mymr Tale")
+                else
+                  if c == 0x1041 then some ("1041;Cakm Mymr Tale") else none
+            else if c == 0x1042 then some ("1042;Cakm Mymr Tale")
+            else
+              if c < 0x1047 then
+                if c < 0x1045 then
+                  if c < 0x1044 then
+                    if c == 0x1043 then some ("1043;Cakm Mymr Tale") else none
+                  else if c == 0x1044 then some ("1044;Cakm Mymr Tale")
+                  else
+                    none
+                else if c == 0x1045 then some ("1045;Cakm Mymr Tale")
+                else
+                  if c == 0x1046 then some ("1046;Cakm Mymr Tale") else none
+              else if c == 0x1047 then some ("1047;Cakm Mymr Tale")
+              else
+                if c < 0x10FB then
+                  if c < 0x1049 then
+                    if c == 0x1048 then some ("1048;Cakm Mymr Tale") else none
+                  else if c == 0x1049 then some ("1049;Cakm Mymr Tale")
+                  else
+                    none
+                else if c == 0x10FB then some ("10FB;Geor Glag Latn")
+                else
+                  if c == 0x16EB then some ("16EB;Runr") else none
+    else if c == 0x16EC then some ("16EC;Runr")
+    else
+      if c < 0x3006 then
+        if c < 0x1CF3 then
+          if c < 0x1CDE then
+            if c < 0x1CD4 then
+              if c < 0x1805 then
+                if c < 0x1736 then
+                  if c < 0x1735 then
+                    if c == 0x16ED then some ("16ED;Runr") else none
+                  else if c == 0x1735 then some ("1735;Buhd Hano Tagb Tglg")
+                  else
+                    none
+                else if c == 0x1736 then some ("1736;Buhd Hano Tagb Tglg")
+                else
+                  if c < 0x1803 then
+                    if c == 0x1802 then some ("1802;Mong Phag") else none
+                  else if c == 0x1803 then some ("1803;Mong Phag")
+                  else
+                    none
+              else if c == 0x1805 then some ("1805;Mong Phag")
+              else
+                if c < 0x1CD2 then
+                  if c < 0x1CD1 then
+                    if c == 0x1CD0 then some ("1CD0;Beng Deva Gran Knda") else none
+                  else if c == 0x1CD1 then some ("1CD1;Deva")
+                  else
+                    none
+                else if c == 0x1CD2 then some ("1CD2;Beng Deva Gran Knda")
+                else
+                  if c == 0x1CD3 then some ("1CD3;Deva Gran Knda") else none
+            else if c == 0x1CD4 then some ("1CD4;Deva")
+            else
+              if c < 0x1CD9 then
+                if c < 0x1CD7 then
+                  if c < 0x1CD6 then
+                    if c == 0x1CD5 then some ("1CD5;Beng Deva Newa Telu Tirh") else none
+                  else if c == 0x1CD6 then some ("1CD6;Beng Deva Telu")
+                  else
+                    none
+                else if c == 0x1CD7 then some ("1CD7;Deva Newa Shrd")
+                else
+                  if c == 0x1CD8 then some ("1CD8;Beng Deva Newa Telu") else none
+              else if c == 0x1CD9 then some ("1CD9;Deva Shrd")
+              else
+                if c < 0x1CDC then
+                  if c < 0x1CDB then
+                    if c == 0x1CDA then some ("1CDA;Deva Knda Mlym Orya Taml Telu") else none
+                  else if c == 0x1CDB then some ("1CDB;Deva")
+                  else
+                    none
+                else if c == 0x1CDC then some ("1CDC;Deva Shrd")
+                else
+                  if c == 0x1CDD then some ("1CDD;Deva Shrd") else none
+          else if c == 0x1CDE then some ("1CDE;Deva")
           else
             if c < 0x1CE9 then
-              if c < 0x1CE3 then
-                if c == 0x1CE2 then some ("1CE2;Deva Newa Tirh") else none
-              else if c == 0x1CE3 then some ("1CE8;Deva")
+              if c < 0x1CE4 then
+                if c < 0x1CE1 then
+                  if c < 0x1CE0 then
+                    if c == 0x1CDF then some ("1CDF;Deva") else none
+                  else if c == 0x1CE0 then some ("1CE0;Deva Shrd")
+                  else
+                    none
+                else if c == 0x1CE1 then some ("1CE1;Beng Deva")
+                else
+                  if c < 0x1CE3 then
+                    if c == 0x1CE2 then some ("1CE2;Deva Newa Tirh") else none
+                  else if c == 0x1CE3 then some ("1CE3;Deva")
+                  else
+                    none
+              else if c == 0x1CE4 then some ("1CE4;Deva")
               else
-                none
+                if c < 0x1CE7 then
+                  if c < 0x1CE6 then
+                    if c == 0x1CE5 then some ("1CE5;Deva") else none
+                  else if c == 0x1CE6 then some ("1CE6;Deva")
+                  else
+                    none
+                else if c == 0x1CE7 then some ("1CE7;Deva")
+                else
+                  if c == 0x1CE8 then some ("1CE8;Deva") else none
             else if c == 0x1CE9 then some ("1CE9;Deva Nand Newa")
             else
-              if c == 0x1CEA then some ("1CEA;Beng Deva Shrd") else none
-  else if c == 0x1CEB then some ("1CEB;Deva Newa")
-  else
-    if c < 0x30FB then
-      if c < 0x2E3C then
-        if c < 0x1DC0 then
-          if c < 0x1CF4 then
-            if c < 0x1CEE then
-              if c < 0x1CED then
-                if c == 0x1CEC then some ("1CEC;Deva") else none
-              else if c == 0x1CED then some ("1CED;Beng Deva Newa Shrd")
+              if c < 0x1CEE then
+                if c < 0x1CEC then
+                  if c < 0x1CEB then
+                    if c == 0x1CEA then some ("1CEA;Beng Deva Shrd") else none
+                  else if c == 0x1CEB then some ("1CEB;Deva Newa")
+                  else
+                    none
+                else if c == 0x1CEC then some ("1CEC;Deva")
+                else
+                  if c == 0x1CED then some ("1CED;Beng Deva Newa Shrd") else none
+              else if c == 0x1CEE then some ("1CEE;Deva")
               else
-                none
-            else if c == 0x1CEE then some ("1CF1;Deva")
-            else
-              if c < 0x1CF3 then
-                if c == 0x1CF2 then some ("1CF2;Beng Deva Gran Knda Mlym Nand Orya Sinh Telu Tirh Tutg") else none
-              else if c == 0x1CF3 then some ("1CF3;Deva Gran")
-              else
-                none
-          else if c == 0x1CF4 then some ("1CF4;Deva Gran Knda Tutg")
-          else
-            if c < 0x1CF8 then
-              if c < 0x1CF7 then
-                if c == 0x1CF5 then some ("1CF6;Beng Deva") else none
-              else if c == 0x1CF7 then some ("1CF7;Beng")
-              else
-                none
-            else if c == 0x1CF8 then some ("1CF9;Deva Gran")
-            else
-              if c == 0x1CFA then some ("1CFA;Nand") else none
-        else if c == 0x1DC0 then some ("1DC1;Grek")
+                if c < 0x1CF1 then
+                  if c < 0x1CF0 then
+                    if c == 0x1CEF then some ("1CEF;Deva") else none
+                  else if c == 0x1CF0 then some ("1CF0;Deva")
+                  else
+                    none
+                else if c == 0x1CF1 then some ("1CF1;Deva")
+                else
+                  if c == 0x1CF2 then some ("1CF2;Beng Deva Gran Knda Mlym Nand Orya Sinh Telu Tirh Tutg") else none
+        else if c == 0x1CF3 then some ("1CF3;Deva Gran")
         else
-          if c < 0x205D then
-            if c < 0x202F then
-              if c < 0x1DFA then
-                if c == 0x1DF8 then some ("1DF8;Cyrl Latn Syrc") else none
-              else if c == 0x1DFA then some ("1DFA;Syrc")
+          if c < 0x2E41 then
+            if c < 0x1DFA then
+              if c < 0x1CF9 then
+                if c < 0x1CF6 then
+                  if c < 0x1CF5 then
+                    if c == 0x1CF4 then some ("1CF4;Deva Gran Knda Tutg") else none
+                  else if c == 0x1CF5 then some ("1CF5;Beng Deva")
+                  else
+                    none
+                else if c == 0x1CF6 then some ("1CF6;Beng Deva")
+                else
+                  if c < 0x1CF8 then
+                    if c == 0x1CF7 then some ("1CF7;Beng") else none
+                  else if c == 0x1CF8 then some ("1CF8;Deva Gran")
+                  else
+                    none
+              else if c == 0x1CF9 then some ("1CF9;Deva Gran")
               else
-                none
-            else if c == 0x202F then some ("202F;Latn Mong Phag")
+                if c < 0x1DC1 then
+                  if c < 0x1DC0 then
+                    if c == 0x1CFA then some ("1CFA;Nand") else none
+                  else if c == 0x1DC0 then some ("1DC0;Grek")
+                  else
+                    none
+                else if c == 0x1DC1 then some ("1DC1;Grek")
+                else
+                  if c == 0x1DF8 then some ("1DF8;Cyrl Latn Syrc") else none
+            else if c == 0x1DFA then some ("1DFA;Syrc")
             else
-              if c < 0x205A then
-                if c == 0x204F then some ("204F;Adlm Arab") else none
-              else if c == 0x205A then some ("205A;Cari Geor Glag Hung Lyci Orkh")
+              if c < 0x20F0 then
+                if c < 0x205A then
+                  if c < 0x204F then
+                    if c == 0x202F then some ("202F;Latn Mong Phag") else none
+                  else if c == 0x204F then some ("204F;Adlm Arab")
+                  else
+                    none
+                else if c == 0x205A then some ("205A;Cari Geor Glag Hung Lyci Orkh")
+                else
+                  if c == 0x205D then some ("205D;Cari Grek Hung Mero") else none
+              else if c == 0x20F0 then some ("20F0;Deva Gran Latn")
               else
-                none
-          else if c == 0x205D then some ("205D;Cari Grek Hung Mero")
+                if c < 0x2E31 then
+                  if c < 0x2E30 then
+                    if c == 0x2E17 then some ("2E17;Copt Latn") else none
+                  else if c == 0x2E30 then some ("2E30;Avst Orkh")
+                  else
+                    none
+                else if c == 0x2E31 then some ("2E31;Avst Cari Geor Hung Kthi Lydi Samr")
+                else
+                  if c == 0x2E3C then some ("2E3C;Dupl") else none
+          else if c == 0x2E41 then some ("2E41;Adlm Arab Hung")
           else
-            if c < 0x2E30 then
-              if c < 0x2E17 then
-                if c == 0x20F0 then some ("20F0;Deva Gran Latn") else none
-              else if c == 0x2E17 then some ("2E17;Copt Latn")
+            if c < 0x2FF9 then
+              if c < 0x2FF4 then
+                if c < 0x2FF1 then
+                  if c < 0x2FF0 then
+                    if c == 0x2E43 then some ("2E43;Cyrl Glag") else none
+                  else if c == 0x2FF0 then some ("2FF0;Hani Tang")
+                  else
+                    none
+                else if c == 0x2FF1 then some ("2FF1;Hani Tang")
+                else
+                  if c < 0x2FF3 then
+                    if c == 0x2FF2 then some ("2FF2;Hani Tang") else none
+                  else if c == 0x2FF3 then some ("2FF3;Hani Tang")
+                  else
+                    none
+              else if c == 0x2FF4 then some ("2FF4;Hani Tang")
               else
-                none
-            else if c == 0x2E30 then some ("2E30;Avst Orkh")
+                if c < 0x2FF7 then
+                  if c < 0x2FF6 then
+                    if c == 0x2FF5 then some ("2FF5;Hani Tang") else none
+                  else if c == 0x2FF6 then some ("2FF6;Hani Tang")
+                  else
+                    none
+                else if c == 0x2FF7 then some ("2FF7;Hani Tang")
+                else
+                  if c == 0x2FF8 then some ("2FF8;Hani Tang") else none
+            else if c == 0x2FF9 then some ("2FF9;Hani Tang")
             else
-              if c == 0x2E31 then some ("2E31;Avst Cari Geor Hung Kthi Lydi Samr") else none
-      else if c == 0x2E3C then some ("2E3C;Dupl")
+              if c < 0x2FFE then
+                if c < 0x2FFC then
+                  if c < 0x2FFB then
+                    if c == 0x2FFA then some ("2FFA;Hani Tang") else none
+                  else if c == 0x2FFB then some ("2FFB;Hani Tang")
+                  else
+                    none
+                else if c == 0x2FFC then some ("2FFC;Hani Tang")
+                else
+                  if c == 0x2FFD then some ("2FFD;Hani Tang") else none
+              else if c == 0x2FFE then some ("2FFE;Hani Tang")
+              else
+                if c < 0x3002 then
+                  if c < 0x3001 then
+                    if c == 0x2FFF then some ("2FFF;Hani Tang") else none
+                  else if c == 0x3001 then some ("3001;Bopo Hang Hani Hira Kana Mong Yiii")
+                  else
+                    none
+                else if c == 0x3002 then some ("3002;Bopo Hang Hani Hira Kana Mong Phag Yiii")
+                else
+                  if c == 0x3003 then some ("3003;Bopo Hang Hani Hira Kana") else none
+      else if c == 0x3006 then some ("3006;Hani")
       else
-        if c < 0x3013 then
-          if c < 0x3003 then
-            if c < 0x2FF0 then
-              if c < 0x2E43 then
-                if c == 0x2E41 then some ("2E41;Adlm Arab Hung") else none
-              else if c == 0x2E43 then some ("2E43;Cyrl Glag")
+        if c < 0x309C then
+          if c < 0x301D then
+            if c < 0x3013 then
+              if c < 0x300D then
+                if c < 0x300A then
+                  if c < 0x3009 then
+                    if c == 0x3008 then some ("3008;Bopo Hang Hani Hira Kana Mong Tibt Yiii") else none
+                  else if c == 0x3009 then some ("3009;Bopo Hang Hani Hira Kana Mong Tibt Yiii")
+                  else
+                    none
+                else if c == 0x300A then some ("300A;Bopo Hang Hani Hira Kana Lisu Mong Tibt Yiii")
+                else
+                  if c < 0x300C then
+                    if c == 0x300B then some ("300B;Bopo Hang Hani Hira Kana Lisu Mong Tibt Yiii") else none
+                  else if c == 0x300C then some ("300C;Bopo Hang Hani Hira Kana Yiii")
+                  else
+                    none
+              else if c == 0x300D then some ("300D;Bopo Hang Hani Hira Kana Yiii")
               else
-                none
-            else if c == 0x2FF0 then some ("2FFF;Hani Tang")
+                if c < 0x3010 then
+                  if c < 0x300F then
+                    if c == 0x300E then some ("300E;Bopo Hang Hani Hira Kana Yiii") else none
+                  else if c == 0x300F then some ("300F;Bopo Hang Hani Hira Kana Yiii")
+                  else
+                    none
+                else if c == 0x3010 then some ("3010;Bopo Hang Hani Hira Kana Yiii")
+                else
+                  if c == 0x3011 then some ("3011;Bopo Hang Hani Hira Kana Yiii") else none
+            else if c == 0x3013 then some ("3013;Bopo Hang Hani Hira Kana")
             else
-              if c < 0x3002 then
-                if c == 0x3001 then some ("3001;Bopo Hang Hani Hira Kana Mong Yiii") else none
-              else if c == 0x3002 then some ("3002;Bopo Hang Hani Hira Kana Mong Phag Yiii")
+              if c < 0x3018 then
+                if c < 0x3016 then
+                  if c < 0x3015 then
+                    if c == 0x3014 then some ("3014;Bopo Hang Hani Hira Kana Yiii") else none
+                  else if c == 0x3015 then some ("3015;Bopo Hang Hani Hira Kana Yiii")
+                  else
+                    none
+                else if c == 0x3016 then some ("3016;Bopo Hang Hani Hira Kana Yiii")
+                else
+                  if c == 0x3017 then some ("3017;Bopo Hang Hani Hira Kana Yiii") else none
+              else if c == 0x3018 then some ("3018;Bopo Hang Hani Hira Kana Yiii")
               else
-                none
-          else if c == 0x3003 then some ("3003;Bopo Hang Hani Hira Kana")
+                if c < 0x301B then
+                  if c < 0x301A then
+                    if c == 0x3019 then some ("3019;Bopo Hang Hani Hira Kana Yiii") else none
+                  else if c == 0x301A then some ("301A;Bopo Hang Hani Hira Kana Yiii")
+                  else
+                    none
+                else if c == 0x301B then some ("301B;Bopo Hang Hani Hira Kana Yiii")
+                else
+                  if c == 0x301C then some ("301C;Bopo Hang Hani Hira Kana") else none
+          else if c == 0x301D then some ("301D;Bopo Hang Hani Hira Kana")
           else
-            if c < 0x300A then
-              if c < 0x3008 then
-                if c == 0x3006 then some ("3006;Hani") else none
-              else if c == 0x3008 then some ("3009;Bopo Hang Hani Hira Kana Mong Tibt Yiii")
+            if c < 0x3034 then
+              if c < 0x302D then
+                if c < 0x302A then
+                  if c < 0x301F then
+                    if c == 0x301E then some ("301E;Bopo Hang Hani Hira Kana") else none
+                  else if c == 0x301F then some ("301F;Bopo Hang Hani Hira Kana")
+                  else
+                    none
+                else if c == 0x302A then some ("302A;Bopo Hani")
+                else
+                  if c < 0x302C then
+                    if c == 0x302B then some ("302B;Bopo Hani") else none
+                  else if c == 0x302C then some ("302C;Bopo Hani")
+                  else
+                    none
+              else if c == 0x302D then some ("302D;Bopo Hani")
               else
-                none
-            else if c == 0x300A then some ("300B;Bopo Hang Hani Hira Kana Lisu Mong Tibt Yiii")
+                if c < 0x3032 then
+                  if c < 0x3031 then
+                    if c == 0x3030 then some ("3030;Bopo Hang Hani Hira Kana") else none
+                  else if c == 0x3031 then some ("3031;Hira Kana")
+                  else
+                    none
+                else if c == 0x3032 then some ("3032;Hira Kana")
+                else
+                  if c == 0x3033 then some ("3033;Hira Kana") else none
+            else if c == 0x3034 then some ("3034;Hira Kana")
             else
-              if c == 0x300C then some ("3011;Bopo Hang Hani Hira Kana Yiii") else none
-        else if c == 0x3013 then some ("3013;Bopo Hang Hani Hira Kana")
-        else
-          if c < 0x3037 then
-            if c < 0x302A then
-              if c < 0x301C then
-                if c == 0x3014 then some ("301B;Bopo Hang Hani Hira Kana Yiii") else none
-              else if c == 0x301C then some ("301F;Bopo Hang Hani Hira Kana")
-              else
-                none
-            else if c == 0x302A then some ("302D;Bopo Hani")
-            else
-              if c < 0x3031 then
-                if c == 0x3030 then some ("3030;Bopo Hang Hani Hira Kana") else none
-              else if c == 0x3031 then some ("3035;Hira Kana")
-              else
-                none
-          else if c == 0x3037 then some ("3037;Bopo Hang Hani Hira Kana")
-          else
-            if c < 0x3099 then
               if c < 0x303E then
-                if c == 0x303C then some ("303D;Hani Hira Kana") else none
-              else if c == 0x303E then some ("303F;Hani")
+                if c < 0x303C then
+                  if c < 0x3037 then
+                    if c == 0x3035 then some ("3035;Hira Kana") else none
+                  else if c == 0x3037 then some ("3037;Bopo Hang Hani Hira Kana")
+                  else
+                    none
+                else if c == 0x303C then some ("303C;Hani Hira Kana")
+                else
+                  if c == 0x303D then some ("303D;Hani Hira Kana") else none
+              else if c == 0x303E then some ("303E;Hani")
               else
-                none
-            else if c == 0x3099 then some ("309C;Hira Kana")
-            else
-              if c == 0x30A0 then some ("30A0;Hira Kana") else none
-    else if c == 0x30FB then some ("30FB;Bopo Hang Hani Hira Kana Yiii")
-    else
-      if c < 0xA9CF then
-        if c < 0x33E0 then
-          if c < 0x3280 then
-            if c < 0x31C0 then
-              if c < 0x3190 then
-                if c == 0x30FC then some ("30FC;Hira Kana") else none
-              else if c == 0x3190 then some ("319F;Hani")
-              else
-                none
-            else if c == 0x31C0 then some ("31E5;Hani")
-            else
-              if c < 0x3220 then
-                if c == 0x31EF then some ("31EF;Hani Tang") else none
-              else if c == 0x3220 then some ("3247;Hani")
-              else
-                none
-          else if c == 0x3280 then some ("32B0;Hani")
-          else
-            if c < 0x3358 then
-              if c < 0x32FF then
-                if c == 0x32C0 then some ("32CB;Hani") else none
-              else if c == 0x32FF then some ("32FF;Hani")
-              else
-                none
-            else if c == 0x3358 then some ("3370;Hani")
-            else
-              if c == 0x337B then some ("337F;Hani") else none
-        else if c == 0x33E0 then some ("33FE;Hani")
+                if c < 0x309A then
+                  if c < 0x3099 then
+                    if c == 0x303F then some ("303F;Hani") else none
+                  else if c == 0x3099 then some ("3099;Hira Kana")
+                  else
+                    none
+                else if c == 0x309A then some ("309A;Hira Kana")
+                else
+                  if c == 0x309B then some ("309B;Hira Kana") else none
+        else if c == 0x309C then some ("309C;Hira Kana")
         else
-          if c < 0xA838 then
-            if c < 0xA830 then
-              if c < 0xA700 then
-                if c == 0xA66F then some ("A66F;Cyrl Glag") else none
-              else if c == 0xA700 then some ("A707;Hani Latn")
+          if c < 0x31C1 then
+            if c < 0x3197 then
+              if c < 0x3192 then
+                if c < 0x30FC then
+                  if c < 0x30FB then
+                    if c == 0x30A0 then some ("30A0;Hira Kana") else none
+                  else if c == 0x30FB then some ("30FB;Bopo Hang Hani Hira Kana Yiii")
+                  else
+                    none
+                else if c == 0x30FC then some ("30FC;Hira Kana")
+                else
+                  if c < 0x3191 then
+                    if c == 0x3190 then some ("3190;Hani") else none
+                  else if c == 0x3191 then some ("3191;Hani")
+                  else
+                    none
+              else if c == 0x3192 then some ("3192;Hani")
               else
-                none
-            else if c == 0xA830 then some ("A832;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Mlym Modi Nand Shrd Sind Takr Tirh Tutg")
+                if c < 0x3195 then
+                  if c < 0x3194 then
+                    if c == 0x3193 then some ("3193;Hani") else none
+                  else if c == 0x3194 then some ("3194;Hani")
+                  else
+                    none
+                else if c == 0x3195 then some ("3195;Hani")
+                else
+                  if c == 0x3196 then some ("3196;Hani") else none
+            else if c == 0x3197 then some ("3197;Hani")
             else
-              if c < 0xA836 then
-                if c == 0xA833 then some ("A835;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Modi Nand Shrd Sind Takr Tirh Tutg") else none
-              else if c == 0xA836 then some ("A837;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh")
+              if c < 0x319C then
+                if c < 0x319A then
+                  if c < 0x3199 then
+                    if c == 0x3198 then some ("3198;Hani") else none
+                  else if c == 0x3199 then some ("3199;Hani")
+                  else
+                    none
+                else if c == 0x319A then some ("319A;Hani")
+                else
+                  if c == 0x319B then some ("319B;Hani") else none
+              else if c == 0x319C then some ("319C;Hani")
               else
-                none
-          else if c == 0xA838 then some ("A838;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Shrd Sind Takr Tirh")
+                if c < 0x319F then
+                  if c < 0x319E then
+                    if c == 0x319D then some ("319D;Hani") else none
+                  else if c == 0x319E then some ("319E;Hani")
+                  else
+                    none
+                else if c == 0x319F then some ("319F;Hani")
+                else
+                  if c == 0x31C0 then some ("31C0;Hani") else none
+          else if c == 0x31C1 then some ("31C1;Hani")
           else
-            if c < 0xA8F3 then
-              if c < 0xA8F1 then
-                if c == 0xA839 then some ("A839;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh") else none
-              else if c == 0xA8F1 then some ("A8F1;Beng Deva Tutg")
+            if c < 0x31CB then
+              if c < 0x31C6 then
+                if c < 0x31C4 then
+                  if c < 0x31C3 then
+                    if c == 0x31C2 then some ("31C2;Hani") else none
+                  else if c == 0x31C3 then some ("31C3;Hani")
+                  else
+                    none
+                else if c == 0x31C4 then some ("31C4;Hani")
+                else
+                  if c == 0x31C5 then some ("31C5;Hani") else none
+              else if c == 0x31C6 then some ("31C6;Hani")
               else
-                none
-            else if c == 0xA8F3 then some ("A8F3;Deva Taml")
+                if c < 0x31C9 then
+                  if c < 0x31C8 then
+                    if c == 0x31C7 then some ("31C7;Hani") else none
+                  else if c == 0x31C8 then some ("31C8;Hani")
+                  else
+                    none
+                else if c == 0x31C9 then some ("31C9;Hani")
+                else
+                  if c == 0x31CA then some ("31CA;Hani") else none
+            else if c == 0x31CB then some ("31CB;Hani")
             else
-              if c == 0xA92E then some ("A92E;Kali Latn Mymr") else none
-      else if c == 0xA9CF then some ("A9CF;Bugi Java")
+              if c < 0x31D0 then
+                if c < 0x31CE then
+                  if c < 0x31CD then
+                    if c == 0x31CC then some ("31CC;Hani") else none
+                  else if c == 0x31CD then some ("31CD;Hani")
+                  else
+                    none
+                else if c == 0x31CE then some ("31CE;Hani")
+                else
+                  if c == 0x31CF then some ("31CF;Hani") else none
+              else if c == 0x31D0 then some ("31D0;Hani")
+              else
+                if c < 0x31D3 then
+                  if c < 0x31D2 then
+                    if c == 0x31D1 then some ("31D1;Hani") else none
+                  else if c == 0x31D2 then some ("31D2;Hani")
+                  else
+                    none
+                else if c == 0x31D3 then some ("31D3;Hani")
+                else
+                  if c == 0x31D4 then some ("31D4;Hani") else none
+  else if c == 0x31D5 then some ("31D5;Hani")
+  else
+    if c < 0x33F2 then
+      if c < 0x329A then
+        if c < 0x3238 then
+          if c < 0x3223 then
+            if c < 0x31E0 then
+              if c < 0x31DB then
+                if c < 0x31D8 then
+                  if c < 0x31D7 then
+                    if c == 0x31D6 then some ("31D6;Hani") else none
+                  else if c == 0x31D7 then some ("31D7;Hani")
+                  else
+                    none
+                else if c == 0x31D8 then some ("31D8;Hani")
+                else
+                  if c < 0x31DA then
+                    if c == 0x31D9 then some ("31D9;Hani") else none
+                  else if c == 0x31DA then some ("31DA;Hani")
+                  else
+                    none
+              else if c == 0x31DB then some ("31DB;Hani")
+              else
+                if c < 0x31DE then
+                  if c < 0x31DD then
+                    if c == 0x31DC then some ("31DC;Hani") else none
+                  else if c == 0x31DD then some ("31DD;Hani")
+                  else
+                    none
+                else if c == 0x31DE then some ("31DE;Hani")
+                else
+                  if c == 0x31DF then some ("31DF;Hani") else none
+            else if c == 0x31E0 then some ("31E0;Hani")
+            else
+              if c < 0x31E5 then
+                if c < 0x31E3 then
+                  if c < 0x31E2 then
+                    if c == 0x31E1 then some ("31E1;Hani") else none
+                  else if c == 0x31E2 then some ("31E2;Hani")
+                  else
+                    none
+                else if c == 0x31E3 then some ("31E3;Hani")
+                else
+                  if c == 0x31E4 then some ("31E4;Hani") else none
+              else if c == 0x31E5 then some ("31E5;Hani")
+              else
+                if c < 0x3221 then
+                  if c < 0x3220 then
+                    if c == 0x31EF then some ("31EF;Hani Tang") else none
+                  else if c == 0x3220 then some ("3220;Hani")
+                  else
+                    none
+                else if c == 0x3221 then some ("3221;Hani")
+                else
+                  if c == 0x3222 then some ("3222;Hani") else none
+          else if c == 0x3223 then some ("3223;Hani")
+          else
+            if c < 0x322E then
+              if c < 0x3229 then
+                if c < 0x3226 then
+                  if c < 0x3225 then
+                    if c == 0x3224 then some ("3224;Hani") else none
+                  else if c == 0x3225 then some ("3225;Hani")
+                  else
+                    none
+                else if c == 0x3226 then some ("3226;Hani")
+                else
+                  if c < 0x3228 then
+                    if c == 0x3227 then some ("3227;Hani") else none
+                  else if c == 0x3228 then some ("3228;Hani")
+                  else
+                    none
+              else if c == 0x3229 then some ("3229;Hani")
+              else
+                if c < 0x322C then
+                  if c < 0x322B then
+                    if c == 0x322A then some ("322A;Hani") else none
+                  else if c == 0x322B then some ("322B;Hani")
+                  else
+                    none
+                else if c == 0x322C then some ("322C;Hani")
+                else
+                  if c == 0x322D then some ("322D;Hani") else none
+            else if c == 0x322E then some ("322E;Hani")
+            else
+              if c < 0x3233 then
+                if c < 0x3231 then
+                  if c < 0x3230 then
+                    if c == 0x322F then some ("322F;Hani") else none
+                  else if c == 0x3230 then some ("3230;Hani")
+                  else
+                    none
+                else if c == 0x3231 then some ("3231;Hani")
+                else
+                  if c == 0x3232 then some ("3232;Hani") else none
+              else if c == 0x3233 then some ("3233;Hani")
+              else
+                if c < 0x3236 then
+                  if c < 0x3235 then
+                    if c == 0x3234 then some ("3234;Hani") else none
+                  else if c == 0x3235 then some ("3235;Hani")
+                  else
+                    none
+                else if c == 0x3236 then some ("3236;Hani")
+                else
+                  if c == 0x3237 then some ("3237;Hani") else none
+        else if c == 0x3238 then some ("3238;Hani")
+        else
+          if c < 0x3285 then
+            if c < 0x3243 then
+              if c < 0x323E then
+                if c < 0x323B then
+                  if c < 0x323A then
+                    if c == 0x3239 then some ("3239;Hani") else none
+                  else if c == 0x323A then some ("323A;Hani")
+                  else
+                    none
+                else if c == 0x323B then some ("323B;Hani")
+                else
+                  if c < 0x323D then
+                    if c == 0x323C then some ("323C;Hani") else none
+                  else if c == 0x323D then some ("323D;Hani")
+                  else
+                    none
+              else if c == 0x323E then some ("323E;Hani")
+              else
+                if c < 0x3241 then
+                  if c < 0x3240 then
+                    if c == 0x323F then some ("323F;Hani") else none
+                  else if c == 0x3240 then some ("3240;Hani")
+                  else
+                    none
+                else if c == 0x3241 then some ("3241;Hani")
+                else
+                  if c == 0x3242 then some ("3242;Hani") else none
+            else if c == 0x3243 then some ("3243;Hani")
+            else
+              if c < 0x3280 then
+                if c < 0x3246 then
+                  if c < 0x3245 then
+                    if c == 0x3244 then some ("3244;Hani") else none
+                  else if c == 0x3245 then some ("3245;Hani")
+                  else
+                    none
+                else if c == 0x3246 then some ("3246;Hani")
+                else
+                  if c == 0x3247 then some ("3247;Hani") else none
+              else if c == 0x3280 then some ("3280;Hani")
+              else
+                if c < 0x3283 then
+                  if c < 0x3282 then
+                    if c == 0x3281 then some ("3281;Hani") else none
+                  else if c == 0x3282 then some ("3282;Hani")
+                  else
+                    none
+                else if c == 0x3283 then some ("3283;Hani")
+                else
+                  if c == 0x3284 then some ("3284;Hani") else none
+          else if c == 0x3285 then some ("3285;Hani")
+          else
+            if c < 0x3290 then
+              if c < 0x328B then
+                if c < 0x3288 then
+                  if c < 0x3287 then
+                    if c == 0x3286 then some ("3286;Hani") else none
+                  else if c == 0x3287 then some ("3287;Hani")
+                  else
+                    none
+                else if c == 0x3288 then some ("3288;Hani")
+                else
+                  if c < 0x328A then
+                    if c == 0x3289 then some ("3289;Hani") else none
+                  else if c == 0x328A then some ("328A;Hani")
+                  else
+                    none
+              else if c == 0x328B then some ("328B;Hani")
+              else
+                if c < 0x328E then
+                  if c < 0x328D then
+                    if c == 0x328C then some ("328C;Hani") else none
+                  else if c == 0x328D then some ("328D;Hani")
+                  else
+                    none
+                else if c == 0x328E then some ("328E;Hani")
+                else
+                  if c == 0x328F then some ("328F;Hani") else none
+            else if c == 0x3290 then some ("3290;Hani")
+            else
+              if c < 0x3295 then
+                if c < 0x3293 then
+                  if c < 0x3292 then
+                    if c == 0x3291 then some ("3291;Hani") else none
+                  else if c == 0x3292 then some ("3292;Hani")
+                  else
+                    none
+                else if c == 0x3293 then some ("3293;Hani")
+                else
+                  if c == 0x3294 then some ("3294;Hani") else none
+              else if c == 0x3295 then some ("3295;Hani")
+              else
+                if c < 0x3298 then
+                  if c < 0x3297 then
+                    if c == 0x3296 then some ("3296;Hani") else none
+                  else if c == 0x3297 then some ("3297;Hani")
+                  else
+                    none
+                else if c == 0x3298 then some ("3298;Hani")
+                else
+                  if c == 0x3299 then some ("3299;Hani") else none
+      else if c == 0x329A then some ("329A;Hani")
       else
-        if c < 0x10137 then
-          if c < 0xFF70 then
-            if c < 0xFDFD then
-              if c < 0xFDF2 then
-                if c == 0xFD3E then some ("FD3F;Arab Nkoo") else none
-              else if c == 0xFDF2 then some ("FDF2;Arab Thaa")
+        if c < 0x335E then
+          if c < 0x32AF then
+            if c < 0x32A5 then
+              if c < 0x32A0 then
+                if c < 0x329D then
+                  if c < 0x329C then
+                    if c == 0x329B then some ("329B;Hani") else none
+                  else if c == 0x329C then some ("329C;Hani")
+                  else
+                    none
+                else if c == 0x329D then some ("329D;Hani")
+                else
+                  if c < 0x329F then
+                    if c == 0x329E then some ("329E;Hani") else none
+                  else if c == 0x329F then some ("329F;Hani")
+                  else
+                    none
+              else if c == 0x32A0 then some ("32A0;Hani")
               else
-                none
-            else if c == 0xFDFD then some ("FDFD;Arab Thaa")
+                if c < 0x32A3 then
+                  if c < 0x32A2 then
+                    if c == 0x32A1 then some ("32A1;Hani") else none
+                  else if c == 0x32A2 then some ("32A2;Hani")
+                  else
+                    none
+                else if c == 0x32A3 then some ("32A3;Hani")
+                else
+                  if c == 0x32A4 then some ("32A4;Hani") else none
+            else if c == 0x32A5 then some ("32A5;Hani")
             else
-              if c < 0xFF61 then
-                if c == 0xFE45 then some ("FE46;Bopo Hang Hani Hira Kana") else none
-              else if c == 0xFF61 then some ("FF65;Bopo Hang Hani Hira Kana Yiii")
+              if c < 0x32AA then
+                if c < 0x32A8 then
+                  if c < 0x32A7 then
+                    if c == 0x32A6 then some ("32A6;Hani") else none
+                  else if c == 0x32A7 then some ("32A7;Hani")
+                  else
+                    none
+                else if c == 0x32A8 then some ("32A8;Hani")
+                else
+                  if c == 0x32A9 then some ("32A9;Hani") else none
+              else if c == 0x32AA then some ("32AA;Hani")
               else
-                none
-          else if c == 0xFF70 then some ("FF70;Hira Kana")
+                if c < 0x32AD then
+                  if c < 0x32AC then
+                    if c == 0x32AB then some ("32AB;Hani") else none
+                  else if c == 0x32AC then some ("32AC;Hani")
+                  else
+                    none
+                else if c == 0x32AD then some ("32AD;Hani")
+                else
+                  if c == 0x32AE then some ("32AE;Hani") else none
+          else if c == 0x32AF then some ("32AF;Hani")
           else
-            if c < 0x10102 then
-              if c < 0x10100 then
-                if c == 0xFF9E then some ("FF9F;Hira Kana") else none
-              else if c == 0x10100 then some ("10101;Cpmn Cprt Linb")
+            if c < 0x32C9 then
+              if c < 0x32C4 then
+                if c < 0x32C1 then
+                  if c < 0x32C0 then
+                    if c == 0x32B0 then some ("32B0;Hani") else none
+                  else if c == 0x32C0 then some ("32C0;Hani")
+                  else
+                    none
+                else if c == 0x32C1 then some ("32C1;Hani")
+                else
+                  if c < 0x32C3 then
+                    if c == 0x32C2 then some ("32C2;Hani") else none
+                  else if c == 0x32C3 then some ("32C3;Hani")
+                  else
+                    none
+              else if c == 0x32C4 then some ("32C4;Hani")
               else
-                none
-            else if c == 0x10102 then some ("10102;Cprt Linb")
+                if c < 0x32C7 then
+                  if c < 0x32C6 then
+                    if c == 0x32C5 then some ("32C5;Hani") else none
+                  else if c == 0x32C6 then some ("32C6;Hani")
+                  else
+                    none
+                else if c == 0x32C7 then some ("32C7;Hani")
+                else
+                  if c == 0x32C8 then some ("32C8;Hani") else none
+            else if c == 0x32C9 then some ("32C9;Hani")
             else
-              if c == 0x10107 then some ("10133;Cprt Lina Linb") else none
-        else if c == 0x10137 then some ("1013F;Cprt Linb")
+              if c < 0x3359 then
+                if c < 0x32FF then
+                  if c < 0x32CB then
+                    if c == 0x32CA then some ("32CA;Hani") else none
+                  else if c == 0x32CB then some ("32CB;Hani")
+                  else
+                    none
+                else if c == 0x32FF then some ("32FF;Hani")
+                else
+                  if c == 0x3358 then some ("3358;Hani") else none
+              else if c == 0x3359 then some ("3359;Hani")
+              else
+                if c < 0x335C then
+                  if c < 0x335B then
+                    if c == 0x335A then some ("335A;Hani") else none
+                  else if c == 0x335B then some ("335B;Hani")
+                  else
+                    none
+                else if c == 0x335C then some ("335C;Hani")
+                else
+                  if c == 0x335D then some ("335D;Hani") else none
+        else if c == 0x335E then some ("335E;Hani")
         else
-          if c < 0x11FD0 then
-            if c < 0x11301 then
-              if c < 0x10AF2 then
-                if c == 0x102E0 then some ("102FB;Arab Copt") else none
-              else if c == 0x10AF2 then some ("10AF2;Mani Ougr")
+          if c < 0x337D then
+            if c < 0x3369 then
+              if c < 0x3364 then
+                if c < 0x3361 then
+                  if c < 0x3360 then
+                    if c == 0x335F then some ("335F;Hani") else none
+                  else if c == 0x3360 then some ("3360;Hani")
+                  else
+                    none
+                else if c == 0x3361 then some ("3361;Hani")
+                else
+                  if c < 0x3363 then
+                    if c == 0x3362 then some ("3362;Hani") else none
+                  else if c == 0x3363 then some ("3363;Hani")
+                  else
+                    none
+              else if c == 0x3364 then some ("3364;Hani")
               else
-                none
-            else if c == 0x11301 then some ("11301;Gran Taml")
+                if c < 0x3367 then
+                  if c < 0x3366 then
+                    if c == 0x3365 then some ("3365;Hani") else none
+                  else if c == 0x3366 then some ("3366;Hani")
+                  else
+                    none
+                else if c == 0x3367 then some ("3367;Hani")
+                else
+                  if c == 0x3368 then some ("3368;Hani") else none
+            else if c == 0x3369 then some ("3369;Hani")
             else
-              if c < 0x1133B then
-                if c == 0x11303 then some ("11303;Gran Taml") else none
-              else if c == 0x1133B then some ("1133C;Gran Taml")
+              if c < 0x336E then
+                if c < 0x336C then
+                  if c < 0x336B then
+                    if c == 0x336A then some ("336A;Hani") else none
+                  else if c == 0x336B then some ("336B;Hani")
+                  else
+                    none
+                else if c == 0x336C then some ("336C;Hani")
+                else
+                  if c == 0x336D then some ("336D;Hani") else none
+              else if c == 0x336E then some ("336E;Hani")
               else
-                none
-          else if c == 0x11FD0 then some ("11FD1;Gran Taml")
+                if c < 0x337B then
+                  if c < 0x3370 then
+                    if c == 0x336F then some ("336F;Hani") else none
+                  else if c == 0x3370 then some ("3370;Hani")
+                  else
+                    none
+                else if c == 0x337B then some ("337B;Hani")
+                else
+                  if c == 0x337C then some ("337C;Hani") else none
+          else if c == 0x337D then some ("337D;Hani")
           else
-            if c < 0x1D360 then
-              if c < 0x1BCA0 then
-                if c == 0x11FD3 then some ("11FD3;Gran Taml") else none
-              else if c == 0x1BCA0 then some ("1BCA3;Dupl")
+            if c < 0x33E8 then
+              if c < 0x33E3 then
+                if c < 0x33E0 then
+                  if c < 0x337F then
+                    if c == 0x337E then some ("337E;Hani") else none
+                  else if c == 0x337F then some ("337F;Hani")
+                  else
+                    none
+                else if c == 0x33E0 then some ("33E0;Hani")
+                else
+                  if c < 0x33E2 then
+                    if c == 0x33E1 then some ("33E1;Hani") else none
+                  else if c == 0x33E2 then some ("33E2;Hani")
+                  else
+                    none
+              else if c == 0x33E3 then some ("33E3;Hani")
               else
-                none
-            else if c == 0x1D360 then some ("1D371;Hani")
+                if c < 0x33E6 then
+                  if c < 0x33E5 then
+                    if c == 0x33E4 then some ("33E4;Hani") else none
+                  else if c == 0x33E5 then some ("33E5;Hani")
+                  else
+                    none
+                else if c == 0x33E6 then some ("33E6;Hani")
+                else
+                  if c == 0x33E7 then some ("33E7;Hani") else none
+            else if c == 0x33E8 then some ("33E8;Hani")
             else
-              if c == 0x1F250 then some ("1F251;Hani") else none
+              if c < 0x33ED then
+                if c < 0x33EB then
+                  if c < 0x33EA then
+                    if c == 0x33E9 then some ("33E9;Hani") else none
+                  else if c == 0x33EA then some ("33EA;Hani")
+                  else
+                    none
+                else if c == 0x33EB then some ("33EB;Hani")
+                else
+                  if c == 0x33EC then some ("33EC;Hani") else none
+              else if c == 0x33ED then some ("33ED;Hani")
+              else
+                if c < 0x33F0 then
+                  if c < 0x33EF then
+                    if c == 0x33EE then some ("33EE;Hani") else none
+                  else if c == 0x33EF then some ("33EF;Hani")
+                  else
+                    none
+                else if c == 0x33F0 then some ("33F0;Hani")
+                else
+                  if c == 0x33F1 then some ("33F1;Hani") else none
+    else if c == 0x33F2 then some ("33F2;Hani")
+    else
+      if c < 0x10126 then
+        if c < 0xFF61 then
+          if c < 0xA707 then
+            if c < 0x33FD then
+              if c < 0x33F8 then
+                if c < 0x33F5 then
+                  if c < 0x33F4 then
+                    if c == 0x33F3 then some ("33F3;Hani") else none
+                  else if c == 0x33F4 then some ("33F4;Hani")
+                  else
+                    none
+                else if c == 0x33F5 then some ("33F5;Hani")
+                else
+                  if c < 0x33F7 then
+                    if c == 0x33F6 then some ("33F6;Hani") else none
+                  else if c == 0x33F7 then some ("33F7;Hani")
+                  else
+                    none
+              else if c == 0x33F8 then some ("33F8;Hani")
+              else
+                if c < 0x33FB then
+                  if c < 0x33FA then
+                    if c == 0x33F9 then some ("33F9;Hani") else none
+                  else if c == 0x33FA then some ("33FA;Hani")
+                  else
+                    none
+                else if c == 0x33FB then some ("33FB;Hani")
+                else
+                  if c == 0x33FC then some ("33FC;Hani") else none
+            else if c == 0x33FD then some ("33FD;Hani")
+            else
+              if c < 0xA702 then
+                if c < 0xA700 then
+                  if c < 0xA66F then
+                    if c == 0x33FE then some ("33FE;Hani") else none
+                  else if c == 0xA66F then some ("A66F;Cyrl Glag")
+                  else
+                    none
+                else if c == 0xA700 then some ("A700;Hani Latn")
+                else
+                  if c == 0xA701 then some ("A701;Hani Latn") else none
+              else if c == 0xA702 then some ("A702;Hani Latn")
+              else
+                if c < 0xA705 then
+                  if c < 0xA704 then
+                    if c == 0xA703 then some ("A703;Hani Latn") else none
+                  else if c == 0xA704 then some ("A704;Hani Latn")
+                  else
+                    none
+                else if c == 0xA705 then some ("A705;Hani Latn")
+                else
+                  if c == 0xA706 then some ("A706;Hani Latn") else none
+          else if c == 0xA707 then some ("A707;Hani Latn")
+          else
+            if c < 0xA8F1 then
+              if c < 0xA835 then
+                if c < 0xA832 then
+                  if c < 0xA831 then
+                    if c == 0xA830 then some ("A830;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Mlym Modi Nand Shrd Sind Takr Tirh Tutg") else none
+                  else if c == 0xA831 then some ("A831;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Mlym Modi Nand Shrd Sind Takr Tirh Tutg")
+                  else
+                    none
+                else if c == 0xA832 then some ("A832;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Mlym Modi Nand Shrd Sind Takr Tirh Tutg")
+                else
+                  if c < 0xA834 then
+                    if c == 0xA833 then some ("A833;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Modi Nand Shrd Sind Takr Tirh Tutg") else none
+                  else if c == 0xA834 then some ("A834;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Modi Nand Shrd Sind Takr Tirh Tutg")
+                  else
+                    none
+              else if c == 0xA835 then some ("A835;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Modi Nand Shrd Sind Takr Tirh Tutg")
+              else
+                if c < 0xA838 then
+                  if c < 0xA837 then
+                    if c == 0xA836 then some ("A836;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh") else none
+                  else if c == 0xA837 then some ("A837;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh")
+                  else
+                    none
+                else if c == 0xA838 then some ("A838;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Shrd Sind Takr Tirh")
+                else
+                  if c == 0xA839 then some ("A839;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh") else none
+            else if c == 0xA8F1 then some ("A8F1;Beng Deva Tutg")
+            else
+              if c < 0xFD3F then
+                if c < 0xA9CF then
+                  if c < 0xA92E then
+                    if c == 0xA8F3 then some ("A8F3;Deva Taml") else none
+                  else if c == 0xA92E then some ("A92E;Kali Latn Mymr")
+                  else
+                    none
+                else if c == 0xA9CF then some ("A9CF;Bugi Java")
+                else
+                  if c == 0xFD3E then some ("FD3E;Arab Nkoo") else none
+              else if c == 0xFD3F then some ("FD3F;Arab Nkoo")
+              else
+                if c < 0xFE45 then
+                  if c < 0xFDFD then
+                    if c == 0xFDF2 then some ("FDF2;Arab Thaa") else none
+                  else if c == 0xFDFD then some ("FDFD;Arab Thaa")
+                  else
+                    none
+                else if c == 0xFE45 then some ("FE45;Bopo Hang Hani Hira Kana")
+                else
+                  if c == 0xFE46 then some ("FE46;Bopo Hang Hani Hira Kana") else none
+        else if c == 0xFF61 then some ("FF61;Bopo Hang Hani Hira Kana Yiii")
+        else
+          if c < 0x10111 then
+            if c < 0x10107 then
+              if c < 0xFF9E then
+                if c < 0xFF64 then
+                  if c < 0xFF63 then
+                    if c == 0xFF62 then some ("FF62;Bopo Hang Hani Hira Kana Yiii") else none
+                  else if c == 0xFF63 then some ("FF63;Bopo Hang Hani Hira Kana Yiii")
+                  else
+                    none
+                else if c == 0xFF64 then some ("FF64;Bopo Hang Hani Hira Kana Yiii")
+                else
+                  if c < 0xFF70 then
+                    if c == 0xFF65 then some ("FF65;Bopo Hang Hani Hira Kana Yiii") else none
+                  else if c == 0xFF70 then some ("FF70;Hira Kana")
+                  else
+                    none
+              else if c == 0xFF9E then some ("FF9E;Hira Kana")
+              else
+                if c < 0x10101 then
+                  if c < 0x10100 then
+                    if c == 0xFF9F then some ("FF9F;Hira Kana") else none
+                  else if c == 0x10100 then some ("10100;Cpmn Cprt Linb")
+                  else
+                    none
+                else if c == 0x10101 then some ("10101;Cpmn Cprt Linb")
+                else
+                  if c == 0x10102 then some ("10102;Cprt Linb") else none
+            else if c == 0x10107 then some ("10107;Cprt Lina Linb")
+            else
+              if c < 0x1010C then
+                if c < 0x1010A then
+                  if c < 0x10109 then
+                    if c == 0x10108 then some ("10108;Cprt Lina Linb") else none
+                  else if c == 0x10109 then some ("10109;Cprt Lina Linb")
+                  else
+                    none
+                else if c == 0x1010A then some ("1010A;Cprt Lina Linb")
+                else
+                  if c == 0x1010B then some ("1010B;Cprt Lina Linb") else none
+              else if c == 0x1010C then some ("1010C;Cprt Lina Linb")
+              else
+                if c < 0x1010F then
+                  if c < 0x1010E then
+                    if c == 0x1010D then some ("1010D;Cprt Lina Linb") else none
+                  else if c == 0x1010E then some ("1010E;Cprt Lina Linb")
+                  else
+                    none
+                else if c == 0x1010F then some ("1010F;Cprt Lina Linb")
+                else
+                  if c == 0x10110 then some ("10110;Cprt Lina Linb") else none
+          else if c == 0x10111 then some ("10111;Cprt Lina Linb")
+          else
+            if c < 0x1011C then
+              if c < 0x10117 then
+                if c < 0x10114 then
+                  if c < 0x10113 then
+                    if c == 0x10112 then some ("10112;Cprt Lina Linb") else none
+                  else if c == 0x10113 then some ("10113;Cprt Lina Linb")
+                  else
+                    none
+                else if c == 0x10114 then some ("10114;Cprt Lina Linb")
+                else
+                  if c < 0x10116 then
+                    if c == 0x10115 then some ("10115;Cprt Lina Linb") else none
+                  else if c == 0x10116 then some ("10116;Cprt Lina Linb")
+                  else
+                    none
+              else if c == 0x10117 then some ("10117;Cprt Lina Linb")
+              else
+                if c < 0x1011A then
+                  if c < 0x10119 then
+                    if c == 0x10118 then some ("10118;Cprt Lina Linb") else none
+                  else if c == 0x10119 then some ("10119;Cprt Lina Linb")
+                  else
+                    none
+                else if c == 0x1011A then some ("1011A;Cprt Lina Linb")
+                else
+                  if c == 0x1011B then some ("1011B;Cprt Lina Linb") else none
+            else if c == 0x1011C then some ("1011C;Cprt Lina Linb")
+            else
+              if c < 0x10121 then
+                if c < 0x1011F then
+                  if c < 0x1011E then
+                    if c == 0x1011D then some ("1011D;Cprt Lina Linb") else none
+                  else if c == 0x1011E then some ("1011E;Cprt Lina Linb")
+                  else
+                    none
+                else if c == 0x1011F then some ("1011F;Cprt Lina Linb")
+                else
+                  if c == 0x10120 then some ("10120;Cprt Lina Linb") else none
+              else if c == 0x10121 then some ("10121;Cprt Lina Linb")
+              else
+                if c < 0x10124 then
+                  if c < 0x10123 then
+                    if c == 0x10122 then some ("10122;Cprt Lina Linb") else none
+                  else if c == 0x10123 then some ("10123;Cprt Lina Linb")
+                  else
+                    none
+                else if c == 0x10124 then some ("10124;Cprt Lina Linb")
+                else
+                  if c == 0x10125 then some ("10125;Cprt Lina Linb") else none
+      else if c == 0x10126 then some ("10126;Cprt Lina Linb")
+      else
+        if c < 0x102F3 then
+          if c < 0x1013E then
+            if c < 0x10131 then
+              if c < 0x1012C then
+                if c < 0x10129 then
+                  if c < 0x10128 then
+                    if c == 0x10127 then some ("10127;Cprt Lina Linb") else none
+                  else if c == 0x10128 then some ("10128;Cprt Lina Linb")
+                  else
+                    none
+                else if c == 0x10129 then some ("10129;Cprt Lina Linb")
+                else
+                  if c < 0x1012B then
+                    if c == 0x1012A then some ("1012A;Cprt Lina Linb") else none
+                  else if c == 0x1012B then some ("1012B;Cprt Lina Linb")
+                  else
+                    none
+              else if c == 0x1012C then some ("1012C;Cprt Lina Linb")
+              else
+                if c < 0x1012F then
+                  if c < 0x1012E then
+                    if c == 0x1012D then some ("1012D;Cprt Lina Linb") else none
+                  else if c == 0x1012E then some ("1012E;Cprt Lina Linb")
+                  else
+                    none
+                else if c == 0x1012F then some ("1012F;Cprt Lina Linb")
+                else
+                  if c == 0x10130 then some ("10130;Cprt Lina Linb") else none
+            else if c == 0x10131 then some ("10131;Cprt Lina Linb")
+            else
+              if c < 0x10139 then
+                if c < 0x10137 then
+                  if c < 0x10133 then
+                    if c == 0x10132 then some ("10132;Cprt Lina Linb") else none
+                  else if c == 0x10133 then some ("10133;Cprt Lina Linb")
+                  else
+                    none
+                else if c == 0x10137 then some ("10137;Cprt Linb")
+                else
+                  if c == 0x10138 then some ("10138;Cprt Linb") else none
+              else if c == 0x10139 then some ("10139;Cprt Linb")
+              else
+                if c < 0x1013C then
+                  if c < 0x1013B then
+                    if c == 0x1013A then some ("1013A;Cprt Linb") else none
+                  else if c == 0x1013B then some ("1013B;Cprt Linb")
+                  else
+                    none
+                else if c == 0x1013C then some ("1013C;Cprt Linb")
+                else
+                  if c == 0x1013D then some ("1013D;Cprt Linb") else none
+          else if c == 0x1013E then some ("1013E;Cprt Linb")
+          else
+            if c < 0x102E9 then
+              if c < 0x102E4 then
+                if c < 0x102E1 then
+                  if c < 0x102E0 then
+                    if c == 0x1013F then some ("1013F;Cprt Linb") else none
+                  else if c == 0x102E0 then some ("102E0;Arab Copt")
+                  else
+                    none
+                else if c == 0x102E1 then some ("102E1;Arab Copt")
+                else
+                  if c < 0x102E3 then
+                    if c == 0x102E2 then some ("102E2;Arab Copt") else none
+                  else if c == 0x102E3 then some ("102E3;Arab Copt")
+                  else
+                    none
+              else if c == 0x102E4 then some ("102E4;Arab Copt")
+              else
+                if c < 0x102E7 then
+                  if c < 0x102E6 then
+                    if c == 0x102E5 then some ("102E5;Arab Copt") else none
+                  else if c == 0x102E6 then some ("102E6;Arab Copt")
+                  else
+                    none
+                else if c == 0x102E7 then some ("102E7;Arab Copt")
+                else
+                  if c == 0x102E8 then some ("102E8;Arab Copt") else none
+            else if c == 0x102E9 then some ("102E9;Arab Copt")
+            else
+              if c < 0x102EE then
+                if c < 0x102EC then
+                  if c < 0x102EB then
+                    if c == 0x102EA then some ("102EA;Arab Copt") else none
+                  else if c == 0x102EB then some ("102EB;Arab Copt")
+                  else
+                    none
+                else if c == 0x102EC then some ("102EC;Arab Copt")
+                else
+                  if c == 0x102ED then some ("102ED;Arab Copt") else none
+              else if c == 0x102EE then some ("102EE;Arab Copt")
+              else
+                if c < 0x102F1 then
+                  if c < 0x102F0 then
+                    if c == 0x102EF then some ("102EF;Arab Copt") else none
+                  else if c == 0x102F0 then some ("102F0;Arab Copt")
+                  else
+                    none
+                else if c == 0x102F1 then some ("102F1;Arab Copt")
+                else
+                  if c == 0x102F2 then some ("102F2;Arab Copt") else none
+        else if c == 0x102F3 then some ("102F3;Arab Copt")
+        else
+          if c < 0x1D360 then
+            if c < 0x11303 then
+              if c < 0x102F9 then
+                if c < 0x102F6 then
+                  if c < 0x102F5 then
+                    if c == 0x102F4 then some ("102F4;Arab Copt") else none
+                  else if c == 0x102F5 then some ("102F5;Arab Copt")
+                  else
+                    none
+                else if c == 0x102F6 then some ("102F6;Arab Copt")
+                else
+                  if c < 0x102F8 then
+                    if c == 0x102F7 then some ("102F7;Arab Copt") else none
+                  else if c == 0x102F8 then some ("102F8;Arab Copt")
+                  else
+                    none
+              else if c == 0x102F9 then some ("102F9;Arab Copt")
+              else
+                if c < 0x10AF2 then
+                  if c < 0x102FB then
+                    if c == 0x102FA then some ("102FA;Arab Copt") else none
+                  else if c == 0x102FB then some ("102FB;Arab Copt")
+                  else
+                    none
+                else if c == 0x10AF2 then some ("10AF2;Mani Ougr")
+                else
+                  if c == 0x11301 then some ("11301;Gran Taml") else none
+            else if c == 0x11303 then some ("11303;Gran Taml")
+            else
+              if c < 0x11FD3 then
+                if c < 0x11FD0 then
+                  if c < 0x1133C then
+                    if c == 0x1133B then some ("1133B;Gran Taml") else none
+                  else if c == 0x1133C then some ("1133C;Gran Taml")
+                  else
+                    none
+                else if c == 0x11FD0 then some ("11FD0;Gran Taml")
+                else
+                  if c == 0x11FD1 then some ("11FD1;Gran Taml") else none
+              else if c == 0x11FD3 then some ("11FD3;Gran Taml")
+              else
+                if c < 0x1BCA2 then
+                  if c < 0x1BCA1 then
+                    if c == 0x1BCA0 then some ("1BCA0;Dupl") else none
+                  else if c == 0x1BCA1 then some ("1BCA1;Dupl")
+                  else
+                    none
+                else if c == 0x1BCA2 then some ("1BCA2;Dupl")
+                else
+                  if c == 0x1BCA3 then some ("1BCA3;Dupl") else none
+          else if c == 0x1D360 then some ("1D360;Hani")
+          else
+            if c < 0x1D36A then
+              if c < 0x1D365 then
+                if c < 0x1D363 then
+                  if c < 0x1D362 then
+                    if c == 0x1D361 then some ("1D361;Hani") else none
+                  else if c == 0x1D362 then some ("1D362;Hani")
+                  else
+                    none
+                else if c == 0x1D363 then some ("1D363;Hani")
+                else
+                  if c == 0x1D364 then some ("1D364;Hani") else none
+              else if c == 0x1D365 then some ("1D365;Hani")
+              else
+                if c < 0x1D368 then
+                  if c < 0x1D367 then
+                    if c == 0x1D366 then some ("1D366;Hani") else none
+                  else if c == 0x1D367 then some ("1D367;Hani")
+                  else
+                    none
+                else if c == 0x1D368 then some ("1D368;Hani")
+                else
+                  if c == 0x1D369 then some ("1D369;Hani") else none
+            else if c == 0x1D36A then some ("1D36A;Hani")
+            else
+              if c < 0x1D36F then
+                if c < 0x1D36D then
+                  if c < 0x1D36C then
+                    if c == 0x1D36B then some ("1D36B;Hani") else none
+                  else if c == 0x1D36C then some ("1D36C;Hani")
+                  else
+                    none
+                else if c == 0x1D36D then some ("1D36D;Hani")
+                else
+                  if c == 0x1D36E then some ("1D36E;Hani") else none
+              else if c == 0x1D36F then some ("1D36F;Hani")
+              else
+                if c < 0x1F250 then
+                  if c < 0x1D371 then
+                    if c == 0x1D370 then some ("1D370;Hani") else none
+                  else if c == 0x1D371 then some ("1D371;Hani")
+                  else
+                    none
+                else if c == 0x1F250 then some ("1F250;Hani")
+                else
+                  if c == 0x1F251 then some ("1F251;Hani") else none
 
 end Unicode.TableLookupTables.ScriptExtensions

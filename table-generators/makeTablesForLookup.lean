@@ -999,7 +999,7 @@ def mkScript : Array (UInt32 × UInt32 × String) := Id.run do
   return t.qsort fun (a, _, _) (b, _, _) => a < b
 
 def mkScriptExtensions : Array (UInt32 × String) := Id.run do
-  let mut t_arr : Array (UInt32 × UInt32 × String) := #[]
+  let mut t_arr : Array (UInt32 × String) := #[]
   let txt : String := ScriptExtensions.txt
   let stream := UCDStream.ofString txt
   for record in stream do
@@ -1011,9 +1011,10 @@ def mkScriptExtensions : Array (UInt32 × String) := Id.run do
       | _ => panic! "invalid record in ScriptExtensions.txt"
     let r1 : String.Slice := record[1]!
     let val : String := r1.copy
-    t_arr := t_arr.push (c₀, c₁, val)
-  let t_res := compressData t_arr
-  return t_res.map fun (c₀, c₁, val) => (c₀, (toHexStringRaw c₁) ++ ";" ++ val)
+    for c in [c₀.toNat:c₁.toNat + 1] do
+      let c := UInt32.ofNat c
+      t_arr := t_arr.push (c, (toHexStringRaw c) ++ ";" ++ val)
+  return t_arr
 
 private def showBidiClass : BidiClass → String
   | .leftToRight => "BidiClass.leftToRight"
