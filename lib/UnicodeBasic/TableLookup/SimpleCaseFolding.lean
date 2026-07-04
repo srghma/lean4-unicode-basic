@@ -10,9 +10,7 @@ namespace Unicode
 
 /-- Get simple case folding of a code point using lookup table -/
 public def lookupSimpleCaseFolding (c : UInt32) : UInt32 :=
-  let table := table
-  if c < table[0]!.1 then c else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (v, m) => if c == v then m else c
-where
-  table : Array (UInt32 × UInt32) := TableLookupTables.SimpleCaseFolding.table
+  if h : TableLookupTables.SimpleCaseFolding.BetweenOrEqStartEnd c then
+    (TableLookupTables.SimpleCaseFolding.lookupSparsePairTable? c h).getD c
+  else
+    c

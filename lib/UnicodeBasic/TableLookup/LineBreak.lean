@@ -11,9 +11,7 @@ namespace Unicode
 
 /-- Get line break property using lookup table -/
 public def lookupLineBreak (c : UInt32) : LineBreak :=
-  let table := table
-  if c < table[0]!.1 then .unknown else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v, b) => if c ≤ v then b else .unknown
-where
-  table : Array (UInt32 × UInt32 × LineBreak) := TableLookupTables.LineBreak.table
+  if h : TableLookupTables.LineBreak.BetweenOrEqStartEnd c then
+    (TableLookupTables.LineBreak.getInsideSparseRangeValueTable c h).getD .unknown
+  else
+    .unknown

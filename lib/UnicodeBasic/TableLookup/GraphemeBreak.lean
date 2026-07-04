@@ -11,9 +11,7 @@ namespace Unicode
 
 /-- Get grapheme cluster break property using lookup table -/
 public def lookupGraphemeClusterBreak (c : UInt32) : GraphemeClusterBreak :=
-  let table := table
-  if c < table[0]!.1 then .other else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v, b) => if c ≤ v then b else .other
-where
-  table : Array (UInt32 × UInt32 × GraphemeClusterBreak) := TableLookupTables.GraphemeBreak.table
+  if h : TableLookupTables.GraphemeBreak.BetweenOrEqStartEnd c then
+    (TableLookupTables.GraphemeBreak.getInsideSparseRangeValueTable c h).getD .other
+  else
+    .other

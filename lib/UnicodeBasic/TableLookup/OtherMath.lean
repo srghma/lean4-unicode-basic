@@ -9,6 +9,8 @@ public import UnicodeBasic.TableLookupTables.OtherMath
 namespace Unicode
 
 /-- Check if code point has Other_Math property using lookup table -/
-@[inline]
-public def lookupOtherMath (c : UInt32) : Bool :=
-  lookupPropRange c TableLookupTables.OtherMath.table
+public abbrev lookupOtherMath (c : UInt32) : Prop :=
+  if h : TableLookupTables.OtherMath.BetweenOrEqStartEnd c then
+    TableLookupTables.OtherMath.IsInsideSparseRangeTable c h
+  else
+    False

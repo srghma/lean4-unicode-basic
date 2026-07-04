@@ -18,25 +18,7 @@ namespace Unicode
     `Numeric_Type`
     `Numeric_Value` -/
 public def lookupNumericValue (c : UInt32) : Option NumericType :=
-  let table := table
-  if c < table[0]!.1 then none else
-    match table[find c (fun i => table[i]!.1) 0 table.size.toUSize]! with
-    | (c₀, _, .decimal _) =>
-      let val := c.toNat - c₀.toNat
-      if h : val < 10 then
-        some <| NumericType.decimal ⟨val, h⟩
-      else
-        none
-    | (c₀, c₁, .digit i) =>
-      if c ≤ c₁ then
-        let val := c.toNat - c₀.toNat + i.val
-        if h : val < 10 then
-          some <| NumericType.digit ⟨val, h⟩
-        else
-          panic! "invalid `Numeric_Value` table"
-      else
-        none
-    | ⟨v, _, n⟩ =>
-      if c == v then some n else none
-where
-  table : Array (UInt32 × UInt32 × NumericType) := TableLookupTables.NumericValue.table
+  if h : TableLookupTables.NumericValue.BetweenOrEqStartEnd c then
+    TableLookupTables.NumericValue.getInsideSparseRangeValueTable c h
+  else
+    none

@@ -14,7 +14,14 @@ namespace Unicode
   Unicode property: `General_Category` -/
 @[inline]
 public def lookupGC (c : UInt32) : GC :=
-  let table : Array (UInt32 × UInt32 × UInt32) := TableLookupTables.GeneralCategory.table
-  if c < table[0]!.1 then GC.Cn else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, stop, raw) => if c ≤ stop then decodeGeneralCategory c raw else GC.Cn
+  if h : TableLookupTables.GeneralCategory.BetweenOrEqStartEnd c then
+    match TableLookupTables.GeneralCategory.getInsideSparseRangeValueTable c h with
+    | some raw => decodeGeneralCategory c raw
+    -- `GC.Cn` = "Unassigned" (Not Assigned): the default category for any code
+    -- point that does not appear in the Unicode Character Database, i.e. gaps
+    -- between assigned ranges in the lookup table return `none`.
+    | none => GC.Cn
+  else
+    -- Code point is outside the table's covered range [start, end]; by Unicode
+    -- convention all such points are also unassigned (`Cn`).
+    GC.Cn

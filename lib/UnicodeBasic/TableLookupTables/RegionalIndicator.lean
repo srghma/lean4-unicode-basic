@@ -11,5 +11,4 @@ abbrev «end» : UInt32 := 0x1F1FF
 
 abbrev BetweenOrEqStartEnd (v : UInt32) : Prop := start ≤ v ∧ v ≤ «end»
 
-
 end Unicode.TableLookupTables.RegionalIndicator

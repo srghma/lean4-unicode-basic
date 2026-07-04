@@ -14,9 +14,7 @@ namespace Unicode
   Unicode property: `Vertical_Orientation`
 -/
 public def lookupVerticalOrientation (c : UInt32) : VerticalOrientation :=
-  let table := table
-  if table.size == 0 || c < table[0]!.1 then .rotated else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, stop, v) => if c ≤ stop then v else .rotated
-where
-  table : Array (UInt32 × UInt32 × VerticalOrientation) := TableLookupTables.VerticalOrientation.table
+  if h : TableLookupTables.VerticalOrientation.BetweenOrEqStartEnd c then
+    (TableLookupTables.VerticalOrientation.getInsideSparseRangeValueTable c h).getD .rotated
+  else
+    .rotated

@@ -9,6 +9,8 @@ public import UnicodeBasic.TableLookupTables.OtherLowercase
 namespace Unicode
 
 /-- Check if code point has Other_Lowercase property using lookup table -/
-@[inline]
-public def lookupOtherLowercase (c : UInt32) : Bool :=
-  lookupPropRange c TableLookupTables.OtherLowercase.table
+public abbrev lookupOtherLowercase (c : UInt32) : Prop :=
+  if h : TableLookupTables.OtherLowercase.BetweenOrEqStartEnd c then
+    TableLookupTables.OtherLowercase.IsInsideSparseRangeTable c h
+  else
+    False

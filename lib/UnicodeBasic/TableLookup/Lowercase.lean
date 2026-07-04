@@ -11,6 +11,8 @@ namespace Unicode
 /-- Check if code point is a lowercase letter using lookup table
 
   Unicode property: `Lowercase` -/
-@[inline]
-public def lookupLowercase (c : UInt32) : Bool :=
-  lookupPropRange c TableLookupTables.Lowercase.table
+public abbrev lookupLowercase (c : UInt32) : Prop :=
+  if h : TableLookupTables.Lowercase.BetweenOrEqStartEnd c then
+    TableLookupTables.Lowercase.IsInsideSparseRangeTable c h
+  else
+    False

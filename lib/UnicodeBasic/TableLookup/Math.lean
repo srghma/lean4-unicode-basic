@@ -11,6 +11,8 @@ namespace Unicode
 /-- Check if code point is a mathematical symbol using lookup table
 
   Unicode property: `Math` -/
-@[inline]
-public def lookupMath (c : UInt32) : Bool :=
-  lookupPropRange c TableLookupTables.Math.table
+public abbrev lookupMath (c : UInt32) : Prop :=
+  if h : TableLookupTables.Math.BetweenOrEqStartEnd c then
+    TableLookupTables.Math.IsInsideSparseRangeTable c h
+  else
+    False

@@ -4,7 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
 public import UnicodeBasic.GeneralApi.GeneralCategory
-public import UnicodeBasic.TableLookup
+public import UnicodeBasic.TableLookup.Lowercase
+public import UnicodeBasic.TableLookup.Uppercase
+public import UnicodeBasic.TableLookup.Cased
+public import UnicodeBasic.TableLookup.CaseMapping
 
 /-!
   This file uses lookup tables:

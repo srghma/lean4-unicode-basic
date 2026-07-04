@@ -11,6 +11,8 @@ namespace Unicode
 /-- Check if code point is a uppercase letter using lookup table
 
   Unicode property: `Uppercase` -/
-@[inline]
-public def lookupUppercase (c : UInt32) : Bool :=
-  lookupPropRange c TableLookupTables.Uppercase.table
+public abbrev lookupUppercase (c : UInt32) : Prop :=
+  if h : TableLookupTables.Uppercase.BetweenOrEqStartEnd c then
+    TableLookupTables.Uppercase.IsInsideSparseRangeTable c h
+  else
+    False

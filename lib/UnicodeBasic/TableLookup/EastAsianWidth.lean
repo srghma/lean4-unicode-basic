@@ -14,9 +14,9 @@ namespace Unicode
   Unicode property: `East_Asian_Width`
 -/
 public def lookupEastAsianWidth (c : UInt32) : EastAsianWidth :=
-  let table := table
-  if table.size == 0 || c < table[0]!.1 then .neutral else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, stop, v) => if c ≤ stop then v else .neutral
-where
-  table : Array (UInt32 × UInt32 × EastAsianWidth) := TableLookupTables.EastAsianWidth.table
+  if h : TableLookupTables.EastAsianWidth.BetweenOrEqStartEnd c then
+    match TableLookupTables.EastAsianWidth.getInsideSparseRangeValueTable c h with
+    | some w => w
+    | none => .neutral
+  else
+    .neutral

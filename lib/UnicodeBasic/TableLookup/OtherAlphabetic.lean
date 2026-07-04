@@ -9,6 +9,8 @@ public import UnicodeBasic.TableLookupTables.OtherAlphabetic
 namespace Unicode
 
 /-- Check if code point has Other_Alphabetic property using lookup table -/
-@[inline]
-public def lookupOtherAlphabetic (c : UInt32) : Bool :=
-  lookupPropRange c TableLookupTables.OtherAlphabetic.table
+public abbrev lookupOtherAlphabetic (c : UInt32) : Prop :=
+  if h : TableLookupTables.OtherAlphabetic.BetweenOrEqStartEnd c then
+    TableLookupTables.OtherAlphabetic.IsInsideSparseRangeTable c h
+  else
+    False

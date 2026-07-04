@@ -4,6 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
 public import UnicodeBasic.TableLookup.Name
+public import UnicodeBasic.TableLookup.BlockName
+public import UnicodeBasic.TableLookup.EastAsianWidth
+public import UnicodeBasic.TableLookup.VerticalOrientation
+public import UnicodeBasic.TableLookup.BidiBrackets
+public import UnicodeBasic.TableLookup.BidiMirroringGlyph
+
 
 /-!
   This file uses lookup tables:

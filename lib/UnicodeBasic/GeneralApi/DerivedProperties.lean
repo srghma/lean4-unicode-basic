@@ -3,7 +3,22 @@ Copyright © 2023-2025 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
-public import UnicodeBasic.TableLookup
+public import UnicodeBasic.TableLookup.IdStart
+public import UnicodeBasic.TableLookup.IdContinue
+public import UnicodeBasic.TableLookup.XidStart
+public import UnicodeBasic.TableLookup.XidContinue
+public import UnicodeBasic.TableLookup.Dash
+public import UnicodeBasic.TableLookup.Hyphen
+public import UnicodeBasic.TableLookup.QuotationMark
+public import UnicodeBasic.TableLookup.TerminalPunctuation
+public import UnicodeBasic.TableLookup.Extender
+public import UnicodeBasic.TableLookup.RegionalIndicator
+public import UnicodeBasic.TableLookup.Diacritic
+public import UnicodeBasic.TableLookup.SentenceTerminal
+public import UnicodeBasic.TableLookup.PatternSyntax
+public import UnicodeBasic.TableLookup.PatternWhiteSpace
+public import UnicodeBasic.TableLookup.GraphemeBase
+public import UnicodeBasic.TableLookup.GraphemeExtend
 
 /-!
   This file uses lookup tables:

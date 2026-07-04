@@ -11,9 +11,7 @@ namespace Unicode
 
 /-- Get sentence break property using lookup table -/
 public def lookupSentenceBreak (c : UInt32) : SentenceBreak :=
-  let table := table
-  if c < table[0]!.1 then .other else
-    match table[find c (fun i => table[i]!.1) 0 table.usize]! with
-    | (_, v, b) => if c ≤ v then b else .other
-where
-  table : Array (UInt32 × UInt32 × SentenceBreak) := TableLookupTables.SentenceBreak.table
+  if h : TableLookupTables.SentenceBreak.BetweenOrEqStartEnd c then
+    (TableLookupTables.SentenceBreak.getInsideSparseRangeValueTable c h).getD .other
+  else
+    .other

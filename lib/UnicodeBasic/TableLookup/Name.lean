@@ -14,46 +14,44 @@ namespace Unicode
 
   Unicode property: `Name` -/
 public def lookupName (c : UInt32) : String :=
-  let table := table
-  if c < table[0]!.1 then unreachable! else
-    match table[find c (fun i => table[i]!.1) 0 table.size.toUSize]! with
-    | (_, v, d) =>
-      if c ≤ v then
-        if "<".isPrefixOf d then
-          if d == "<Control>" then
-            s!"<control-{toHexStringRaw c}>"
-          else if d == "<Private Use>" then
-            s!"<private-use-{toHexStringRaw c}>"
-          else if d == "<Reserved>" then
-            s!"<reserved-{toHexStringRaw c}>"
-          else if d == "<Surrogate>" then
-            s!"<surrogate-{toHexStringRaw c}>"
-          else if d == "<CJK Unified Ideograph>" then
-            "CJK UNIFIED IDEOGRAPH-" ++ toHexStringRaw c
-          else if d == "<CJK Compatibility Ideograph>" then
-            "CJK COMPATIBILITY IDEOGRAPH-" ++ toHexStringRaw c
-          else if d == "<Hangul Syllable>" then
-            "HANGUL SYLLABLE " ++ (Hangul.getSyllable! c).getShortName
-          else if d == "<Khitan Small Script Character>" then
-            "KHITAN SMALL SCRIPT CHARACTER-" ++ toHexStringRaw c
-          else if d == "<Nushu Character>" then
-            "NUSHU CHARACTER-" ++ toHexStringRaw c
-          else if d == "<Tangut Component>" then
-            let i := if c.toNat < 0x18B00 then
-                -- Tangut Component
-                toString <| c.toNat - 0x18800 + 1
-              else
-                -- Tangut Component Supplement
-                toString <| c.toNat - 0x18D80 + 769
-            let i :=
-              if i.length == 1 then "00" ++ i
-              else if i.length == 2 then "0" ++ i
-              else i
-            "TANGUT COMPONENT-" ++ i
-          else if d == "<Tangut Ideograph>" then
-            "TANGUT IDEOGRAPH-" ++ toHexStringRaw c
-          else panic! s!"unknown name range {d}"
-        else d
-      else s!"<noncharacter-{toHexStringRaw c}>"
-where
-  table : Array (UInt32 × UInt32 × String) := TableLookupTables.Name.table
+  if h : TableLookupTables.Name.BetweenOrEqStartEnd c then
+    match TableLookupTables.Name.getInsideSparseRangeValueTable c h with
+    | some d =>
+      if "<".isPrefixOf d then
+        if d == "<Control>" then
+          s!"<control-{toHexStringRaw c}>"
+        else if d == "<Private Use>" then
+          s!"<private-use-{toHexStringRaw c}>"
+        else if d == "<Reserved>" then
+          s!"<reserved-{toHexStringRaw c}>"
+        else if d == "<Surrogate>" then
+          s!"<surrogate-{toHexStringRaw c}>"
+        else if d == "<CJK Unified Ideograph>" then
+          "CJK UNIFIED IDEOGRAPH-" ++ toHexStringRaw c
+        else if d == "<CJK Compatibility Ideograph>" then
+          "CJK COMPATIBILITY IDEOGRAPH-" ++ toHexStringRaw c
+        else if d == "<Hangul Syllable>" then
+          "HANGUL SYLLABLE " ++ (Hangul.getSyllable! c).getShortName
+        else if d == "<Khitan Small Script Character>" then
+          "KHITAN SMALL SCRIPT CHARACTER-" ++ toHexStringRaw c
+        else if d == "<Nushu Character>" then
+          "NUSHU CHARACTER-" ++ toHexStringRaw c
+        else if d == "<Tangut Component>" then
+          let i := if c.toNat < 0x18B00 then
+              -- Tangut Component
+              toString <| c.toNat - 0x18800 + 1
+            else
+              -- Tangut Component Supplement
+              toString <| c.toNat - 0x18D80 + 769
+          let i :=
+            if i.length == 1 then "00" ++ i
+            else if i.length == 2 then "0" ++ i
+            else i
+          "TANGUT COMPONENT-" ++ i
+        else if d == "<Tangut Ideograph>" then
+          "TANGUT IDEOGRAPH-" ++ toHexStringRaw c
+        else panic! s!"unknown name range {d}"
+      else d
+    | none => s!"<noncharacter-{toHexStringRaw c}>"
+  else
+    s!"<noncharacter-{toHexStringRaw c}>"

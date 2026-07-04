@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
 public import UnicodeBasic.GeneralApi.GeneralCategory
-public import UnicodeBasic.TableLookup
-public import UnicodeBasic.Lookup
+public import UnicodeBasic.TableLookup.Alphabetic
+public import UnicodeBasic.TableLookup.DefaultIgnorableCodePoint
+public import UnicodeBasic.TableLookup.Math
+public import UnicodeBasic.Lookup.NoncharacterCodePoint
 
 /-!
   This file uses lookup tables:

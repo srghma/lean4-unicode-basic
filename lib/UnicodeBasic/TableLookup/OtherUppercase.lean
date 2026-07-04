@@ -9,6 +9,8 @@ public import UnicodeBasic.TableLookupTables.OtherUppercase
 namespace Unicode
 
 /-- Check if code point has Other_Uppercase property using lookup table -/
-@[inline]
-public def lookupOtherUppercase (c : UInt32) : Bool :=
-  lookupPropRange c TableLookupTables.OtherUppercase.table
+public abbrev lookupOtherUppercase (c : UInt32) : Prop :=
+  if h : TableLookupTables.OtherUppercase.BetweenOrEqStartEnd c then
+    TableLookupTables.OtherUppercase.IsInsideSparseRangeTable c h
+  else
+    False

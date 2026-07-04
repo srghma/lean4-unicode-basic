@@ -3,7 +3,12 @@ Copyright © 2023-2025 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
-public import UnicodeBasic.TableLookup
+public import UnicodeBasic.TableLookup.Emoji
+public import UnicodeBasic.TableLookup.EmojiPresentation
+public import UnicodeBasic.TableLookup.EmojiModifier
+public import UnicodeBasic.TableLookup.EmojiModifierBase
+public import UnicodeBasic.TableLookup.EmojiComponent
+public import UnicodeBasic.TableLookup.ExtendedPictographic
 
 /-!
   This file uses lookup tables:
