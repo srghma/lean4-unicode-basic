@@ -1,6 +1,6 @@
 module
 
-namespace Unicode.Script
+namespace Unicode.Script.Common
 
 /-- Get the raw `UInt32` script code point from an abbreviation slice.
     Returns `some code` if the slice is exactly 4 bytes, otherwise `none`. -/

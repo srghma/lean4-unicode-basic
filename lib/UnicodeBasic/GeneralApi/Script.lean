@@ -53,7 +53,14 @@ public def getScriptExtensions (char : Char) : Array MaybeUnknownScript :=
 -/
 @[inline]
 public def isScript (sc : Script) (char : Char) : Bool :=
-  lookupScript char.val == MaybeUnknownScript.ofScript sc
+  if h : TableLookupTables.Script.BetweenOrEqStartEnd char.val then
+    (TableLookupTables.Script.getInsideSparseRangeValueTable char.val h).elim false (fun sc' => sc' == sc)
+  else
+    false
+
+@[inline]
+public def isMaybeUnknownScript (sc : MaybeUnknownScript) (char : Char) : Bool :=
+  lookupScript char.val == sc
 
 /-- Check if character has a script extension
 

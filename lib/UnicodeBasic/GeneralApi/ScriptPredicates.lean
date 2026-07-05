@@ -4,6 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
 public import UnicodeBasic.GeneralApi.Script
+public import UnicodeBasicCommon.Types.Script
+
+@[expose] public section
+
 
 /-!
   This file uses lookup tables:
@@ -13,356 +17,356 @@ public import UnicodeBasic.GeneralApi.Script
 namespace Unicode
 
 /-- Check if character is Adlam -/
-public def isAdlam (char : Char) : Bool := isScript (Script.ofAbbrev! "Adlm") char
+def isAdlam (char : Char) : Bool := isScript (Script.mk Script.CodePoints.adlam) char
 /-- Check if character is Ahom -/
-public def isAhom (char : Char) : Bool := isScript (Script.ofAbbrev! "Ahom") char
+def isAhom (char : Char) : Bool := isScript (Script.mk Script.CodePoints.ahom) char
 /-- Check if character is Anatolian_Hieroglyphs -/
-public def isAnatolianHieroglyphs (char : Char) : Bool := isScript (Script.ofAbbrev! "Hluw") char
+def isAnatolianHieroglyphs (char : Char) : Bool := isScript (Script.mk Script.CodePoints.anatolianHieroglyphs) char
 /-- Check if character is Arabic -/
-public def isArabic (char : Char) : Bool := isScript (Script.ofAbbrev! "Arab") char
+def isArabic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.arabic) char
 /-- Check if character is Armenian -/
-public def isArmenian (char : Char) : Bool := isScript (Script.ofAbbrev! "Armn") char
+def isArmenian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.armenian) char
 /-- Check if character is Avestan -/
-public def isAvestan (char : Char) : Bool := isScript (Script.ofAbbrev! "Avst") char
+def isAvestan (char : Char) : Bool := isScript (Script.mk Script.CodePoints.avestan) char
 /-- Check if character is Balinese -/
-public def isBalinese (char : Char) : Bool := isScript (Script.ofAbbrev! "Bali") char
+def isBalinese (char : Char) : Bool := isScript (Script.mk Script.CodePoints.balinese) char
 /-- Check if character is Bamum -/
-public def isBamum (char : Char) : Bool := isScript (Script.ofAbbrev! "Bamu") char
+def isBamum (char : Char) : Bool := isScript (Script.mk Script.CodePoints.bamum) char
 /-- Check if character is Bassa_Vah -/
-public def isBassaVah (char : Char) : Bool := isScript (Script.ofAbbrev! "Bass") char
+def isBassaVah (char : Char) : Bool := isScript (Script.mk Script.CodePoints.bassaVah) char
 /-- Check if character is Batak -/
-public def isBatak (char : Char) : Bool := isScript (Script.ofAbbrev! "Batk") char
+def isBatak (char : Char) : Bool := isScript (Script.mk Script.CodePoints.batak) char
 /-- Check if character is Bengali -/
-public def isBengali (char : Char) : Bool := isScript (Script.ofAbbrev! "Beng") char
+def isBengali (char : Char) : Bool := isScript (Script.mk Script.CodePoints.bengali) char
 /-- Check if character is Beria_Erfe -/
-public def isBeriaErfe (char : Char) : Bool := isScript (Script.ofAbbrev! "Berf") char
+def isBeriaErfe (char : Char) : Bool := isScript (Script.mk Script.CodePoints.beriaErfe) char
 /-- Check if character is Bhaiksuki -/
-public def isBhaiksuki (char : Char) : Bool := isScript (Script.ofAbbrev! "Bhks") char
+def isBhaiksuki (char : Char) : Bool := isScript (Script.mk Script.CodePoints.bhaiksuki) char
 /-- Check if character is Bopomofo -/
-public def isBopomofo (char : Char) : Bool := isScript (Script.ofAbbrev! "Bopo") char
+def isBopomofo (char : Char) : Bool := isScript (Script.mk Script.CodePoints.bopomofo) char
 /-- Check if character is Brahmi -/
-public def isBrahmi (char : Char) : Bool := isScript (Script.ofAbbrev! "Brah") char
+def isBrahmi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.brahmi) char
 /-- Check if character is Braille -/
-public def isBraille (char : Char) : Bool := isScript (Script.ofAbbrev! "Brai") char
+def isBraille (char : Char) : Bool := isScript (Script.mk Script.CodePoints.braille) char
 /-- Check if character is Buginese -/
-public def isBuginese (char : Char) : Bool := isScript (Script.ofAbbrev! "Bugi") char
+def isBuginese (char : Char) : Bool := isScript (Script.mk Script.CodePoints.buginese) char
 /-- Check if character is Buhid -/
-public def isBuhid (char : Char) : Bool := isScript (Script.ofAbbrev! "Buhd") char
+def isBuhid (char : Char) : Bool := isScript (Script.mk Script.CodePoints.buhid) char
 /-- Check if character is Canadian_Aboriginal -/
-public def isCanadianAboriginal (char : Char) : Bool := isScript (Script.ofAbbrev! "Cans") char
+def isCanadianAboriginal (char : Char) : Bool := isScript (Script.mk Script.CodePoints.canadianAboriginal) char
 /-- Check if character is Carian -/
-public def isCarian (char : Char) : Bool := isScript (Script.ofAbbrev! "Cari") char
+def isCarian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.carian) char
 /-- Check if character is Caucasian_Albanian -/
-public def isCaucasianAlbanian (char : Char) : Bool := isScript (Script.ofAbbrev! "Aghb") char
+def isCaucasianAlbanian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.caucasianAlbanian) char
 /-- Check if character is Chakma -/
-public def isChakma (char : Char) : Bool := isScript (Script.ofAbbrev! "Cakm") char
+def isChakma (char : Char) : Bool := isScript (Script.mk Script.CodePoints.chakma) char
 /-- Check if character is Cham -/
-public def isCham (char : Char) : Bool := isScript (Script.ofAbbrev! "Cham") char
+def isCham (char : Char) : Bool := isScript (Script.mk Script.CodePoints.cham) char
 /-- Check if character is Cherokee -/
-public def isCherokee (char : Char) : Bool := isScript (Script.ofAbbrev! "Cher") char
+def isCherokee (char : Char) : Bool := isScript (Script.mk Script.CodePoints.cherokee) char
 /-- Check if character is Chorasmian -/
-public def isChorasmian (char : Char) : Bool := isScript (Script.ofAbbrev! "Chrs") char
+def isChorasmian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.chorasmian) char
 /-- Check if character is Common -/
-public def isCommon (char : Char) : Bool := isScript (Script.ofAbbrev! "Zyyy") char
+def isCommon (char : Char) : Bool := isScript (Script.mk Script.CodePoints.common) char
 /-- Check if character is Coptic -/
-public def isCoptic (char : Char) : Bool := isScript (Script.ofAbbrev! "Copt") char
+def isCoptic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.coptic) char
 /-- Check if character is Cuneiform -/
-public def isCuneiform (char : Char) : Bool := isScript (Script.ofAbbrev! "Xsux") char
+def isCuneiform (char : Char) : Bool := isScript (Script.mk Script.CodePoints.cuneiform) char
 /-- Check if character is Cypriot -/
-public def isCypriot (char : Char) : Bool := isScript (Script.ofAbbrev! "Cprt") char
+def isCypriot (char : Char) : Bool := isScript (Script.mk Script.CodePoints.cypriot) char
 /-- Check if character is Cypro_Minoan -/
-public def isCyproMinoan (char : Char) : Bool := isScript (Script.ofAbbrev! "Cpmn") char
+def isCyproMinoan (char : Char) : Bool := isScript (Script.mk Script.CodePoints.cyproMinoan) char
 /-- Check if character is Cyrillic -/
-public def isCyrillic (char : Char) : Bool := isScript (Script.ofAbbrev! "Cyrl") char
+def isCyrillic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.cyrillic) char
 /-- Check if character is Deseret -/
-public def isDeseret (char : Char) : Bool := isScript (Script.ofAbbrev! "Dsrt") char
+def isDeseret (char : Char) : Bool := isScript (Script.mk Script.CodePoints.deseret) char
 /-- Check if character is Devanagari -/
-public def isDevanagari (char : Char) : Bool := isScript (Script.ofAbbrev! "Deva") char
+def isDevanagari (char : Char) : Bool := isScript (Script.mk Script.CodePoints.devanagari) char
 /-- Check if character is Dives_Akuru -/
-public def isDivesAkuru (char : Char) : Bool := isScript (Script.ofAbbrev! "Diak") char
+def isDivesAkuru (char : Char) : Bool := isScript (Script.mk Script.CodePoints.divesAkuru) char
 /-- Check if character is Dogra -/
-public def isDogra (char : Char) : Bool := isScript (Script.ofAbbrev! "Dogr") char
+def isDogra (char : Char) : Bool := isScript (Script.mk Script.CodePoints.dogra) char
 /-- Check if character is Duployan -/
-public def isDuployan (char : Char) : Bool := isScript (Script.ofAbbrev! "Dupl") char
+def isDuployan (char : Char) : Bool := isScript (Script.mk Script.CodePoints.duployan) char
 /-- Check if character is Egyptian_Hieroglyphs -/
-public def isEgyptianHieroglyphs (char : Char) : Bool := isScript (Script.ofAbbrev! "Egyp") char
+def isEgyptianHieroglyphs (char : Char) : Bool := isScript (Script.mk Script.CodePoints.egyptianHieroglyphs) char
 /-- Check if character is Elbasan -/
-public def isElbasan (char : Char) : Bool := isScript (Script.ofAbbrev! "Elba") char
+def isElbasan (char : Char) : Bool := isScript (Script.mk Script.CodePoints.elbasan) char
 /-- Check if character is Elymaic -/
-public def isElymaic (char : Char) : Bool := isScript (Script.ofAbbrev! "Elym") char
+def isElymaic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.elymaic) char
 /-- Check if character is Ethiopic -/
-public def isEthiopic (char : Char) : Bool := isScript (Script.ofAbbrev! "Ethi") char
+def isEthiopic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.ethiopic) char
 /-- Check if character is Garay -/
-public def isGaray (char : Char) : Bool := isScript (Script.ofAbbrev! "Gara") char
+def isGaray (char : Char) : Bool := isScript (Script.mk Script.CodePoints.garay) char
 /-- Check if character is Georgian -/
-public def isGeorgian (char : Char) : Bool := isScript (Script.ofAbbrev! "Geor") char
+def isGeorgian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.georgian) char
 /-- Check if character is Glagolitic -/
-public def isGlagolitic (char : Char) : Bool := isScript (Script.ofAbbrev! "Glag") char
+def isGlagolitic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.glagolitic) char
 /-- Check if character is Gothic -/
-public def isGothic (char : Char) : Bool := isScript (Script.ofAbbrev! "Goth") char
+def isGothic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.gothic) char
 /-- Check if character is Grantha -/
-public def isGrantha (char : Char) : Bool := isScript (Script.ofAbbrev! "Gran") char
+def isGrantha (char : Char) : Bool := isScript (Script.mk Script.CodePoints.grantha) char
 /-- Check if character is Greek -/
-public def isGreek (char : Char) : Bool := isScript (Script.ofAbbrev! "Grek") char
+def isGreek (char : Char) : Bool := isScript (Script.mk Script.CodePoints.greek) char
 /-- Check if character is Gujarati -/
-public def isGujarati (char : Char) : Bool := isScript (Script.ofAbbrev! "Gujr") char
+def isGujarati (char : Char) : Bool := isScript (Script.mk Script.CodePoints.gujarati) char
 /-- Check if character is Gunjala_Gondi -/
-public def isGunjalaGondi (char : Char) : Bool := isScript (Script.ofAbbrev! "Gong") char
+def isGunjalaGondi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.gunjalaGondi) char
 /-- Check if character is Gurmukhi -/
-public def isGurmukhi (char : Char) : Bool := isScript (Script.ofAbbrev! "Guru") char
+def isGurmukhi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.gurmukhi) char
 /-- Check if character is Gurung_Khema -/
-public def isGurungKhema (char : Char) : Bool := isScript (Script.ofAbbrev! "Gukh") char
+def isGurungKhema (char : Char) : Bool := isScript (Script.mk Script.CodePoints.gurungKhema) char
 /-- Check if character is Han -/
-public def isHan (char : Char) : Bool := isScript (Script.ofAbbrev! "Hani") char
+def isHan (char : Char) : Bool := isScript (Script.mk Script.CodePoints.han) char
 /-- Check if character is Hangul -/
-public def isHangul (char : Char) : Bool := isScript (Script.ofAbbrev! "Hang") char
+def isHangul (char : Char) : Bool := isScript (Script.mk Script.CodePoints.hangul) char
 /-- Check if character is Hanifi_Rohingya -/
-public def isHanifiRohingya (char : Char) : Bool := isScript (Script.ofAbbrev! "Rohg") char
+def isHanifiRohingya (char : Char) : Bool := isScript (Script.mk Script.CodePoints.hanifiRohingya) char
 /-- Check if character is Hanunoo -/
-public def isHanunoo (char : Char) : Bool := isScript (Script.ofAbbrev! "Hano") char
+def isHanunoo (char : Char) : Bool := isScript (Script.mk Script.CodePoints.hanunoo) char
 /-- Check if character is Hatran -/
-public def isHatran (char : Char) : Bool := isScript (Script.ofAbbrev! "Hatr") char
+def isHatran (char : Char) : Bool := isScript (Script.mk Script.CodePoints.hatran) char
 /-- Check if character is Hebrew -/
-public def isHebrew (char : Char) : Bool := isScript (Script.ofAbbrev! "Hebr") char
+def isHebrew (char : Char) : Bool := isScript (Script.mk Script.CodePoints.hebrew) char
 /-- Check if character is Hiragana -/
-public def isHiragana (char : Char) : Bool := isScript (Script.ofAbbrev! "Hira") char
+def isHiragana (char : Char) : Bool := isScript (Script.mk Script.CodePoints.hiragana) char
 /-- Check if character is Imperial_Aramaic -/
-public def isImperialAramaic (char : Char) : Bool := isScript (Script.ofAbbrev! "Armi") char
+def isImperialAramaic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.imperialAramaic) char
 /-- Check if character is Inherited -/
-public def isInherited (char : Char) : Bool := isScript (Script.ofAbbrev! "Zinh") char
+def isInherited (char : Char) : Bool := isScript (Script.mk Script.CodePoints.inherited) char
 /-- Check if character is Inscriptional_Pahlavi -/
-public def isInscriptionalPahlavi (char : Char) : Bool := isScript (Script.ofAbbrev! "Phli") char
+def isInscriptionalPahlavi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.inscriptionalPahlavi) char
 /-- Check if character is Inscriptional_Parthian -/
-public def isInscriptionalParthian (char : Char) : Bool := isScript (Script.ofAbbrev! "Prti") char
+def isInscriptionalParthian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.inscriptionalParthian) char
 /-- Check if character is Javanese -/
-public def isJavanese (char : Char) : Bool := isScript (Script.ofAbbrev! "Java") char
+def isJavanese (char : Char) : Bool := isScript (Script.mk Script.CodePoints.javanese) char
 /-- Check if character is Kaithi -/
-public def isKaithi (char : Char) : Bool := isScript (Script.ofAbbrev! "Kthi") char
+def isKaithi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.kaithi) char
 /-- Check if character is Kannada -/
-public def isKannada (char : Char) : Bool := isScript (Script.ofAbbrev! "Knda") char
+def isKannada (char : Char) : Bool := isScript (Script.mk Script.CodePoints.kannada) char
 /-- Check if character is Katakana -/
-public def isKatakana (char : Char) : Bool := isScript (Script.ofAbbrev! "Kana") char
+def isKatakana (char : Char) : Bool := isScript (Script.mk Script.CodePoints.katakana) char
 /-- Check if character is Katakana_Or_Hiragana -/
-public def isKatakanaOrHiragana (char : Char) : Bool := isScript (Script.ofAbbrev! "Hrkt") char
+def isKatakanaOrHiragana (char : Char) : Bool := isScript (Script.mk Script.CodePoints.katakanaOrHiragana) char
 /-- Check if character is Kawi -/
-public def isKawi (char : Char) : Bool := isScript (Script.ofAbbrev! "Kawi") char
+def isKawi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.kawi) char
 /-- Check if character is Kayah_Li -/
-public def isKayahLi (char : Char) : Bool := isScript (Script.ofAbbrev! "Kali") char
+def isKayahLi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.kayahLi) char
 /-- Check if character is Kharoshthi -/
-public def isKharoshthi (char : Char) : Bool := isScript (Script.ofAbbrev! "Khar") char
+def isKharoshthi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.kharoshthi) char
 /-- Check if character is Khitan_Small_Script -/
-public def isKhitanSmallScript (char : Char) : Bool := isScript (Script.ofAbbrev! "Kits") char
+def isKhitanSmallScript (char : Char) : Bool := isScript (Script.mk Script.CodePoints.khitanSmallScript) char
 /-- Check if character is Khmer -/
-public def isKhmer (char : Char) : Bool := isScript (Script.ofAbbrev! "Khmr") char
+def isKhmer (char : Char) : Bool := isScript (Script.mk Script.CodePoints.khmer) char
 /-- Check if character is Khojki -/
-public def isKhojki (char : Char) : Bool := isScript (Script.ofAbbrev! "Khoj") char
+def isKhojki (char : Char) : Bool := isScript (Script.mk Script.CodePoints.khojki) char
 /-- Check if character is Khudawadi -/
-public def isKhudawadi (char : Char) : Bool := isScript (Script.ofAbbrev! "Sind") char
+def isKhudawadi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.khudawadi) char
 /-- Check if character is Kirat_Rai -/
-public def isKiratRai (char : Char) : Bool := isScript (Script.ofAbbrev! "Krai") char
+def isKiratRai (char : Char) : Bool := isScript (Script.mk Script.CodePoints.kiratRai) char
 /-- Check if character is Lao -/
-public def isLao (char : Char) : Bool := isScript (Script.ofAbbrev! "Laoo") char
+def isLao (char : Char) : Bool := isScript (Script.mk Script.CodePoints.lao) char
 /-- Check if character is Latin -/
-public def isLatin (char : Char) : Bool := isScript (Script.ofAbbrev! "Latn") char
+def isLatin (char : Char) : Bool := isScript (Script.mk Script.CodePoints.latin) char
 /-- Check if character is Lepcha -/
-public def isLepcha (char : Char) : Bool := isScript (Script.ofAbbrev! "Lepc") char
+def isLepcha (char : Char) : Bool := isScript (Script.mk Script.CodePoints.lepcha) char
 /-- Check if character is Limbu -/
-public def isLimbu (char : Char) : Bool := isScript (Script.ofAbbrev! "Limb") char
+def isLimbu (char : Char) : Bool := isScript (Script.mk Script.CodePoints.limbu) char
 /-- Check if character is Linear_A -/
-public def isLinearA (char : Char) : Bool := isScript (Script.ofAbbrev! "Lina") char
+def isLinearA (char : Char) : Bool := isScript (Script.mk Script.CodePoints.linearA) char
 /-- Check if character is Linear_B -/
-public def isLinearB (char : Char) : Bool := isScript (Script.ofAbbrev! "Linb") char
+def isLinearB (char : Char) : Bool := isScript (Script.mk Script.CodePoints.linearB) char
 /-- Check if character is Lisu -/
-public def isLisu (char : Char) : Bool := isScript (Script.ofAbbrev! "Lisu") char
+def isLisu (char : Char) : Bool := isScript (Script.mk Script.CodePoints.lisu) char
 /-- Check if character is Lycian -/
-public def isLycian (char : Char) : Bool := isScript (Script.ofAbbrev! "Lyci") char
+def isLycian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.lycian) char
 /-- Check if character is Lydian -/
-public def isLydian (char : Char) : Bool := isScript (Script.ofAbbrev! "Lydi") char
+def isLydian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.lydian) char
 /-- Check if character is Mahajani -/
-public def isMahajani (char : Char) : Bool := isScript (Script.ofAbbrev! "Mahj") char
+def isMahajani (char : Char) : Bool := isScript (Script.mk Script.CodePoints.mahajani) char
 /-- Check if character is Makasar -/
-public def isMakasar (char : Char) : Bool := isScript (Script.ofAbbrev! "Maka") char
+def isMakasar (char : Char) : Bool := isScript (Script.mk Script.CodePoints.makasar) char
 /-- Check if character is Malayalam -/
-public def isMalayalam (char : Char) : Bool := isScript (Script.ofAbbrev! "Mlym") char
+def isMalayalam (char : Char) : Bool := isScript (Script.mk Script.CodePoints.malayalam) char
 /-- Check if character is Mandaic -/
-public def isMandaic (char : Char) : Bool := isScript (Script.ofAbbrev! "Mand") char
+def isMandaic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.mandaic) char
 /-- Check if character is Manichaean -/
-public def isManichaean (char : Char) : Bool := isScript (Script.ofAbbrev! "Mani") char
+def isManichaean (char : Char) : Bool := isScript (Script.mk Script.CodePoints.manichaean) char
 /-- Check if character is Marchen -/
-public def isMarchen (char : Char) : Bool := isScript (Script.ofAbbrev! "Marc") char
+def isMarchen (char : Char) : Bool := isScript (Script.mk Script.CodePoints.marchen) char
 /-- Check if character is Masaram_Gondi -/
-public def isMasaramGondi (char : Char) : Bool := isScript (Script.ofAbbrev! "Gonm") char
+def isMasaramGondi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.masaramGondi) char
 /-- Check if character is Medefaidrin -/
-public def isMedefaidrin (char : Char) : Bool := isScript (Script.ofAbbrev! "Medf") char
+def isMedefaidrin (char : Char) : Bool := isScript (Script.mk Script.CodePoints.medefaidrin) char
 /-- Check if character is Meetei_Mayek -/
-public def isMeeteiMayek (char : Char) : Bool := isScript (Script.ofAbbrev! "Mtei") char
+def isMeeteiMayek (char : Char) : Bool := isScript (Script.mk Script.CodePoints.meeteiMayek) char
 /-- Check if character is Mende_Kikakui -/
-public def isMendeKikakui (char : Char) : Bool := isScript (Script.ofAbbrev! "Mend") char
+def isMendeKikakui (char : Char) : Bool := isScript (Script.mk Script.CodePoints.mendeKikakui) char
 /-- Check if character is Meroitic_Cursive -/
-public def isMeroiticCursive (char : Char) : Bool := isScript (Script.ofAbbrev! "Merc") char
+def isMeroiticCursive (char : Char) : Bool := isScript (Script.mk Script.CodePoints.meroiticCursive) char
 /-- Check if character is Meroitic_Hieroglyphs -/
-public def isMeroiticHieroglyphs (char : Char) : Bool := isScript (Script.ofAbbrev! "Mero") char
+def isMeroiticHieroglyphs (char : Char) : Bool := isScript (Script.mk Script.CodePoints.meroiticHieroglyphs) char
 /-- Check if character is Miao -/
-public def isMiao (char : Char) : Bool := isScript (Script.ofAbbrev! "Plrd") char
+def isMiao (char : Char) : Bool := isScript (Script.mk Script.CodePoints.miao) char
 /-- Check if character is Modi -/
-public def isModi (char : Char) : Bool := isScript (Script.ofAbbrev! "Modi") char
+def isModi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.modi) char
 /-- Check if character is Mongolian -/
-public def isMongolian (char : Char) : Bool := isScript (Script.ofAbbrev! "Mong") char
+def isMongolian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.mongolian) char
 /-- Check if character is Mro -/
-public def isMro (char : Char) : Bool := isScript (Script.ofAbbrev! "Mroo") char
+def isMro (char : Char) : Bool := isScript (Script.mk Script.CodePoints.mro) char
 /-- Check if character is Multani -/
-public def isMultani (char : Char) : Bool := isScript (Script.ofAbbrev! "Mult") char
+def isMultani (char : Char) : Bool := isScript (Script.mk Script.CodePoints.multani) char
 /-- Check if character is Myanmar -/
-public def isMyanmar (char : Char) : Bool := isScript (Script.ofAbbrev! "Mymr") char
+def isMyanmar (char : Char) : Bool := isScript (Script.mk Script.CodePoints.myanmar) char
 /-- Check if character is Nabataean -/
-public def isNabataean (char : Char) : Bool := isScript (Script.ofAbbrev! "Nbat") char
+def isNabataean (char : Char) : Bool := isScript (Script.mk Script.CodePoints.nabataean) char
 /-- Check if character is Nag_Mundari -/
-public def isNagMundari (char : Char) : Bool := isScript (Script.ofAbbrev! "Nagm") char
+def isNagMundari (char : Char) : Bool := isScript (Script.mk Script.CodePoints.nagMundari) char
 /-- Check if character is Nandinagari -/
-public def isNandinagari (char : Char) : Bool := isScript (Script.ofAbbrev! "Nand") char
+def isNandinagari (char : Char) : Bool := isScript (Script.mk Script.CodePoints.nandinagari) char
 /-- Check if character is New_Tai_Lue -/
-public def isNewTaiLue (char : Char) : Bool := isScript (Script.ofAbbrev! "Talu") char
+def isNewTaiLue (char : Char) : Bool := isScript (Script.mk Script.CodePoints.newTaiLue) char
 /-- Check if character is Newa -/
-public def isNewa (char : Char) : Bool := isScript (Script.ofAbbrev! "Newa") char
+def isNewa (char : Char) : Bool := isScript (Script.mk Script.CodePoints.newa) char
 /-- Check if character is Nko -/
-public def isNko (char : Char) : Bool := isScript (Script.ofAbbrev! "Nkoo") char
+def isNko (char : Char) : Bool := isScript (Script.mk Script.CodePoints.nko) char
 /-- Check if character is Nushu -/
-public def isNushu (char : Char) : Bool := isScript (Script.ofAbbrev! "Nshu") char
+def isNushu (char : Char) : Bool := isScript (Script.mk Script.CodePoints.nushu) char
 /-- Check if character is Nyiakeng_Puachue_Hmong -/
-public def isNyiakengPuachueHmong (char : Char) : Bool := isScript (Script.ofAbbrev! "Hmnp") char
+def isNyiakengPuachueHmong (char : Char) : Bool := isScript (Script.mk Script.CodePoints.nyiakengPuachueHmong) char
 /-- Check if character is Ogham -/
-public def isOgham (char : Char) : Bool := isScript (Script.ofAbbrev! "Ogam") char
+def isOgham (char : Char) : Bool := isScript (Script.mk Script.CodePoints.ogham) char
 /-- Check if character is Ol_Chiki -/
-public def isOlChiki (char : Char) : Bool := isScript (Script.ofAbbrev! "Olck") char
+def isOlChiki (char : Char) : Bool := isScript (Script.mk Script.CodePoints.olChiki) char
 /-- Check if character is Ol_Onal -/
-public def isOlOnal (char : Char) : Bool := isScript (Script.ofAbbrev! "Onao") char
+def isOlOnal (char : Char) : Bool := isScript (Script.mk Script.CodePoints.olOnal) char
 /-- Check if character is Old_Hungarian -/
-public def isOldHungarian (char : Char) : Bool := isScript (Script.ofAbbrev! "Hung") char
+def isOldHungarian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.oldHungarian) char
 /-- Check if character is Old_Italic -/
-public def isOldItalic (char : Char) : Bool := isScript (Script.ofAbbrev! "Ital") char
+def isOldItalic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.oldItalic) char
 /-- Check if character is Old_North_Arabian -/
-public def isOldNorthArabian (char : Char) : Bool := isScript (Script.ofAbbrev! "Narb") char
+def isOldNorthArabian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.oldNorthArabian) char
 /-- Check if character is Old_Permic -/
-public def isOldPermic (char : Char) : Bool := isScript (Script.ofAbbrev! "Perm") char
+def isOldPermic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.oldPermic) char
 /-- Check if character is Old_Persian -/
-public def isOldPersian (char : Char) : Bool := isScript (Script.ofAbbrev! "Xpeo") char
+def isOldPersian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.oldPersian) char
 /-- Check if character is Old_Sogdian -/
-public def isOldSogdian (char : Char) : Bool := isScript (Script.ofAbbrev! "Sogo") char
+def isOldSogdian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.oldSogdian) char
 /-- Check if character is Old_South_Arabian -/
-public def isOldSouthArabian (char : Char) : Bool := isScript (Script.ofAbbrev! "Sarb") char
+def isOldSouthArabian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.oldSouthArabian) char
 /-- Check if character is Old_Turkic -/
-public def isOldTurkic (char : Char) : Bool := isScript (Script.ofAbbrev! "Orkh") char
+def isOldTurkic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.oldTurkic) char
 /-- Check if character is Old_Uyghur -/
-public def isOldUyghur (char : Char) : Bool := isScript (Script.ofAbbrev! "Ougr") char
+def isOldUyghur (char : Char) : Bool := isScript (Script.mk Script.CodePoints.oldUyghur) char
 /-- Check if character is Oriya -/
-public def isOriya (char : Char) : Bool := isScript (Script.ofAbbrev! "Orya") char
+def isOriya (char : Char) : Bool := isScript (Script.mk Script.CodePoints.oriya) char
 /-- Check if character is Osage -/
-public def isOsage (char : Char) : Bool := isScript (Script.ofAbbrev! "Osge") char
+def isOsage (char : Char) : Bool := isScript (Script.mk Script.CodePoints.osage) char
 /-- Check if character is Osmanya -/
-public def isOsmanya (char : Char) : Bool := isScript (Script.ofAbbrev! "Osma") char
+def isOsmanya (char : Char) : Bool := isScript (Script.mk Script.CodePoints.osmanya) char
 /-- Check if character is Pahawh_Hmong -/
-public def isPahawhHmong (char : Char) : Bool := isScript (Script.ofAbbrev! "Hmng") char
+def isPahawhHmong (char : Char) : Bool := isScript (Script.mk Script.CodePoints.pahawhHmong) char
 /-- Check if character is Palmyrene -/
-public def isPalmyrene (char : Char) : Bool := isScript (Script.ofAbbrev! "Palm") char
+def isPalmyrene (char : Char) : Bool := isScript (Script.mk Script.CodePoints.palmyrene) char
 /-- Check if character is Pau_Cin_Hau -/
-public def isPauCinHau (char : Char) : Bool := isScript (Script.ofAbbrev! "Pauc") char
+def isPauCinHau (char : Char) : Bool := isScript (Script.mk Script.CodePoints.pauCinHau) char
 /-- Check if character is Phags_Pa -/
-public def isPhagsPa (char : Char) : Bool := isScript (Script.ofAbbrev! "Phag") char
+def isPhagsPa (char : Char) : Bool := isScript (Script.mk Script.CodePoints.phagsPa) char
 /-- Check if character is Phoenician -/
-public def isPhoenician (char : Char) : Bool := isScript (Script.ofAbbrev! "Phnx") char
+def isPhoenician (char : Char) : Bool := isScript (Script.mk Script.CodePoints.phoenician) char
 /-- Check if character is Psalter_Pahlavi -/
-public def isPsalterPahlavi (char : Char) : Bool := isScript (Script.ofAbbrev! "Phlp") char
+def isPsalterPahlavi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.psalterPahlavi) char
 /-- Check if character is Rejang -/
-public def isRejang (char : Char) : Bool := isScript (Script.ofAbbrev! "Rjng") char
+def isRejang (char : Char) : Bool := isScript (Script.mk Script.CodePoints.rejang) char
 /-- Check if character is Runic -/
-public def isRunic (char : Char) : Bool := isScript (Script.ofAbbrev! "Runr") char
+def isRunic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.runic) char
 /-- Check if character is Samaritan -/
-public def isSamaritan (char : Char) : Bool := isScript (Script.ofAbbrev! "Samr") char
+def isSamaritan (char : Char) : Bool := isScript (Script.mk Script.CodePoints.samaritan) char
 /-- Check if character is Saurashtra -/
-public def isSaurashtra (char : Char) : Bool := isScript (Script.ofAbbrev! "Saur") char
+def isSaurashtra (char : Char) : Bool := isScript (Script.mk Script.CodePoints.saurashtra) char
 /-- Check if character is Sharada -/
-public def isSharada (char : Char) : Bool := isScript (Script.ofAbbrev! "Shrd") char
+def isSharada (char : Char) : Bool := isScript (Script.mk Script.CodePoints.sharada) char
 /-- Check if character is Shavian -/
-public def isShavian (char : Char) : Bool := isScript (Script.ofAbbrev! "Shaw") char
+def isShavian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.shavian) char
 /-- Check if character is Siddham -/
-public def isSiddham (char : Char) : Bool := isScript (Script.ofAbbrev! "Sidd") char
+def isSiddham (char : Char) : Bool := isScript (Script.mk Script.CodePoints.siddham) char
 /-- Check if character is Sidetic -/
-public def isSidetic (char : Char) : Bool := isScript (Script.ofAbbrev! "Sidt") char
+def isSidetic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.sidetic) char
 /-- Check if character is SignWriting -/
-public def isSignWriting (char : Char) : Bool := isScript (Script.ofAbbrev! "Sgnw") char
+def isSignWriting (char : Char) : Bool := isScript (Script.mk Script.CodePoints.signwriting) char
 /-- Check if character is Sinhala -/
-public def isSinhala (char : Char) : Bool := isScript (Script.ofAbbrev! "Sinh") char
+def isSinhala (char : Char) : Bool := isScript (Script.mk Script.CodePoints.sinhala) char
 /-- Check if character is Sogdian -/
-public def isSogdian (char : Char) : Bool := isScript (Script.ofAbbrev! "Sogd") char
+def isSogdian (char : Char) : Bool := isScript (Script.mk Script.CodePoints.sogdian) char
 /-- Check if character is Sora_Sompeng -/
-public def isSoraSompeng (char : Char) : Bool := isScript (Script.ofAbbrev! "Sora") char
+def isSoraSompeng (char : Char) : Bool := isScript (Script.mk Script.CodePoints.soraSompeng) char
 /-- Check if character is Soyombo -/
-public def isSoyombo (char : Char) : Bool := isScript (Script.ofAbbrev! "Soyo") char
+def isSoyombo (char : Char) : Bool := isScript (Script.mk Script.CodePoints.soyombo) char
 /-- Check if character is Sundanese -/
-public def isSundanese (char : Char) : Bool := isScript (Script.ofAbbrev! "Sund") char
+def isSundanese (char : Char) : Bool := isScript (Script.mk Script.CodePoints.sundanese) char
 /-- Check if character is Sunuwar -/
-public def isSunuwar (char : Char) : Bool := isScript (Script.ofAbbrev! "Sunu") char
+def isSunuwar (char : Char) : Bool := isScript (Script.mk Script.CodePoints.sunuwar) char
 /-- Check if character is Syloti_Nagri -/
-public def isSylotiNagri (char : Char) : Bool := isScript (Script.ofAbbrev! "Sylo") char
+def isSylotiNagri (char : Char) : Bool := isScript (Script.mk Script.CodePoints.sylotiNagri) char
 /-- Check if character is Syriac -/
-public def isSyriac (char : Char) : Bool := isScript (Script.ofAbbrev! "Syrc") char
+def isSyriac (char : Char) : Bool := isScript (Script.mk Script.CodePoints.syriac) char
 /-- Check if character is Tagalog -/
-public def isTagalog (char : Char) : Bool := isScript (Script.ofAbbrev! "Tglg") char
+def isTagalog (char : Char) : Bool := isScript (Script.mk Script.CodePoints.tagalog) char
 /-- Check if character is Tagbanwa -/
-public def isTagbanwa (char : Char) : Bool := isScript (Script.ofAbbrev! "Tagb") char
+def isTagbanwa (char : Char) : Bool := isScript (Script.mk Script.CodePoints.tagbanwa) char
 /-- Check if character is Tai_Le -/
-public def isTaiLe (char : Char) : Bool := isScript (Script.ofAbbrev! "Tale") char
+def isTaiLe (char : Char) : Bool := isScript (Script.mk Script.CodePoints.taiLe) char
 /-- Check if character is Tai_Tham -/
-public def isTaiTham (char : Char) : Bool := isScript (Script.ofAbbrev! "Lana") char
+def isTaiTham (char : Char) : Bool := isScript (Script.mk Script.CodePoints.taiTham) char
 /-- Check if character is Tai_Viet -/
-public def isTaiViet (char : Char) : Bool := isScript (Script.ofAbbrev! "Tavt") char
+def isTaiViet (char : Char) : Bool := isScript (Script.mk Script.CodePoints.taiViet) char
 /-- Check if character is Tai_Yo -/
-public def isTaiYo (char : Char) : Bool := isScript (Script.ofAbbrev! "Tayo") char
+def isTaiYo (char : Char) : Bool := isScript (Script.mk Script.CodePoints.taiYo) char
 /-- Check if character is Takri -/
-public def isTakri (char : Char) : Bool := isScript (Script.ofAbbrev! "Takr") char
+def isTakri (char : Char) : Bool := isScript (Script.mk Script.CodePoints.takri) char
 /-- Check if character is Tamil -/
-public def isTamil (char : Char) : Bool := isScript (Script.ofAbbrev! "Taml") char
+def isTamil (char : Char) : Bool := isScript (Script.mk Script.CodePoints.tamil) char
 /-- Check if character is Tangsa -/
-public def isTangsa (char : Char) : Bool := isScript (Script.ofAbbrev! "Tnsa") char
+def isTangsa (char : Char) : Bool := isScript (Script.mk Script.CodePoints.tangsa) char
 /-- Check if character is Tangut -/
-public def isTangut (char : Char) : Bool := isScript (Script.ofAbbrev! "Tang") char
+def isTangut (char : Char) : Bool := isScript (Script.mk Script.CodePoints.tangut) char
 /-- Check if character is Telugu -/
-public def isTelugu (char : Char) : Bool := isScript (Script.ofAbbrev! "Telu") char
+def isTelugu (char : Char) : Bool := isScript (Script.mk Script.CodePoints.telugu) char
 /-- Check if character is Thaana -/
-public def isThaana (char : Char) : Bool := isScript (Script.ofAbbrev! "Thaa") char
+def isThaana (char : Char) : Bool := isScript (Script.mk Script.CodePoints.thaana) char
 /-- Check if character is Thai -/
-public def isThai (char : Char) : Bool := isScript (Script.ofAbbrev! "Thai") char
+def isThai (char : Char) : Bool := isScript (Script.mk Script.CodePoints.thai) char
 /-- Check if character is Tibetan -/
-public def isTibetan (char : Char) : Bool := isScript (Script.ofAbbrev! "Tibt") char
+def isTibetan (char : Char) : Bool := isScript (Script.mk Script.CodePoints.tibetan) char
 /-- Check if character is Tifinagh -/
-public def isTifinagh (char : Char) : Bool := isScript (Script.ofAbbrev! "Tfng") char
+def isTifinagh (char : Char) : Bool := isScript (Script.mk Script.CodePoints.tifinagh) char
 /-- Check if character is Tirhuta -/
-public def isTirhuta (char : Char) : Bool := isScript (Script.ofAbbrev! "Tirh") char
+def isTirhuta (char : Char) : Bool := isScript (Script.mk Script.CodePoints.tirhuta) char
 /-- Check if character is Todhri -/
-public def isTodhri (char : Char) : Bool := isScript (Script.ofAbbrev! "Todr") char
+def isTodhri (char : Char) : Bool := isScript (Script.mk Script.CodePoints.todhri) char
 /-- Check if character is Tolong_Siki -/
-public def isTolongSiki (char : Char) : Bool := isScript (Script.ofAbbrev! "Tols") char
+def isTolongSiki (char : Char) : Bool := isScript (Script.mk Script.CodePoints.tolongSiki) char
 /-- Check if character is Toto -/
-public def isToto (char : Char) : Bool := isScript (Script.ofAbbrev! "Toto") char
+def isToto (char : Char) : Bool := isScript (Script.mk Script.CodePoints.toto) char
 /-- Check if character is Tulu_Tigalari -/
-public def isTuluTigalari (char : Char) : Bool := isScript (Script.ofAbbrev! "Tutg") char
+def isTuluTigalari (char : Char) : Bool := isScript (Script.mk Script.CodePoints.tuluTigalari) char
 /-- Check if character is Ugaritic -/
-public def isUgaritic (char : Char) : Bool := isScript (Script.ofAbbrev! "Ugar") char
+def isUgaritic (char : Char) : Bool := isScript (Script.mk Script.CodePoints.ugaritic) char
 /-- Check if character is Unknown -/
-public def isUnknown (char : Char) : Bool := isScript (Script.ofAbbrev! "Zzzz") char
+def isUnknown (char : Char) : Bool := isMaybeUnknownScript (MaybeUnknownScript.mk Script.CodePoints.unknown) char
 /-- Check if character is Vai -/
-public def isVai (char : Char) : Bool := isScript (Script.ofAbbrev! "Vaii") char
+def isVai (char : Char) : Bool := isScript (Script.mk Script.CodePoints.vai) char
 /-- Check if character is Vithkuqi -/
-public def isVithkuqi (char : Char) : Bool := isScript (Script.ofAbbrev! "Vith") char
+def isVithkuqi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.vithkuqi) char
 /-- Check if character is Wancho -/
-public def isWancho (char : Char) : Bool := isScript (Script.ofAbbrev! "Wcho") char
+def isWancho (char : Char) : Bool := isScript (Script.mk Script.CodePoints.wancho) char
 /-- Check if character is Warang_Citi -/
-public def isWarangCiti (char : Char) : Bool := isScript (Script.ofAbbrev! "Wara") char
+def isWarangCiti (char : Char) : Bool := isScript (Script.mk Script.CodePoints.warangCiti) char
 /-- Check if character is Yezidi -/
-public def isYezidi (char : Char) : Bool := isScript (Script.ofAbbrev! "Yezi") char
+def isYezidi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.yezidi) char
 /-- Check if character is Yi -/
-public def isYi (char : Char) : Bool := isScript (Script.ofAbbrev! "Yiii") char
+def isYi (char : Char) : Bool := isScript (Script.mk Script.CodePoints.yi) char
 /-- Check if character is Zanabazar_Square -/
-public def isZanabazarSquare (char : Char) : Bool := isScript (Script.ofAbbrev! "Zanb") char
+def isZanabazarSquare (char : Char) : Bool := isScript (Script.mk Script.CodePoints.zanabazarSquare) char
 
 end Unicode

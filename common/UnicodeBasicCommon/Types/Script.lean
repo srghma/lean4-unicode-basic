@@ -2,6 +2,8 @@ module
 public import UnicodeBasicCommon.Types.Script.Common
 public import UnicodeBasicCommon.Types.Script.IsValidCodePoint
 
+@[expose] public section
+
 namespace Unicode
 
 /-!
@@ -9,15 +11,15 @@ namespace Unicode
 -/
 
 /-- Script identifier type -/
-public structure Script where
-  public code : UInt32
-  public is_valid : Script.IsValidCodePoint code := by decide
+structure Script where
+  code : UInt32
+  is_valid : Script.IsValidCodePoint code := by decide
 deriving DecidableEq, Hashable
 
 namespace Script
 
 /-- Default value is `Zyyy` (`Common`) -/
-public instance : Inhabited Script where
+instance : Inhabited Script where
   default := {
     code := Script.CodePoints.common
     is_valid := by decide
@@ -25,12 +27,12 @@ public instance : Inhabited Script where
 
 /-- String abbreviation of script -/
 @[inline]
-public def toAbbrev (s : Script) → String := toAbbrevImpl s.code
+def toAbbrev (s : Script) : String := Unicode.Script.Common.toAbbrevImpl s.code
 
 /-- Get script from abbreviation -/
 @[inline]
-public def ofAbbrev? (abbr : String.Slice) : Option Script :=
-  match ofAbbrevAux abbr with
+def ofAbbrev? (abbr : String.Slice) : Option Script :=
+  match Unicode.Script.Common.ofAbbrevAux abbr with
   | some code =>
     if h_val : IsValidCodePoint code then
       some ⟨code, h_val⟩
@@ -39,8 +41,4 @@ public def ofAbbrev? (abbr : String.Slice) : Option Script :=
   | none => none
 
 @[inline, inherit_doc ofAbbrev?]
-public def ofAbbrev! (abbr : String.Slice) : Script := ofAbbrev? abbr |>.get!
-
-end Script
-
-end Unicode
+def ofAbbrev! (abbr : String.Slice) : Script := ofAbbrev? abbr |>.get!
