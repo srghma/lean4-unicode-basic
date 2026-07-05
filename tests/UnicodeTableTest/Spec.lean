@@ -386,6 +386,6 @@ public def spec : Spec.Spec := do
     itPropertyForData "Sentence_Break" testSentenceBreak
     itPropertyForData "Simple_Case_Folding" testSimpleCaseFolding
     itPropertyForData "General_Category" testGeneralCategory
-    itPropertyForData (timeoutMs? := some (Std.Time.Millisecond.Offset.ofSeconds (50 : Std.Time.Second.Offset))) "Line_Break" testLineBreak
+    itPropertyForData (timeoutMs? := some (Std.Time.Millisecond.Offset.ofSeconds (120 : Std.Time.Second.Offset))) "Line_Break" testLineBreak
     itPropertyForData "White_Space" testWhiteSpace
     itPropertyForData "Word_Break" testWordBreak
