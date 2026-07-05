@@ -31,7 +31,7 @@ public def lookupName (c : UInt32) : String :=
         else if d == "<CJK Compatibility Ideograph>" then
           "CJK COMPATIBILITY IDEOGRAPH-" ++ toHexStringRaw c
         else if d == "<Hangul Syllable>" then
-          "HANGUL SYLLABLE " ++ (Hangul.getSyllable! c).getShortName
+          "HANGUL SYLLABLE " ++ (Hangul.getSyllable! c).getShortName -- can we also returh proof with return type?
         else if d == "<Khitan Small Script Character>" then
           "KHITAN SMALL SCRIPT CHARACTER-" ++ toHexStringRaw c
         else if d == "<Nushu Character>" then

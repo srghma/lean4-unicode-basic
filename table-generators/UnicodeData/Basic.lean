@@ -96,7 +96,7 @@ def UnicodeData.mkCJKUnifiedIdeograph (c : UInt32) : UnicodeData where
   gc := .Lo
 
 /-- Make `UnicodeData` for Hangul syllable code point -/
-def UnicodeData.mkHangulSyllable (c : UInt32) : UnicodeData :=
+def UnicodeData.mkHangulSyllable! (c : UInt32) : UnicodeData :=
   let s := Hangul.getSyllable! c
   let m : DecompositionMapping :=
     match s.getTChar? with
@@ -293,7 +293,7 @@ public partial def getUnicodeData? (code : UInt32) : Option UnicodeData := do
     if data.name.front == '<' then
       if code = data.code || data.name.takeEnd 8 == ", First>" then
         if data.name.take 16 == "<Hangul Syllable" then
-          withDerivedNumeric <| UnicodeData.mkHangulSyllable code
+          withDerivedNumeric <| UnicodeData.mkHangulSyllable! code
         else if data.name.take 14 == "<CJK Ideograph" then
           withDerivedNumeric <| UnicodeData.mkCJKUnifiedIdeograph code
         else if data.name.take 17 == "<Tangut Ideograph" then
@@ -372,7 +372,7 @@ public def UnicodeDataStream.next? (s : UnicodeDataStream) : Option (UnicodeData
         else if n.take 14 == "<CJK Ideograph" then
           default := UnicodeData.mkCJKUnifiedIdeograph
         else if n.take 16 == "<Hangul Syllable" then
-          default := UnicodeData.mkHangulSyllable
+          default := UnicodeData.mkHangulSyllable!
         else if n.take 17 == "<Tangut Ideograph" then
           default := UnicodeData.mkTangutIdeograph
         else

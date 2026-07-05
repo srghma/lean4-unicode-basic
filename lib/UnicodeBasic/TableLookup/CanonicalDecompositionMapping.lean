@@ -16,12 +16,12 @@ namespace Unicode
     `Decomposition_Type=Canonical` -/
 public def lookupCanonicalDecompositionMapping (c : UInt32) : List UInt32 :=
   -- Hangul syllables
-  if Hangul.Syllable.base ≤ c && c ≤ Hangul.Syllable.last then
-    let s := Hangul.getSyllable! c
+  match Unicode.Hangul.getSyllable? c with
+  | some s =>
     match s.getTChar? with
     | some t => [s.getLChar.val, s.getVChar.val, t.val]
     | none => [s.getLChar.val, s.getVChar.val]
-  else
+  | none =>
     if h : TableLookupTables.CanonicalDecompositionMapping.BetweenOrEqStartEnd c then
       match TableLookupTables.CanonicalDecompositionMapping.lookupSparseKVTable? c h with
       | some l => l.mapping

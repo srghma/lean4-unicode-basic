@@ -6,6 +6,8 @@ module
 public import Spec.Tree
 import UnicodeBasic
 import UnicodeData
+import Std.Time.Time.Unit.Basic
+import Std.Time.Time.Unit.Second
 
 open Unicode
 
@@ -309,8 +311,8 @@ def testUppercase (d : UnicodeData) : Bool :=
 def testWhiteSpace (d : UnicodeData) : Bool :=
   PropList.isWhiteSpace d.code == lookupWhiteSpace d.code
 
-def itPropertyForData (name : String) (f : UnicodeData → Bool) : Spec.Spec := do
-  Spec.it name do
+def itPropertyForData (name : String) (f : UnicodeData → Bool) (focus : Bool := false) (timeoutMs? : Option Std.Time.Millisecond.Offset := none) : Spec.Spec := do
+  Spec.it (focus := focus) (timeoutMs? := timeoutMs?) name do
     let stream : UnicodeDataStream := {}
     let mut failedCodes : Array UInt32 := #[]
     for d in stream do
@@ -384,6 +386,6 @@ public def spec : Spec.Spec := do
     itPropertyForData "Sentence_Break" testSentenceBreak
     itPropertyForData "Simple_Case_Folding" testSimpleCaseFolding
     itPropertyForData "General_Category" testGeneralCategory
-    itPropertyForData "Line_Break" testLineBreak
+    itPropertyForData (timeoutMs? := some (Std.Time.Millisecond.Offset.ofSeconds (50 : Std.Time.Second.Offset))) "Line_Break" testLineBreak
     itPropertyForData "White_Space" testWhiteSpace
     itPropertyForData "Word_Break" testWordBreak

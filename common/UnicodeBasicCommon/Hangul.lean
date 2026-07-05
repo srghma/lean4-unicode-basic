@@ -121,7 +121,7 @@ public abbrev getSyllable (code : UInt32) (h : Hangul.Syllable.IsBtwBaseAndLast 
 
 /-- Get Hangul syllable from code point -/
 public abbrev getSyllable? (code : UInt32) : Option Syllable :=
-  if h : Syllable.base ≤ code ∧ code ≤ Syllable.last then
+  if h : Syllable.IsBtwBaseAndLast code then
     some (getSyllable code h)
   else
     none

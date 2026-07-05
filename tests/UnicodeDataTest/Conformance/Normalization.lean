@@ -16,10 +16,9 @@ open Unicode
 namespace UnicodeDataTest.Conformance.Normalization
 
 private def decomposeHangul (c : UInt32) : Option (List UInt32) :=
-  if c < Hangul.Syllable.base || c > Hangul.Syllable.last then
-    none
-  else
-    let s := Hangul.getSyllable! c
+  match Hangul.getSyllable? c with
+  | none => none
+  | some s =>
     match s.getTChar? with
     | some t => some [s.getLChar.val, s.getVChar.val, t.val]
     | none => some [s.getLChar.val, s.getVChar.val]
@@ -83,15 +82,15 @@ private def composeHangul? (a b : UInt32) : Option UInt32 :=
   let vCount := Hangul.sizeV
   let tCount := Hangul.sizeT
   if aN >= lBase && aN < lBase + lCount && bN >= vBase && bN < vBase + vCount then
-    let l := aN - lBase
-    let v := bN - vBase
-    some <| UInt32.ofNat <| sBase + (l * vCount + v) * tCount
-  else if aN >= sBase && aN <= Hangul.Syllable.last.toNat && bN > tBase && bN < tBase + tCount then
-    let s := Hangul.getSyllable! a
-    if s.toT.val == 0 then
-      some <| UInt32.ofNat <| aN + (bN - tBase)
-    else
-      none
+    some <| UInt32.ofNat <| sBase + ((aN - lBase) * vCount + (bN - vBase)) * tCount
+  else if bN > tBase && bN < tBase + tCount then
+    match Hangul.getSyllable? a with
+    | some s =>
+        if s.toT.val == 0 then
+          some <| UInt32.ofNat <| aN + (bN - tBase)
+        else
+          none
+    | none => none
   else
     none
 

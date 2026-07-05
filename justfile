@@ -54,7 +54,7 @@ build:
     @just lake-all-do "lake build --wfail"
 
 test:
-    cd tests && lake exe testAll -- --timeout 120
+    cd tests && lake test
 
 check-ucd-text:
     node scripts/check_ucd_text_not_baked.ts
