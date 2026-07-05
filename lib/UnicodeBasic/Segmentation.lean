@@ -28,8 +28,8 @@ private def prevIndexIf (xs : Array UInt32) (i : Nat) (p : UInt32 → Bool) : Op
 
 private def nextIndexIf (xs : Array UInt32) (i : Nat) (p : UInt32 → Bool) : Option Nat := Id.run do
   let mut j := i
-  while j < xs.size do
-    if p xs[j]! then
+  while h : j < xs.size do
+    if p xs[j] then
       return some j
     j := j + 1
   return none
@@ -81,9 +81,10 @@ private def countPrevWordRI (xs : Array UInt32) (i : Nat) : Nat := Id.run do
   let mut n := 0
   while j > 0 do
     j := j - 1
-    if wordIgnore xs[j]! then
+    let c := xs[j]!
+    if wordIgnore c then
       continue
-    if wb xs[j]! == .nonOther .regionalIndicator then
+    if wb c == .nonOther .regionalIndicator then
       n := n + 1
     else
       break

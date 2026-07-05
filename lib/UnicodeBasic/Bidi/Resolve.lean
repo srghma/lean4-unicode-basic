@@ -42,10 +42,10 @@ public def bidiLeveledCodepoints
     (text : Array UInt32) (resolution : BidiResolution) :
     Array BidiLeveledCodepoint := Id.run do
   let mut out := #[]
-  for i in [:text.size] do
-    if i < resolution.resolvedLevels.size then
-      match resolution.resolvedLevels[i]! with
-      | some level => out := out.push { index := i, codepoint := text[i]!, level }
+  for h : i in 0...text.size do
+    if hi : i < resolution.resolvedLevels.size then
+      match resolution.resolvedLevels[i]'hi with
+      | some level => out := out.push { index := i, codepoint := text[i], level }
       | none => pure ()
   return out
 
@@ -57,8 +57,8 @@ public def bidiLeveledCodepoints
 public def reorderBidiText (text : Array UInt32) (resolution : BidiResolution) : Array UInt32 := Id.run do
   let mut out := #[]
   for i in resolution.visualOrder do
-    if i < text.size then
-      out := out.push text[i]!
+    if hi : i < text.size then
+      out := out.push text[i]
   return out
 
 /-- Return contiguous logical runs with the same resolved bidi level.
@@ -70,8 +70,8 @@ public def bidiRuns (resolution : BidiResolution) : Array BidiRun := Id.run do
   let levels := resolution.resolvedLevels
   let mut runs := #[]
   let mut i := 0
-  while i < levels.size do
-    match levels[i]! with
+  while h : i < levels.size do
+    match levels[i] with
     | none => i := i + 1
     | some level =>
         let start := i

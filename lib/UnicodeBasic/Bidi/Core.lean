@@ -143,8 +143,8 @@ public def leastGreaterEven? (level : Nat) : Option Nat :=
 public def findMatchingPDI (items : Array Item) (start : Nat) : Option Nat := Id.run do
   let mut depth := 0
   let mut i := start + 1
-  while i < items.size do
-    let bc := items[i]!.orig
+  while h : i < items.size do
+    let bc := items[i].orig
     if isIsolateInitiator bc then
       depth := depth + 1
     else if bc == .popDirectionalIsolate then
@@ -157,17 +157,20 @@ public def findMatchingPDI (items : Array Item) (start : Nat) : Option Nat := Id
 
 public def firstStrongLevel (items : Array Item) (lo : Nat) (hi : Nat) : Nat := Id.run do
   let mut i := lo
-  while i < hi && i < items.size do
-    match items[i]!.orig with
-    | .leftToRight => return 0
-    | .rightToLeft | .arabicLetter => return 1
-    | bc =>
-        if isIsolateInitiator bc then
-          match findMatchingPDI items i with
-          | some j => i := j + 1
-          | none => return 0
-        else
-          i := i + 1
+  while i < hi do
+    if h : i < items.size then
+      match items[i].orig with
+      | .leftToRight => return 0
+      | .rightToLeft | .arabicLetter => return 1
+      | bc =>
+          if isIsolateInitiator bc then
+            match findMatchingPDI items i with
+            | some j => i := j + 1
+            | none => return 0
+          else
+            i := i + 1
+    else
+      break
   return 0
 
 public def paragraphLevel (items : Array Item) : Unicode.BidiParagraphDirection → Nat
@@ -177,21 +180,21 @@ public def paragraphLevel (items : Array Item) : Unicode.BidiParagraphDirection 
 
 public def buildTextItems (text : Array UInt32) : Array Item := Id.run do
   let mut out := #[]
-  for i in [:text.size] do
-    let c := text[i]!
+  for h : i in 0...text.size do
+    let c := text[i]
     let bc := lookupBidiClass c
     out := out.push { index := i, code := some c, orig := bc, cls := bc, level := none, matchedPDI := false, matchedIsolate := false, matchingInitiator := none }
   return out
 
 public def buildClassItems (classes : Array BidiClass) : Array Item := Id.run do
   let mut out := #[]
-  for i in [:classes.size] do
-    let bc := classes[i]!
+  for h : i in 0...classes.size do
+    let bc := classes[i]
     out := out.push { index := i, code := none, orig := bc, cls := bc, level := none, matchedPDI := false, matchedIsolate := false, matchingInitiator := none }
   return out
 
-public def top! (stack : Array StackEntry) : StackEntry :=
-  stack[stack.size - 1]!
+public abbrev top! (stack : Array StackEntry) : StackEntry :=
+  stack.back!
 
 public def pushEmbedding
     (stack : Array StackEntry) (level : Nat) (ov : Override) (overflowIsolate overflowEmbedding : Nat) :

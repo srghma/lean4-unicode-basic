@@ -7,14 +7,16 @@ public import UnicodeBasic.Bidi.Core
 
 namespace Unicode.BidiInternal
 
-public def resolveExplicitLevels (paragraph : Nat) (items0 : Array Item) : Array Item := Id.run do
-  let mut items := items0
+public def resolveExplicitLevels (paragraph : Nat) (items0 : Array Item) : Vector Item items0.size := Id.run do
+  let n := items0.size
+  let mut items : Vector Item n := items0.toVector
   let mut stack : Array StackEntry := #[{ level := paragraph, override := .neutral, isolate := false, initiator := none }]
   let mut overflowIsolate := 0
   let mut overflowEmbedding := 0
   let mut validIsolate := 0
-  for i in [:items.size] do
-    let item := items[i]!
+  let mut i := 0
+  while h : i < n do
+    let item := items[i]
     let cur := top! stack
     match item.orig with
     | .leftToRightEmbedding =>
@@ -52,13 +54,13 @@ public def resolveExplicitLevels (paragraph : Nat) (items0 : Array Item) : Array
     | .leftToRightIsolate | .rightToLeftIsolate | .firstStrongIsolate =>
         let initiatorClass :=
           if item.orig == .firstStrongIsolate then
-            if firstStrongLevel items (i + 1) (match findMatchingPDI items i with | some j => j | none => items.size) == 0 then
+            if firstStrongLevel items.toArray (i + 1) (match findMatchingPDI items.toArray i with | some j => j | none => n) == 0 then
               BidiClass.leftToRightIsolate
             else
               BidiClass.rightToLeftIsolate
           else
             item.orig
-        items := items.set! i { item with cls := applyOverride cur.override initiatorClass, level := some cur.level }
+        items := items.set i { item with cls := applyOverride cur.override initiatorClass, level := some cur.level } h
         let next? :=
           if initiatorClass == .rightToLeftIsolate then leastGreaterOdd? cur.level else leastGreaterEven? cur.level
         match next? with
@@ -83,13 +85,14 @@ public def resolveExplicitLevels (paragraph : Nat) (items0 : Array Item) : Array
           matchingInitiator := (top! stack).initiator
           match matchingInitiator with
           | some start =>
-              items := items.set! start { items[start]! with matchedIsolate := true }
+              if hs : start < n then
+                items := items.set start { items[start]'hs with matchedIsolate := true } hs
           | none => pure ()
           if stack.size > 1 then
             stack := stack.pop
           validIsolate := validIsolate - 1
         let cur := top! stack
-        items := items.set! i { item with cls := applyOverride cur.override item.orig, level := some cur.level, matchedPDI, matchingInitiator }
+        items := items.set i { item with cls := applyOverride cur.override item.orig, level := some cur.level, matchedPDI, matchingInitiator } h
     | .popDirectionalFormat =>
         if overflowIsolate > 0 then
           pure ()
@@ -98,44 +101,50 @@ public def resolveExplicitLevels (paragraph : Nat) (items0 : Array Item) : Array
         else if !(top! stack).isolate && stack.size > 1 then
           stack := stack.pop
     | .paragraphSeparator =>
-        items := items.set! i { item with level := some paragraph }
+        items := items.set i { item with level := some paragraph } h
     | _ =>
         if !isRemovedByX9 item.orig then
-          items := items.set! i { item with cls := applyOverride cur.override item.orig, level := some cur.level }
-  for i in [:items.size] do
-    let item := items[i]!
+          items := items.set i { item with cls := applyOverride cur.override item.orig, level := some cur.level } h
+    i := i + 1
+  -- X9 cleanup: remove explicit embedding/override/isolate controls
+  i := 0
+  while h : i < n do
+    let item := items[i]
     if isRemovedByX9 item.orig then
-      items := items.set! i { item with level := none }
+      items := items.set i { item with level := none } h
+    i := i + 1
   return items
 
-public def previousInSeq? (items : Array Item) (seq : Array Nat) (pos : Nat) : Option BidiClass := Id.run do
+public def previousInSeq? {n : Nat} (items : Vector Item n) (seq : Array (Fin n)) (pos : Nat) : Option BidiClass := Id.run do
   let mut j := pos
   while j > 0 do
     j := j - 1
-    let bc := items[seq[j]!]!.cls
-    if !isRemovedByX9 bc then
-      return some bc
+    if h : j < seq.size then
+      let bc := (items.get seq[j]).cls
+      if !isRemovedByX9 bc then
+        return some bc
   return none
 
-public def nextInSeq? (items : Array Item) (seq : Array Nat) (pos : Nat) : Option BidiClass := Id.run do
+public def nextInSeq? {n : Nat} (items : Vector Item n) (seq : Array (Fin n)) (pos : Nat) : Option BidiClass := Id.run do
   let mut j := pos + 1
-  while j < seq.size do
-    let bc := items[seq[j]!]!.cls
+  while h : j < seq.size do
+    let bc := (items.get seq[j]).cls
     if !isRemovedByX9 bc then
       return some bc
     j := j + 1
   return none
 
-public def setClass (items : Array Item) (i : Nat) (bc : BidiClass) : Array Item :=
-  items.set! i { items[i]! with cls := bc }
+@[inline] public def setClass {n : Nat} (items : Vector Item n) (i : Fin n) (bc : BidiClass) : Vector Item n :=
+  items.set i.val { items.get i with cls := bc } i.isLt
 
-public def prevStrongOrSot (items : Array Item) (seq : Array Nat) (pos : Nat) (sot : BidiClass) : BidiClass := Id.run do
+public def prevStrongOrSot {n : Nat} (items : Vector Item n) (seq : Array (Fin n)) (pos : Nat) (sot : BidiClass) : BidiClass := Id.run do
   let mut j := pos
   while j > 0 do
     j := j - 1
-    let bc := items[seq[j]!]!.cls
-    if isStrong bc then
-      return bc
+    if h : j < seq.size then
+      let bc := (items.get seq[j]).cls
+      if isStrong bc then
+        return bc
   return sot
 
 end Unicode.BidiInternal

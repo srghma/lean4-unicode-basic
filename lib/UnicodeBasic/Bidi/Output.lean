@@ -82,7 +82,7 @@ public def resolveItems (items0 : Array Item) (direction : Unicode.BidiParagraph
   let items := resolveExplicitLevels paragraph items0
   let items := resolveRuns paragraph items
   let items := resolveImplicitLevels items
-  let items := resolveLineBreaks paragraph items
+  let items := resolveLineBreaks paragraph items.toArray
   {
     paragraphLevel := paragraph
     resolvedLevels := items.map (·.level)
