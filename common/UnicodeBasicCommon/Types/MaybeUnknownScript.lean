@@ -1,5 +1,6 @@
 module
 public import UnicodeBasicCommon.Types.Script
+public import UnicodeBasicCommon.Types.Script.Common
 public import UnicodeBasicCommon.Types.Script.IsValidCodePoint
 
 namespace Unicode
@@ -32,25 +33,18 @@ public instance : Inhabited MaybeUnknownScript where
 
 /-- String abbreviation of script -/
 @[inline]
-public def toAbbrev : MaybeUnknownScript → String
-  | ⟨c, _⟩ =>
-    let c0 := Char.ofUInt8 (c >>> 24).toUInt8
-    let c1 := Char.ofUInt8 (c >>> 16).toUInt8
-    let c2 := Char.ofUInt8 (c >>> 8).toUInt8
-    let c3 := Char.ofUInt8 c.toUInt8
-    String.ofList [c0, c1, c2, c3]
+public def toAbbrev (s : MaybeUnknownScript) → String := toAbbrevImpl s.code
 
 /-- Get script from abbreviation, including `Zzzz`. -/
 @[inline]
 public def ofAbbrev? (abbr : String.Slice) : Option MaybeUnknownScript :=
-  if abbr.utf8ByteSize = 4 then
-    let code := Script.ofAbbrevAux abbr
-    if h : Script.IsValidMaybeUnknownCodePoint code then
-      some ⟨code, h⟩
+  match Script.ofAbbrevAux abbr with
+  | some code =>
+    if h_val : Script.IsValidMaybeUnknownCodePoint code then
+      some ⟨code, h_val⟩
     else
       none
-  else
-    none
+  | none => none
 
 @[inline, inherit_doc ofAbbrev?]
 public def ofAbbrev! (abbr : String.Slice) : MaybeUnknownScript := ofAbbrev? abbr |>.get!

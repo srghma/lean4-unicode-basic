@@ -23,3 +23,8 @@ globs = [
   "UnicodeBasicCommon.Types.Script",
   "UnicodeBasicCommon.Types.MaybeUnknownScript",
 ]
+
+# [[require]]
+# name = "aesop"
+# scope = "leanprover-community"
+# rev = "v4.32.0-rc1"
